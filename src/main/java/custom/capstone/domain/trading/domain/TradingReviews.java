@@ -1,6 +1,6 @@
 package custom.capstone.domain.trading.domain;
 
-import custom.capstone.project.domain.members.domain.Member;
+import custom.capstone.domain.members.domain.Member;
 import lombok.Getter;
 
 import javax.persistence.*;

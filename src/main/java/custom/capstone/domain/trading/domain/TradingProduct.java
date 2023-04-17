@@ -1,6 +1,6 @@
 package custom.capstone.domain.trading.domain;
 
-import custom.capstone.project.domain.posts.domain.Post;
+import custom.capstone.domain.posts.domain.Post;
 import lombok.Getter;
 
 import javax.persistence.*;
