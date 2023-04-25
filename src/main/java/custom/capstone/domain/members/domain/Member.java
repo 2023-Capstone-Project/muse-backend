@@ -1,9 +1,9 @@
 package custom.capstone.domain.members.domain;
 
+import custom.capstone.domain.members.dto.UpdateMemberDto;
 import custom.capstone.domain.posts.domain.InterestList;
 import custom.capstone.domain.posts.domain.Post;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,7 +26,7 @@ public class Member {
     @Column(length = 20, nullable = false)
     private String name;
 
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     private String email;
 
     @Column(length = 20, nullable = false)
@@ -47,30 +47,32 @@ public class Member {
     /**
      * 생성자 로직
      */
-    @Builder
-    public Member(final String name, final String password, final String email, final String phoneNum){
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this.phoneNum = phoneNum;
+    public static Member of(
+            String name,
+            String password,
+            String email,
+            String phoneNum,
+            MemberOccupation occupation,
+            MemberStatus status
+    ) {
+        Member member = new Member();
+        member.name = name;
+        member.password = password;
+        member.email = email;
+        member.phoneNum = phoneNum;
+        member.occupation = occupation;
+        member.status = status;
+
+        return member;
     }
 
     /**
      * 수정 로직
      */
-    public void updateName(final String name) {
-        this.name = name;
-    }
-
-    public void updatePassword(final String password) {
-        this.password = password;
-    }
-
-    public void updateEmail(final String email) {
-        this.email = email;
-    }
-
-    public void updatePhoneNum(final String phoneNum) {
-        this.phoneNum = phoneNum;
+    public void update(UpdateMemberDto memberDto) {
+        this.name = memberDto.name();
+        this.password = memberDto.password();
+        this.email = memberDto.email();
+        this.phoneNum = memberDto.phoneNum();
     }
 }
