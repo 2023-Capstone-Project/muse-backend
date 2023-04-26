@@ -1,7 +1,7 @@
 package custom.capstone.domain.posts.domain;
 
-import custom.capstone.project.domain.members.domain.Member;
-import custom.capstone.project.domain.model.domain.Category;
+import custom.capstone.domain.members.domain.Member;
+import custom.capstone.domain.model.domain.Category;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

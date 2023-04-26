@@ -1,6 +1,6 @@
 package custom.capstone.domain.notice.domain;
 
-import custom.capstone.project.domain.admin.Admin;
+import custom.capstone.domain.admin.Admin;
 import lombok.Getter;
 
 import javax.persistence.*;
