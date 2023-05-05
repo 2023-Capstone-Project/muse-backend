@@ -1,9 +1,10 @@
 package custom.capstone.domain.members.domain;
 
-import custom.capstone.domain.members.dto.UpdateMemberDto;
 import custom.capstone.domain.posts.domain.InterestList;
 import custom.capstone.domain.posts.domain.Post;
+
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,10 +24,10 @@ public class Member {
     @Column(length = 150, nullable = false)
     private String password;
 
-    @Column(length = 20, nullable = false)
-    private String name;
+    @Column(length = 20, unique = true, nullable = false)
+    private String nickname;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 50, unique = true, nullable = false)
     private String email;
 
     @Column(length = 20, nullable = false)
@@ -36,6 +37,7 @@ public class Member {
     private MemberOccupation occupation;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private MemberStatus status;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
@@ -45,34 +47,21 @@ public class Member {
     private final List<InterestList> interestList = new ArrayList<>();
 
     /**
-     * 생성자 로직
+     * 정적 생성자
      */
-    public static Member of(
-            String name,
-            String password,
-            String email,
-            String phoneNum,
-            MemberOccupation occupation,
-            MemberStatus status
-    ) {
-        Member member = new Member();
-        member.name = name;
-        member.password = password;
-        member.email = email;
-        member.phoneNum = phoneNum;
-        member.occupation = occupation;
-        member.status = status;
-
-        return member;
+    @Builder
+    public Member(String nickname, String password, String email, String phoneNum, MemberOccupation occupation) {
+        this.nickname = nickname;
+        this.password = password;
+        this.email = email;
+        this.phoneNum = phoneNum;
+        this.occupation = occupation;
     }
 
-    /**
-     * 수정 로직
-     */
-    public void update(UpdateMemberDto memberDto) {
-        this.name = memberDto.name();
-        this.password = memberDto.password();
-        this.email = memberDto.email();
-        this.phoneNum = memberDto.phoneNum();
+    public void update(String nickname, String password, String email, String phoneNum) {
+        this.nickname = nickname;
+        this.password = password;
+        this.email = email;
+        this.phoneNum = phoneNum;
     }
 }

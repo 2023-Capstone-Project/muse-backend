@@ -2,80 +2,78 @@ package custom.capstone.domain.members.application;
 
 import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
-import custom.capstone.domain.members.domain.MemberOccupation;
-import custom.capstone.domain.members.domain.MemberStatus;
-import custom.capstone.domain.members.dto.SignInMemberDto;
-import custom.capstone.domain.members.dto.SignUpMemberDto;
-import custom.capstone.domain.members.dto.UpdateMemberDto;
+import custom.capstone.domain.members.dto.MemberResponseDto;
+import custom.capstone.domain.members.dto.MemberSaveRequestDto;
+import custom.capstone.domain.members.dto.MemberUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class MembersService {
+public class MemberService {
     private final MemberRepository memberRepository;
 
-    /**
-     * 회원 가입
-     */
     @Transactional
-    public Long join(SignUpMemberDto signUpDto) {
-        validateDuplicateMember(signUpDto);
+    public Long save(MemberSaveRequestDto requestDto) {
+        Member member = Member.builder()
+                .nickname(requestDto.nickname())
+                .password(requestDto.password())
+                .email(requestDto.email())
+                .phoneNum(requestDto.phoneNum())
+                .occupation(requestDto.occupation())
+                .build();
 
-        Member newMember = Member.of(
-                signUpDto.name(),
-                signUpDto.password(),
-                signUpDto.email(),
-                signUpDto.phoneNum(),
-                MemberOccupation.NORMAL,
-                MemberStatus.ACTIVE
-        );
-        memberRepository.save(newMember);
-
-        return newMember.getId();
+        return memberRepository.save(member).getId();
     }
-
-    // 중복 회원 검사
-    private void validateDuplicateMember(SignUpMemberDto signUpDto) {
-        List<Member> findMembers = memberRepository.findByName(signUpDto.name());
-        if(!findMembers.isEmpty()) {
-            throw new IllegalStateException("이미 존재하는 회원입니다.");
-        }
-    }
-
-    /**
-     * 회원 정보 조회
-     */
-    public Member findOne(Long memberId) {
-        return memberRepository.findOne(memberId);
-    }
-
-    public List<Member> findAll() {
-        return memberRepository.findAll();
-    }
-
 
     /**
      * 회원 정보 수정
      */
     @Transactional
-    public void update(Long id, UpdateMemberDto memberDto) {
-        Member member = memberRepository.findOne(id);
-        member.update(memberDto);
+    public Long update(Long id, MemberUpdateRequestDto requestDto) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
+
+        member.update(requestDto.nickname(), requestDto.password(), requestDto.email(), requestDto.phoneNum());
+
+        return id;
     }
 
-    public Member login(SignInMemberDto request) {
-        Member member = memberRepository.findOne(request.id());
+    /**
+     * 회원 탈퇴
+     */
+    @Transactional
+    public void delete(Long id) {
+        Optional<Member> member = memberRepository.findById(id);
+        member.ifPresent(memberRepository::delete);
+    }
 
-        if(member == null || !member.getPassword().equals(request.password())) {
-            return null;
-        } else {
-            return member;
-        }
+    /**
+     * 회원 조회
+     */
+    @Transactional
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
+    @Transactional
+    public Optional<Member> findByNickname(String nickname) {
+        return memberRepository.findByNickname(nickname);
+    }
+
+    @Transactional
+    public List<Member> findAll() {
+        return memberRepository.findAll();
+    }
+
+    public MemberResponseDto findById(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(IllegalAccessError::new);
+
+        return new MemberResponseDto(member.getId(), member.getNickname(), member.getEmail(), member.getPhoneNum(), member.getOccupation(), member.getStatus());
     }
 }
-
