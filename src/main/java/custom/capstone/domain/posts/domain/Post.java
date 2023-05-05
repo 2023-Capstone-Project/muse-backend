@@ -36,18 +36,15 @@ public class Post {
 
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    private char deleteYn;  //삭제여부 ... 일단 넣음
     private PostStatus status;
     private int likeCnt;
     private int views;
 
     @Builder
-    public Post(String title, String content, Member member, int views, char deleteYn) {
+    public Post(String title, String content, Member member) {
         this.title = title;
         this.content = content;
         this.member = member;
-        this.views = views;
-        this.deleteYn = deleteYn;
     }
 
     public void update(String title, String content) {
