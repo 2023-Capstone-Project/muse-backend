@@ -58,6 +58,8 @@ public class MagazineService {
     public void deleteMagazine(Long id) {
         Magazine magazine = magazineRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 매거진이 없습니다. id = " + id));
+
+        magazineRepository.delete(magazine);
     }
 
 }

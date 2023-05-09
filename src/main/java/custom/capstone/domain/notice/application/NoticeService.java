@@ -58,5 +58,7 @@ public class NoticeService {
     public void deleteNotice(Long id) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 공지사항이 없습니다. id = " + id));
+
+        noticeRepository.delete(notice);
     }
 }
