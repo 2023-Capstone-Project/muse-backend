@@ -19,7 +19,7 @@ public class MagazineService {
     private final MagazineRepository magazineRepository;
 
     @Transactional
-    public Long save(MagazineSaveRequestDto requestDto) {
+    public Long saveMagazine(MagazineSaveRequestDto requestDto) {
         Magazine magazine = Magazine.builder()
                 .title(requestDto.title())
                 .content(requestDto.content())
@@ -30,7 +30,7 @@ public class MagazineService {
     }
 
     @Transactional
-    public Long update(Long id, MagazineUpdateRequestDto requestDto) {
+    public Long updateMagazine(Long id, MagazineUpdateRequestDto requestDto) {
         Magazine magazine = magazineRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 매거진이 없습니다. id = " + id));
 
@@ -39,7 +39,7 @@ public class MagazineService {
         return id;
     }
 
-    public MagazineResponseDto findById(Long id) {
+    public MagazineResponseDto findMagazineById(Long id) {
         Magazine entity = magazineRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 매거진이 없습니다. id = " + id));
 
@@ -55,7 +55,7 @@ public class MagazineService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void deleteMagazine(Long id) {
         Magazine magazine = magazineRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 매거진이 없습니다. id = " + id));
     }

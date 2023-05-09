@@ -14,23 +14,23 @@ public class MemberApiController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public Long save(@RequestBody MemberSaveRequestDto requestDto) {
-        return memberService.save(requestDto);
+    public Long saveMember(@RequestBody MemberSaveRequestDto requestDto) {
+        return memberService.saveMember(requestDto);
     }
 
     @PatchMapping("/{id}")
-    public Long update(@PathVariable Long id, @RequestBody MemberUpdateRequestDto requestDto) {
-        return memberService.update(id, requestDto);
+    public Long updateMember(@PathVariable Long id, @RequestBody MemberUpdateRequestDto requestDto) {
+        return memberService.updateMember(id, requestDto);
     }
 
     @GetMapping("/{id}")
-    public MemberResponseDto findById(@PathVariable Long id) {
-        return memberService.findById(id);
+    public MemberResponseDto findMemberById(@PathVariable Long id) {
+        return memberService.findMemberById(id);
     }
 
     @DeleteMapping("/{id}")
-    public Long delete(@PathVariable Long id) {
-        memberService.delete(id);
+    public Long deleteMember(@PathVariable Long id) {
+        memberService.deleteMember(id);
         return id;
     }
 }
