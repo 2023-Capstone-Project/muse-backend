@@ -14,23 +14,23 @@ public class MagazineApiController {
     private final MagazineService magazineService;
 
     @GetMapping("/write")
-    public Long save(@RequestBody MagazineSaveRequestDto requestDto) {
-        return magazineService.save(requestDto);
+    public Long saveMagazine(@RequestBody MagazineSaveRequestDto requestDto) {
+        return magazineService.saveMagazine(requestDto);
     }
 
     @PatchMapping("/{id}/edit")
-    public Long update(@PathVariable Long id, @RequestBody MagazineUpdateRequestDto requestDto) {
-        return magazineService.update(id, requestDto);
+    public Long updateMagazine(@PathVariable Long id, @RequestBody MagazineUpdateRequestDto requestDto) {
+        return magazineService.updateMagazine(id, requestDto);
     }
 
     @DeleteMapping("/{id}")
-    public Long delete(@PathVariable Long id) {
-        magazineService.delete(id);
+    public Long deleteMagazine(@PathVariable Long id) {
+        magazineService.deleteMagazine(id);
         return id;
     }
 
     @GetMapping("/{id}")
-    public MagazineResponseDto findById(@PathVariable Long id) {
-        return magazineService.findById(id);
+    public MagazineResponseDto findMagazineById(@PathVariable Long id) {
+        return magazineService.findMagazineById(id);
     }
 }

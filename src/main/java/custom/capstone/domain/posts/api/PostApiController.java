@@ -14,23 +14,23 @@ public class PostApiController {
     private final PostService postService;
 
     @PostMapping("/write")
-    public Long save(@RequestBody PostSaveRequestDto requestDto) {
-        return postService.save(requestDto);
+    public Long savePost(@RequestBody PostSaveRequestDto requestDto) {
+        return postService.savePost(requestDto);
     };
 
     @PatchMapping("/{id}/edit")
-    public Long update(@PathVariable Long id, @RequestBody PostUpdateRequestDto requestDto){
-        return postService.update(id, requestDto);
+    public Long updatePost(@PathVariable Long id, @RequestBody PostUpdateRequestDto requestDto){
+        return postService.updatePost(id, requestDto);
     }
 
     @GetMapping("/{id}")
-    public PostResponseDto findById(@PathVariable Long id) {
-        return postService.findById(id);
+    public PostResponseDto findPostById(@PathVariable Long id) {
+        return postService.findPostById(id);
     }
 
     @DeleteMapping("/{id}")
-    public Long delete(@PathVariable Long id) {
-        postService.delete(id);
+    public Long deletePost(@PathVariable Long id) {
+        postService.deletePost(id);
         return id;
     }
 }

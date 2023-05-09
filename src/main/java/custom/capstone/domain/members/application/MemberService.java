@@ -18,7 +18,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long save(MemberSaveRequestDto requestDto) {
+    public Long saveMember(MemberSaveRequestDto requestDto) {
         Member member = Member.builder()
                 .nickname(requestDto.nickname())
                 .password(requestDto.password())
@@ -34,7 +34,7 @@ public class MemberService {
      * 회원 정보 수정
      */
     @Transactional
-    public Long update(Long id, MemberUpdateRequestDto requestDto) {
+    public Long updateMember(Long id, MemberUpdateRequestDto requestDto) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -47,7 +47,7 @@ public class MemberService {
      * 회원 탈퇴
      */
     @Transactional
-    public void delete(Long id) {
+    public void deleteMember(Long id) {
         Optional<Member> member = memberRepository.findById(id);
         member.ifPresent(memberRepository::delete);
     }
@@ -56,21 +56,21 @@ public class MemberService {
      * 회원 조회
      */
     @Transactional
-    public Optional<Member> findByEmail(String email) {
-        return memberRepository.findByEmail(email);
+    public Optional<Member> findMemberByEmail(String email) {
+        return memberRepository.findMemberByEmail(email);
     }
 
     @Transactional
-    public Optional<Member> findByNickname(String nickname) {
-        return memberRepository.findByNickname(nickname);
+    public Optional<Member> findMemberByNickname(String nickname) {
+        return memberRepository.findMemberByNickname(nickname);
     }
 
     @Transactional
-    public List<Member> findAll() {
+    public List<Member> findMembers() {
         return memberRepository.findAll();
     }
 
-    public MemberResponseDto findById(Long id) {
+    public MemberResponseDto findMemberById(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(IllegalAccessError::new);
 

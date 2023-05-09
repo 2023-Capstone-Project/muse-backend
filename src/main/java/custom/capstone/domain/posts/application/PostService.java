@@ -19,7 +19,7 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Long save(PostSaveRequestDto requestDto) {
+    public Long savePost(PostSaveRequestDto requestDto) {
         Post post = Post.builder()
                 .title(requestDto.title())
                 .content(requestDto.content())
@@ -30,7 +30,7 @@ public class PostService {
     }
 
     @Transactional
-    public Long update(Long id, PostUpdateRequestDto requestDto) {
+    public Long updatePost(Long id, PostUpdateRequestDto requestDto) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
 
@@ -39,7 +39,7 @@ public class PostService {
         return id;
     }
 
-    public PostResponseDto findById(Long id) {
+    public PostResponseDto findPostById(Long id) {
         Post entity = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
 
@@ -55,7 +55,7 @@ public class PostService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void deletePost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다. id = " + id));
 

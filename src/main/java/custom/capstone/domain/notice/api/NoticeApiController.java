@@ -14,23 +14,23 @@ public class NoticeApiController {
     private final NoticeService noticeService;
 
     @GetMapping("/write")
-    public Long save(@RequestBody NoticeSaveRequestDto requestDto) {
-        return noticeService.save(requestDto);
+    public Long saveNotice(@RequestBody NoticeSaveRequestDto requestDto) {
+        return noticeService.saveNotice(requestDto);
     }
 
     @PatchMapping("/{id}/edit")
-    public Long update(@PathVariable Long id, @RequestBody NoticeUpdateRequestDto requestDto) {
-        return noticeService.update(id, requestDto);
+    public Long updateNotice(@PathVariable Long id, @RequestBody NoticeUpdateRequestDto requestDto) {
+        return noticeService.updateNotice(id, requestDto);
     }
 
     @DeleteMapping("/{id}")
-    public Long delete(@PathVariable Long id) {
-        noticeService.delete(id);
+    public Long deleteNotice(@PathVariable Long id) {
+        noticeService.deleteNotice(id);
         return id;
     }
 
     @GetMapping("/{id}")
-    public NoticeResponseDto findById(@PathVariable Long id) {
-        return noticeService.findById(id);
+    public NoticeResponseDto findNoticeById(@PathVariable Long id) {
+        return noticeService.findNoticeById(id);
     }
 }

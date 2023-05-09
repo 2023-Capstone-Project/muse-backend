@@ -19,7 +19,7 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
 
     @Transactional
-    public Long save(NoticeSaveRequestDto requestDto) {
+    public Long saveNotice(NoticeSaveRequestDto requestDto) {
         Notice notice = Notice.builder()
                 .title(requestDto.title())
                 .content(requestDto.content())
@@ -30,7 +30,7 @@ public class NoticeService {
     }
 
     @Transactional
-    public Long update(Long id, NoticeUpdateRequestDto requestDto) {
+    public Long updateNotice(Long id, NoticeUpdateRequestDto requestDto) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 공지사항이 없습니다. id = " + id));
 
@@ -39,7 +39,7 @@ public class NoticeService {
         return id;
     }
 
-    public NoticeResponseDto findById(Long id) {
+    public NoticeResponseDto findNoticeById(Long id) {
         Notice entity = noticeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 공지사항이 없습니다. id = " + id));
 
@@ -55,8 +55,10 @@ public class NoticeService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void deleteNotice(Long id) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 공지사항이 없습니다. id = " + id));
+
+        noticeRepository.delete(notice);
     }
 }
