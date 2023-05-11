@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class NoticeApiController {
     private final NoticeService noticeService;
 
-    @GetMapping("/write")
+    @PostMapping("/write")
     public Long saveNotice(@RequestBody NoticeSaveRequestDto requestDto) {
         return noticeService.saveNotice(requestDto);
     }

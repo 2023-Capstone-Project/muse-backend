@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class MagazineApiController {
     private final MagazineService magazineService;
 
-    @GetMapping("/write")
+    @PostMapping("/write")
     public Long saveMagazine(@RequestBody MagazineSaveRequestDto requestDto) {
         return magazineService.saveMagazine(requestDto);
     }
