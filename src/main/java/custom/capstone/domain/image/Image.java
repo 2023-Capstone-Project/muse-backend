@@ -1,4 +1,4 @@
-package custom.capstone.domain.model.domain;
+package custom.capstone.domain.image;
 
 import custom.capstone.domain.posts.domain.Post;
 import lombok.Getter;
