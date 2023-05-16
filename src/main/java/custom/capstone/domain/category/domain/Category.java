@@ -22,4 +22,8 @@ public class Category {
     public Category(String title) {
         this.title = title;
     }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
 }
