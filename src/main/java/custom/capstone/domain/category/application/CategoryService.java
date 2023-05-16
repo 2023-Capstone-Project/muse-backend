@@ -23,6 +23,10 @@ public class CategoryService {
         return categoryRepository.save(category).getId();
     }
 
+    public List<Category> findAll() {
+        return categoryRepository.findAll();
+    }
+
     @Transactional
     public Long updateCategory(Long id, CategoryUpdateRequestDto requestDto) {
         Category category = categoryRepository.findById(id)
