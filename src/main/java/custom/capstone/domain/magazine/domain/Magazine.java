@@ -1,6 +1,5 @@
 package custom.capstone.domain.magazine.domain;
 
-import custom.capstone.domain.admin.Admin;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +16,6 @@ public class Magazine {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mgz_id")
     private Long id;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "admin_code")
-    private Admin admin;
 
     @Column(length = 50, nullable = false)
     private String title;
