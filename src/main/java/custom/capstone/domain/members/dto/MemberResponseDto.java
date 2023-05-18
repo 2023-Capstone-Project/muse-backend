@@ -1,6 +1,6 @@
 package custom.capstone.domain.members.dto;
 
-import custom.capstone.domain.members.domain.MemberOccupation;
+import custom.capstone.domain.members.domain.MemberRole;
 import custom.capstone.domain.members.domain.MemberStatus;
 
 public record MemberResponseDto(
@@ -8,7 +8,7 @@ public record MemberResponseDto(
         String nickname,
         String email,
         String phoneNUm,
-        MemberOccupation occupation,
+        MemberRole occupation,
         MemberStatus status
 ) {
 }
