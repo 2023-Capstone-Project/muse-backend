@@ -43,14 +43,14 @@ public class NoticeService {
         Notice entity = noticeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 공지사항이 없습니다. id = " + id));
 
-        return new NoticeResponseDto(entity.getId(), entity.getTitle(), entity.getContent(), entity.getAdmin(), entity.getViews());
+        return new NoticeResponseDto(entity.getId(), entity.getTitle(), entity.getContent(), entity.getViews());
     }
 
     @Transactional
     public List<NoticeListResponseDto> findAllDesc() {
         return noticeRepository.findAllDesc()
                 .stream()
-                .map(entity -> new NoticeListResponseDto(entity.getId(), entity.getTitle(), entity.getContent(), entity.getAdmin()))
+                .map(entity -> new NoticeListResponseDto(entity.getId(), entity.getTitle(), entity.getContent()))
                 .collect(Collectors.toList());
     }
 

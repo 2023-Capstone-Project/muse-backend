@@ -34,7 +34,7 @@ public class Member {
     private String phoneNum;
 
     @Enumerated(EnumType.STRING)
-    private MemberOccupation occupation;
+    private MemberRole occupation;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -50,7 +50,7 @@ public class Member {
      * 정적 생성자
      */
     @Builder
-    public Member(String nickname, String password, String email, String phoneNum, MemberOccupation occupation) {
+    public Member(String nickname, String password, String email, String phoneNum, MemberRole occupation) {
         this.nickname = nickname;
         this.password = password;
         this.email = email;

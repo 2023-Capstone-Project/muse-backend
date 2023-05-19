@@ -43,14 +43,14 @@ public class MagazineService {
         Magazine entity = magazineRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 매거진이 없습니다. id = " + id));
 
-        return new MagazineResponseDto(entity.getId(), entity.getTitle(), entity.getContent(), entity.getAdmin(), entity.getViews());
+        return new MagazineResponseDto(entity.getId(), entity.getTitle(), entity.getContent(), entity.getViews());
     }
 
     @Transactional
     public List<MagazineListResponseDto> findAllDesc() {
         return magazineRepository.findAllDesc()
                 .stream()
-                .map(entity -> new MagazineListResponseDto(entity.getId(), entity.getTitle(), entity.getContent(), entity.getAdmin()))
+                .map(entity -> new MagazineListResponseDto(entity.getId(), entity.getTitle(), entity.getContent()))
                 .collect(Collectors.toList());
     }
 
