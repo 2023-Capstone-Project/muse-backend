@@ -21,5 +21,6 @@ public class TradingProduct {
 
     @Column(length = 50)
     private String title;
+
     private LocalDateTime dealAt;
 }
