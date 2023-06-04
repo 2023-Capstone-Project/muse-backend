@@ -1,6 +1,7 @@
-package custom.capstone.domain.trading.domain;
+package custom.capstone.domain.review.domain;
 
 import custom.capstone.domain.members.domain.Member;
+import custom.capstone.domain.trading.domain.Trading;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,14 +15,14 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TradingReview {
+public class Review {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tr_id")
+    @Column(name = "review_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "tp_id")
-    private TradingProduct tradingProduct;
+    @JoinColumn(name = "trading_id")
+    private Trading trading;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
@@ -33,8 +34,8 @@ public class TradingReview {
     private LocalDateTime creatAt;
 
     @Builder
-    public TradingReview(TradingProduct tradingProduct, Member member, String content) {
-        this.tradingProduct = tradingProduct;
+    public Review(Trading trading, Member member, String content) {
+        this.trading = trading;
         this.member = member;
         this.content = content;
     }

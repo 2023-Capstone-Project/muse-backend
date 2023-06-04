@@ -13,23 +13,37 @@ import org.springframework.web.bind.annotation.*;
 public class MemberApiController {
     private final MemberService memberService;
 
+    /**
+     * 회원 가입
+     * TODO: 수정필요
+     */
     @PostMapping("/signup")
     public Long saveMember(@RequestBody MemberSaveRequestDto requestDto) {
         return memberService.saveMember(requestDto);
     }
 
-    @PatchMapping("/{id}")
-    public Long updateMember(@PathVariable Long id, @RequestBody MemberUpdateRequestDto requestDto) {
+    /**
+     * 회원 정보 수정
+     */
+    @PatchMapping("/{memberId}")
+    public Long updateMember(@PathVariable("memberId") Long id,
+                             @RequestBody MemberUpdateRequestDto requestDto) {
         return memberService.updateMember(id, requestDto);
     }
 
-    @GetMapping("/{id}")
-    public MemberResponseDto findMemberById(@PathVariable Long id) {
+    /**
+     * 회원 조회
+     */
+    @GetMapping("/{memberId}")
+    public MemberResponseDto findMemberById(@PathVariable("memberId") Long id) {
         return memberService.findMemberById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public Long deleteMember(@PathVariable Long id) {
+    /**
+     * 회원 탈퇴
+     */
+    @DeleteMapping("/{memberId}")
+    public Long deleteMember(@PathVariable("memberId") Long id) {
         memberService.deleteMember(id);
         return id;
     }

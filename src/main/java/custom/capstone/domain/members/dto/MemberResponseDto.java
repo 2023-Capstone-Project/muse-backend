@@ -8,7 +8,7 @@ public record MemberResponseDto(
         String nickname,
         String email,
         String phoneNUm,
-        MemberRole occupation,
+        MemberRole role,
         MemberStatus status
 ) {
 }
