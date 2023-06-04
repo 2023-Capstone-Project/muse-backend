@@ -34,7 +34,7 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
 
-        post.update(requestDto.title(), requestDto.content());
+        post.update(requestDto.title(), requestDto.content(), requestDto.price());
 
         return id;
     }
@@ -50,7 +50,7 @@ public class PostService {
     public List<PostListResponseDto> findAllDesc() {
         return postRepository.findAllDesc()
                 .stream()
-                .map(entity -> new PostListResponseDto(entity.getId(), entity.getTitle(), entity.getContent(), entity.getMember()))
+                .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
     }
 
