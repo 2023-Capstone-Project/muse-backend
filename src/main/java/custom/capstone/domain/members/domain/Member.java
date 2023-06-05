@@ -46,9 +46,6 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private final List<Interest> interestList = new ArrayList<>();
 
-    /**
-     * 정적 생성자
-     */
     @Builder
     public Member(
             final String nickname,

@@ -62,32 +62,21 @@ public class MemberService {
     /**
      * 회원 조회
      */
-    @Transactional
-    public Optional<Member> findMemberByEmail(final String email) {
-        return memberRepository.findMemberByEmail(email);
-    }
+   public Member findById(final Long memberId) {
+       return memberRepository.findById(memberId)
+               .orElseThrow(NullPointerException::new);
+   }
 
-    @Transactional
-    public Optional<Member> findMemberByNickname(final String nickname) {
-        return memberRepository.findMemberByNickname(nickname);
-    }
+   public MemberResponseDto findDetailById(final Long memberId) {
+       Member entity = memberRepository.findById(memberId)
+               .orElseThrow(NullPointerException::new);
+
+       return new MemberResponseDto(entity);
+   }
 
     @Transactional
     public List<Member> findMembers() {
         return memberRepository.findAll();
     }
 
-    public MemberResponseDto findMemberById(final Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(IllegalAccessError::new);
-
-        return new MemberResponseDto(
-                member.getId(),
-                member.getNickname(),
-                member.getEmail(),
-                member.getPhoneNum(),
-                member.getRole(),
-                member.getStatus()
-        );
-    }
 }

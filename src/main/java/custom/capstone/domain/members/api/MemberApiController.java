@@ -1,6 +1,7 @@
 package custom.capstone.domain.members.api;
 
 import custom.capstone.domain.members.application.MemberService;
+import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.members.dto.MemberResponseDto;
 import custom.capstone.domain.members.dto.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.MemberUpdateRequestDto;
@@ -18,7 +19,7 @@ public class MemberApiController {
      * TODO: 수정필요
      */
     @PostMapping("/signup")
-    public Long saveMember(@RequestBody MemberSaveRequestDto requestDto) {
+    public Long saveMember(@RequestBody final MemberSaveRequestDto requestDto) {
         return memberService.saveMember(requestDto);
     }
 
@@ -26,8 +27,8 @@ public class MemberApiController {
      * 회원 정보 수정
      */
     @PatchMapping("/{memberId}")
-    public Long updateMember(@PathVariable("memberId") Long id,
-                             @RequestBody MemberUpdateRequestDto requestDto) {
+    public Long updateMember(@PathVariable("memberId") final Long id,
+                             @RequestBody final MemberUpdateRequestDto requestDto) {
         return memberService.updateMember(id, requestDto);
     }
 
@@ -35,15 +36,20 @@ public class MemberApiController {
      * 회원 조회
      */
     @GetMapping("/{memberId}")
-    public MemberResponseDto findMemberById(@PathVariable("memberId") Long id) {
-        return memberService.findMemberById(id);
+    public Member findById(@PathVariable("memberId") final Long id) {
+        return memberService.findById(id);
+    }
+
+    @GetMapping("/{memberId}")
+    public MemberResponseDto findDetailById(@PathVariable("memberId") final Long id) {
+        return memberService.findDetailById(id);
     }
 
     /**
      * 회원 탈퇴
      */
     @DeleteMapping("/{memberId}")
-    public Long deleteMember(@PathVariable("memberId") Long id) {
+    public Long deleteMember(@PathVariable("memberId") final Long id) {
         memberService.deleteMember(id);
         return id;
     }
