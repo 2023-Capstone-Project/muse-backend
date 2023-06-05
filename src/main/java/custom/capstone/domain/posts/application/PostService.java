@@ -19,7 +19,7 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Long savePost(PostSaveRequestDto requestDto) {
+    public Long savePost(final PostSaveRequestDto requestDto) {
         Post post = Post.builder()
                 .title(requestDto.title())
                 .content(requestDto.content())
@@ -30,18 +30,23 @@ public class PostService {
     }
 
     @Transactional
-    public Long updatePost(Long id, PostUpdateRequestDto requestDto) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
+    public Long updatePost(final Long postId, final PostUpdateRequestDto requestDto) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + postId));
 
         post.update(requestDto.title(), requestDto.content(), requestDto.price());
 
-        return id;
+        return postId;
     }
 
-    public PostResponseDto findPostById(Long id) {
-        Post entity = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
+    public Post findById(final Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(NullPointerException::new);
+    }
+
+    public PostResponseDto findDetailById(final Long postId) {
+        Post entity = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + postId));
 
         return new PostResponseDto(entity.getId(), entity.getTitle(), entity.getContent(), entity.getMember());
     }
@@ -55,9 +60,9 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다. id = " + id));
+    public void deletePost(final Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다. id = " + postId));
 
         postRepository.delete(post);
     }

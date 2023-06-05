@@ -1,6 +1,7 @@
 package custom.capstone.domain.posts.api;
 
 import custom.capstone.domain.posts.application.PostService;
+import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.posts.dto.PostResponseDto;
 import custom.capstone.domain.posts.dto.PostSaveRequestDto;
 import custom.capstone.domain.posts.dto.PostUpdateRequestDto;
@@ -14,22 +15,28 @@ public class PostApiController {
     private final PostService postService;
 
     @PostMapping("/write")
-    public Long savePost(@RequestBody PostSaveRequestDto requestDto) {
+    public Long savePost(@RequestBody final PostSaveRequestDto requestDto) {
         return postService.savePost(requestDto);
     };
 
-    @PatchMapping("/{id}/edit")
-    public Long updatePost(@PathVariable Long id, @RequestBody PostUpdateRequestDto requestDto){
+    @PatchMapping("/{postId}/edit")
+    public Long updatePost(@PathVariable("postId") final Long id,
+                           @RequestBody PostUpdateRequestDto requestDto){
         return postService.updatePost(id, requestDto);
     }
 
-    @GetMapping("/{id}")
-    public PostResponseDto findPostById(@PathVariable Long id) {
-        return postService.findPostById(id);
+    @GetMapping("/{postId}")
+    public Post findById(@PathVariable("postId") final Long id) {
+        return postService.findById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public Long deletePost(@PathVariable Long id) {
+    @GetMapping("/{postId}")
+    public PostResponseDto findPostById(@PathVariable("postId") final Long id) {
+        return postService.findDetailById(id);
+    }
+
+    @DeleteMapping("/{postId}")
+    public Long deletePost(@PathVariable("postId") final Long id) {
         postService.deletePost(id);
         return id;
     }
