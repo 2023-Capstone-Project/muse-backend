@@ -34,6 +34,7 @@ public class Post {
     @Column(length = 1000, nullable = false)
     private String content;
 
+    private int price;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private PostStatus status;
@@ -41,15 +42,17 @@ public class Post {
     private int views;
 
     @Builder
-    public Post(String title, String content, Member member) {
+    public Post(String title, String content, int price, Member member) {
         this.title = title;
         this.content = content;
+        this.price = price;
         this.member = member;
     }
 
-    public void update(String title, String content) {
+    public void update(String title, String content, int price) {
         this.title = title;
         this.content = content;
+        this.price = price;
         this.updateAt = LocalDateTime.now();
     }
 }

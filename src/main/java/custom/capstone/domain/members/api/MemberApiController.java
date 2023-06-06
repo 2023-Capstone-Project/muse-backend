@@ -1,6 +1,7 @@
 package custom.capstone.domain.members.api;
 
 import custom.capstone.domain.members.application.MemberService;
+import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.members.dto.MemberResponseDto;
 import custom.capstone.domain.members.dto.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.MemberUpdateRequestDto;
@@ -13,23 +14,42 @@ import org.springframework.web.bind.annotation.*;
 public class MemberApiController {
     private final MemberService memberService;
 
+    /**
+     * 회원 가입
+     * TODO: 수정필요
+     */
     @PostMapping("/signup")
-    public Long saveMember(@RequestBody MemberSaveRequestDto requestDto) {
+    public Long saveMember(@RequestBody final MemberSaveRequestDto requestDto) {
         return memberService.saveMember(requestDto);
     }
 
-    @PatchMapping("/{id}")
-    public Long updateMember(@PathVariable Long id, @RequestBody MemberUpdateRequestDto requestDto) {
+    /**
+     * 회원 정보 수정
+     */
+    @PatchMapping("/{memberId}")
+    public Long updateMember(@PathVariable("memberId") final Long id,
+                             @RequestBody final MemberUpdateRequestDto requestDto) {
         return memberService.updateMember(id, requestDto);
     }
 
-    @GetMapping("/{id}")
-    public MemberResponseDto findMemberById(@PathVariable Long id) {
-        return memberService.findMemberById(id);
+    /**
+     * 회원 조회
+     */
+    @GetMapping("/{memberId}")
+    public Member findById(@PathVariable("memberId") final Long id) {
+        return memberService.findById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public Long deleteMember(@PathVariable Long id) {
+    @GetMapping("/{memberId}")
+    public MemberResponseDto findDetailById(@PathVariable("memberId") final Long id) {
+        return memberService.findDetailById(id);
+    }
+
+    /**
+     * 회원 탈퇴
+     */
+    @DeleteMapping("/{memberId}")
+    public Long deleteMember(@PathVariable("memberId") final Long id) {
         memberService.deleteMember(id);
         return id;
     }

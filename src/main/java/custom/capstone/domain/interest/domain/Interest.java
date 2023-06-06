@@ -1,7 +1,10 @@
-package custom.capstone.domain.posts.domain;
+package custom.capstone.domain.interest.domain;
 
 import custom.capstone.domain.members.domain.Member;
+import custom.capstone.domain.posts.domain.Post;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -9,9 +12,10 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-public class InterestList {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Interest {
     @Id @GeneratedValue
-    @Column(name = "intLst_id")
+    @Column(name = "interest_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
@@ -21,4 +25,9 @@ public class InterestList {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    public Interest(Member member, Post post) {
+        this.member = member;
+        this.post = post;
+    }
 }

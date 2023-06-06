@@ -29,7 +29,7 @@ public class Follow {
     private LocalDateTime createAt = LocalDateTime.now();
 
     @Builder
-    public Follow(Member from, Member to) {
+    public Follow(final Member from, final Member to) {
         this.from = from;
         this.to = to;
     }

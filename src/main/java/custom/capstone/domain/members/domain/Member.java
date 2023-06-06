@@ -1,6 +1,6 @@
 package custom.capstone.domain.members.domain;
 
-import custom.capstone.domain.posts.domain.InterestList;
+import custom.capstone.domain.interest.domain.Interest;
 import custom.capstone.domain.posts.domain.Post;
 
 import lombok.AccessLevel;
@@ -34,7 +34,7 @@ public class Member {
     private String phoneNum;
 
     @Enumerated(EnumType.STRING)
-    private MemberRole occupation;
+    private MemberRole role;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -44,21 +44,29 @@ public class Member {
     private final List<Post> postList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-    private final List<InterestList> interestList = new ArrayList<>();
+    private final List<Interest> interestList = new ArrayList<>();
 
-    /**
-     * 정적 생성자
-     */
     @Builder
-    public Member(String nickname, String password, String email, String phoneNum, MemberRole occupation) {
+    public Member(
+            final String nickname,
+            final String password,
+            final String email,
+            final String phoneNum,
+            final MemberRole role,
+            final MemberStatus status) {
         this.nickname = nickname;
         this.password = password;
         this.email = email;
         this.phoneNum = phoneNum;
-        this.occupation = occupation;
+        this.role = role;
+        this.status = status;
     }
 
-    public void update(String nickname, String password, String email, String phoneNum) {
+    public void update(
+            final String nickname,
+            final String password,
+            final String email,
+            final String phoneNum) {
         this.nickname = nickname;
         this.password = password;
         this.email = email;

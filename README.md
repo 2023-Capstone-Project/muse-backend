@@ -1,11 +1,11 @@
 # Muse Web Platform - Backend
-Ä¸½ºÅæ µðÀÚÀÎ ¹é¿£µå¸¦ ±¸ÇöÀÔ´Ï´Ù.
+ìº¡ìŠ¤í†¤ ë””ìžì¸ ë°±ì—”ë“œë¥¼ êµ¬í˜„ìž…ë‹ˆë‹¤.
 
 ## Intro
-> Áö¼Ó °¡´ÉÇÑ ÀÇ·ù »ê¾÷ ¹ßÀüÀ» À§ÇÑ ÀÇ·ù Ä¿½ºÅÒ ¹× ¸®Æû µðÀÚÀÎ °Å·¡ À¥ ÇÃ·§ÆûÀÔ´Ï´Ù.
+> ì§€ì† ê°€ëŠ¥í•œ ì˜ë¥˜ ì‚°ì—… ë°œì „ì„ ìœ„í•œ ì˜ë¥˜ ì»¤ìŠ¤í…€ ë° ë¦¬í¼ ë””ìžì¸ ê±°ëž˜ ì›¹ í”Œëž«í¼ìž…ë‹ˆë‹¤.
 
 ## BE Stack
-Sprinboot
+Springboot
 
-## Development period ..
+## Development period
 2023.03 ~
