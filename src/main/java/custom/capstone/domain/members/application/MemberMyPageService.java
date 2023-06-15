@@ -31,12 +31,13 @@ public class MemberMyPageService {
         return memberMyPageRepository.findReviewsByMemberId(memberId, pageable);
     }
 
+    // TODO: 수정 필요
     /**
      * 자신이 거래한 시안 목록 페이징 조회
      */
-    public Page<Trading> findTradingByMemberId(final Long memberId, final Pageable pageable) {
-        return memberMyPageRepository.findTradingByMemberId(memberId, pageable);
-    }
+//    public Page<Trading> findTradingByMemberId(final Long memberId, final Pageable pageable) {
+//        return memberMyPageRepository.findTradingByMemberId(memberId, pageable);
+//    }
 
     /**
      * 자신이 좋아요한 시안 목록 페이징 조회
