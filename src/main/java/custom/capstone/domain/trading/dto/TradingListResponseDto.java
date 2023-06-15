@@ -17,7 +17,7 @@ public class TradingListResponseDto {
 
     public TradingListResponseDto(Trading trading) {
         this.title = trading.getPost().getTitle();
-        this.seller = trading.getMember().getNickname();
+        this.seller = trading.getSeller().getNickname();
         this.status = trading.getPost().getStatus().toString();
         this.price = trading.getPost().getPrice();
         this.dealAt = trading.getDealAt();

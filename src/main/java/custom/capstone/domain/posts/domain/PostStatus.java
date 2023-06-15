@@ -1,5 +1,7 @@
 package custom.capstone.domain.posts.domain;
 
 public enum PostStatus {
-    TRADING, SUSPENDED, COMPLETED        //거래중, 일시중단, 거래완료
+    SALE,           //판매 중
+    RESERVED,       //판매 예약
+    SOLD            //판매 완료
 }

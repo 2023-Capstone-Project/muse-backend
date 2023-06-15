@@ -2,10 +2,7 @@ package custom.capstone.domain.posts.domain;
 
 import custom.capstone.domain.category.domain.Category;
 import custom.capstone.domain.members.domain.Member;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -37,19 +34,24 @@ public class Post {
     private int price;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
+
+    @Enumerated(EnumType.STRING) @Setter
+    @Column(nullable = false)
     private PostStatus status;
+
     private int likeCnt;
     private int views;
 
     @Builder
-    public Post(String title, String content, int price, Member member) {
+    public Post(final String title, final String content, final int price, final Member member) {
         this.title = title;
         this.content = content;
         this.price = price;
         this.member = member;
+        this.status = PostStatus.SALE;
     }
 
-    public void update(String title, String content, int price) {
+    public void update(final String title, final String content, final int price) {
         this.title = title;
         this.content = content;
         this.price = price;
