@@ -1,22 +1,22 @@
 package custom.capstone.domain.inquiry.domain;
 
 import custom.capstone.domain.members.domain.Member;
-import lombok.AccessLevel;
+import custom.capstone.global.common.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import java.time.LocalDateTime;
-
-import static javax.persistence.FetchType.*;
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Inquiry {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+@NoArgsConstructor(access = PROTECTED)
+public class Inquiry extends BaseTimeEntity {
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "inquiry_id")
     private Long id;
 
@@ -32,29 +32,23 @@ public class Inquiry {
 
     private String content;
 
-    private LocalDateTime createAt;
-
-    private LocalDateTime updateAt;
-
     @Builder
-    public Inquiry(Member member, String title, String content, LocalDateTime createAt) {
+    public Inquiry(final Member member, final String title, final String content) {
         this.member = member;
         this.title = title;
         this.content = content;
-        this.createAt = createAt;
     }
 
-    public void setMember(Member member) {
+    public void setMember(final Member member) {
         this.member = member;
     }
 
-    public void setAnswer(Answer answer) {
+    public void setAnswer(final Answer answer) {
         this.answer = answer;
     }
 
-    public void update(String title, String content) {
+    public void update(final String title, final String content) {
         this.title = title;
         this.content = content;
-        this.updateAt = LocalDateTime.now();
     }
 }

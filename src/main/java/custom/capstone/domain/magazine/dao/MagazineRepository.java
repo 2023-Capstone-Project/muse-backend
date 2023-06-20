@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface MagazineRepository extends JpaRepository<Magazine, Long> {
-    @Query("select m from Magazine m" +
+    @Query(value = "select m" +
+            " from Magazine m" +
             " order by m.id desc")
     List<Magazine> findAllDesc();
 }

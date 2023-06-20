@@ -2,21 +2,22 @@ package custom.capstone.domain.review.domain;
 
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.trading.domain.Trading;
-import lombok.AccessLevel;
+import custom.capstone.global.common.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+@NoArgsConstructor(access = PROTECTED)
+public class Review extends BaseTimeEntity {
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "review_id")
     private Long id;
 
@@ -31,16 +32,14 @@ public class Review {
     @Column(length = 500)
     private String content;
 
-    private LocalDateTime creatAt;
-
     @Builder
-    public Review(Trading trading, Member member, String content) {
+    public Review(final Trading trading, final Member member, final String content) {
         this.trading = trading;
         this.member = member;
         this.content = content;
     }
 
-    public void update(String content) {
+    public void update(final String content) {
         this.content = content;
     }
 }

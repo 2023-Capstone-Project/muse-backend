@@ -1,18 +1,20 @@
 package custom.capstone.domain.notice.domain;
 
+import custom.capstone.global.common.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
+import static javax.persistence.GenerationType.*;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
-@NoArgsConstructor
-public class Notice {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+@NoArgsConstructor(access = PROTECTED)
+public class Notice extends BaseTimeEntity {
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "notice_id")
     private Long id;
 
@@ -21,17 +23,17 @@ public class Notice {
 
     @Column(length = 1000, nullable = false)
     private String content;
-    private LocalDateTime createAt;
+
     private int views;
 
     @Builder
-    public Notice(String title, String content, int views) {
+    public Notice(final String title, final String content, final int views) {
         this.title = title;
         this.content = content;
         this.views = views;
     }
 
-    public void update(String title, String content) {
+    public void update(final String title, final String content) {
         this.title = title;
         this.content = content;
     }
