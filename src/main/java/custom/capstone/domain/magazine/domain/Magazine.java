@@ -1,20 +1,24 @@
 package custom.capstone.domain.magazine.domain;
 
+import custom.capstone.global.common.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
-import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
-@NoArgsConstructor
-public class Magazine {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "mgz_id")
+@NoArgsConstructor(access = PROTECTED)
+public class Magazine extends BaseTimeEntity {
+    @Id @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "magazine_id")
     private Long id;
 
     @Column(length = 50, nullable = false)
@@ -23,18 +27,16 @@ public class Magazine {
     @Column(length = 1000, nullable = false)
     private String content;
 
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
     private int views;
 
     @Builder
-    public Magazine(String title, String content, int views) {
+    public Magazine(final String title, final String content, final int views) {
         this.title = title;
         this.content = content;
         this.views = views;
     }
 
-    public void update(String title, String content) {
+    public void update(final String title, final String content) {
         this.title = title;
         this.content = content;
     }

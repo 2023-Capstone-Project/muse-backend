@@ -1,17 +1,22 @@
 package custom.capstone.domain.category.domain;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 public class Category {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "category_id")
     private Long id;
 
@@ -19,11 +24,11 @@ public class Category {
     private String title;
 
     @Builder
-    public Category(String title) {
+    public Category(final String title) {
         this.title = title;
     }
 
-    public void updateTitle(String title) {
+    public void updateTitle(final String title) {
         this.title = title;
     }
 }

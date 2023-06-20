@@ -2,18 +2,21 @@ package custom.capstone.domain.posts.domain;
 
 import custom.capstone.domain.category.domain.Category;
 import custom.capstone.domain.members.domain.Member;
+import custom.capstone.global.common.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
+import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.*;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+@NoArgsConstructor(access = PROTECTED)
+public class Post extends BaseTimeEntity {
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "post_id")
     private Long id;
 
@@ -32,18 +35,21 @@ public class Post {
     private String content;
 
     private int price;
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
 
-    @Enumerated(EnumType.STRING) @Setter
+    @Setter @Enumerated(STRING)
     @Column(nullable = false)
     private PostStatus status;
 
     private int likeCnt;
+
     private int views;
 
     @Builder
-    public Post(final String title, final String content, final int price, final Member member) {
+    public Post(
+            final String title,
+            final String content,
+            final int price,
+            final Member member) {
         this.title = title;
         this.content = content;
         this.price = price;
@@ -55,6 +61,5 @@ public class Post {
         this.title = title;
         this.content = content;
         this.price = price;
-        this.updateAt = LocalDateTime.now();
     }
 }

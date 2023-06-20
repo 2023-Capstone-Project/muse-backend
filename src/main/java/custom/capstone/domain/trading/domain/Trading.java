@@ -1,23 +1,24 @@
 package custom.capstone.domain.trading.domain;
 
 import custom.capstone.domain.members.domain.Member;
-import custom.capstone.domain.members.domain.MemberStatus;
 import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.posts.domain.PostStatus;
+import custom.capstone.global.common.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
-@NoArgsConstructor
-public class Trading {
-    @Id @GeneratedValue
+@NoArgsConstructor(access = PROTECTED)
+public class Trading extends BaseTimeEntity {
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "trading_id")
     private Long id;
 
@@ -37,10 +38,6 @@ public class Trading {
     @Column(nullable = false)
     private TradingStatus status;
 
-    private int limitDate; // 이건 post 에 있는 게 맞을까 ?
-
-    private LocalDateTime dealAt;
-
     @Builder
     public Trading(final Post post, final Member buyer, final Member seller) {
         this.post = post;
@@ -49,7 +46,11 @@ public class Trading {
         this.status = TradingStatus.PENDING;
     }
 
-    public void update(final Post post, final Member buyer, final Member seller, final TradingStatus status) {
+    public void update(
+            final Post post,
+            final Member buyer,
+            final Member seller,
+            final TradingStatus status) {
         this.post = post;
         this.buyer = buyer;
         this.seller = seller;
