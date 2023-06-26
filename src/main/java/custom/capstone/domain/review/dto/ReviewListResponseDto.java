@@ -19,6 +19,6 @@ public class ReviewListResponseDto {
         this.writer = review.getMember().getNickname();
         this.seller = review.getTrading().getPost().getMember().getNickname();
         this.content = review.getContent();
-        this.createAt = review.getCreatAt();
+        this.createAt = review.getCreatedAt();
     }
 }

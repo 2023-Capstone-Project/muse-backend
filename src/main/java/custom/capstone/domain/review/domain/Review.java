@@ -32,6 +32,11 @@ public class Review extends BaseTimeEntity {
     @Column(length = 500)
     private String content;
 
+    public void setTrading(final Trading trading) {
+        this.trading = trading;
+        trading.getReviews().add(this);
+    }
+
     @Builder
     public Review(final Trading trading, final Member member, final String content) {
         this.trading = trading;
