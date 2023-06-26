@@ -26,7 +26,7 @@ public class InterestService {
         Member member = memberService.findById(requestDto.memberId());
         Post post = postService.findById(requestDto.postId());
 
-        return interestRepository.save(new Interest(member, post)).getId();
+        return interestRepository.save(Interest.save(member, post)).getId();
     }
 
     /**

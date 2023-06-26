@@ -2,8 +2,8 @@ package custom.capstone.domain.members.domain;
 
 import custom.capstone.domain.interest.domain.Interest;
 import custom.capstone.domain.posts.domain.Post;
-
-import lombok.AccessLevel;
+import custom.capstone.domain.review.domain.Review;
+import custom.capstone.domain.trading.domain.Trading;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +12,16 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.GenerationType.*;
+import static lombok.AccessLevel.PROTECTED;
+
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
@@ -40,11 +44,23 @@ public class Member {
     @Column(nullable = false)
     private MemberStatus status;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-    private final List<Post> postList = new ArrayList<>();
+    @Column(name = "profile_image")
+    private String profileImage;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-    private final List<Interest> interestList = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = REMOVE)
+    private final List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = REMOVE)
+    private final List<Interest> interests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = REMOVE)
+    private final List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "buyer", cascade = REMOVE)
+    private final List<Trading> buyerTradings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "seller", cascade = REMOVE)
+    private final List<Trading> sellerTradings = new ArrayList<>();
 
     @Builder
     public Member(
@@ -71,5 +87,9 @@ public class Member {
         this.password = password;
         this.email = email;
         this.phoneNum = phoneNum;
+    }
+
+    public void updateProfileImage(final String profileImage) {
+        this.profileImage = profileImage;
     }
 }

@@ -1,14 +1,15 @@
 package custom.capstone.domain.posts.dto;
 
 import custom.capstone.domain.posts.domain.Post;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 public class PostListResponseDto {
     private String writer;
     private String title;
@@ -16,11 +17,11 @@ public class PostListResponseDto {
     private int price;
     private LocalDateTime createAt;
 
-    public PostListResponseDto(Post post) {
+    public PostListResponseDto(final Post post) {
         this.writer = post.getMember().getNickname();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.price = post.getPrice();
-        this.createAt = post.getCreateAt();
+        this.createAt = post.getCreatedAt();
     }
 }

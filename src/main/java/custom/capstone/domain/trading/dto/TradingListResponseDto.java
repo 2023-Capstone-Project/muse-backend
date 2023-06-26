@@ -20,6 +20,6 @@ public class TradingListResponseDto {
         this.seller = trading.getSeller().getNickname();
         this.status = trading.getPost().getStatus().toString();
         this.price = trading.getPost().getPrice();
-        this.dealAt = trading.getDealAt();
+        this.dealAt = trading.getCreatedAt();
     }
 }

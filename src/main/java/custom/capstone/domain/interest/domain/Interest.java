@@ -27,8 +27,22 @@ public class Interest {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    public Interest(final Member member, final Post post) {
+    public void setMember(final Member member) {
         this.member = member;
+        member.getInterests().add(this);
+    }
+
+    public void setPost(final Post post) {
         this.post = post;
+        post.getInterests().add(this);
+    }
+
+    public static Interest save(final Member member, final Post post) {
+        final Interest interest = new Interest();
+
+        interest.member = member;
+        interest.post = post;
+
+        return interest;
     }
 }
