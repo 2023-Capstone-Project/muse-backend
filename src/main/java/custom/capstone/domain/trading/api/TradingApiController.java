@@ -2,6 +2,7 @@ package custom.capstone.domain.trading.api;
 
 import custom.capstone.domain.trading.application.TradingService;
 import custom.capstone.domain.trading.domain.Trading;
+import custom.capstone.domain.trading.domain.TradingStatus;
 import custom.capstone.domain.trading.dto.TradingSaveRequestDto;
 import custom.capstone.domain.trading.dto.TradingUpdateRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +26,7 @@ public class TradingApiController {
     @Operation(summary = "거래 수정")
     @PatchMapping("/{tradingId}/edit")
     public Long updateTrading(@PathVariable("tradingId") final Long id,
-                              @RequestBody TradingUpdateRequestDto requestDto) {
+                              @RequestBody final TradingUpdateRequestDto requestDto) {
         return tradingService.updateTrading(id, requestDto);
     }
 
@@ -35,10 +36,17 @@ public class TradingApiController {
         return tradingService.findById(id);
     }
 
-    @Operation(summary = "거래 취소")
+    @Operation(summary = "거래 삭제")
     @DeleteMapping("/{tradingId}")
     public Long deleteTrading(@PathVariable("tradingId") final Long id) {
         tradingService.deleteTrading(id);
         return id;
+    }
+
+    @Operation(summary = "거래 상태 변경")
+    @PatchMapping("/{tradingId}")
+    public Trading changeTradingStatus(@PathVariable("tradingId") final Long id,
+                                       @RequestBody final TradingStatus status) {
+        return tradingService.changeTradingStatus(id, status);
     }
 }

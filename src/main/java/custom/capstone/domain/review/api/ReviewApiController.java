@@ -22,7 +22,7 @@ public class ReviewApiController {
     }
 
     @Operation(summary = "후기 수정")
-    @PatchMapping("/{reviewId}")
+    @PatchMapping("/{reviewId}/edit")
     public Long updateReview(@PathVariable("reviewId") final Long reviewId,
                              @RequestBody final ReviewUpdateRequestDto requestDto) {
         return reviewService.updateReview(reviewId, requestDto);

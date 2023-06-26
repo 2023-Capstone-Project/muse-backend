@@ -2,8 +2,6 @@ package custom.capstone.domain.members.domain;
 
 import custom.capstone.domain.interest.domain.Interest;
 import custom.capstone.domain.posts.domain.Post;
-
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +10,16 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.GenerationType.*;
+import static lombok.AccessLevel.PROTECTED;
+
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
@@ -40,10 +42,10 @@ public class Member {
     @Column(nullable = false)
     private MemberStatus status;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member", cascade = REMOVE)
     private final List<Post> postList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member", cascade = REMOVE)
     private final List<Interest> interestList = new ArrayList<>();
 
     @Builder
