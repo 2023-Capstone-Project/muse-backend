@@ -2,6 +2,8 @@ package custom.capstone.domain.members.domain;
 
 import custom.capstone.domain.interest.domain.Interest;
 import custom.capstone.domain.posts.domain.Post;
+import custom.capstone.domain.review.domain.Review;
+import custom.capstone.domain.trading.domain.Trading;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,11 +44,23 @@ public class Member {
     @Column(nullable = false)
     private MemberStatus status;
 
-    @OneToMany(mappedBy = "member", cascade = REMOVE)
-    private final List<Post> postList = new ArrayList<>();
+    @Column(name = "profile_image")
+    private String profileImage;
 
     @OneToMany(mappedBy = "member", cascade = REMOVE)
-    private final List<Interest> interestList = new ArrayList<>();
+    private final List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = REMOVE)
+    private final List<Interest> interests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = REMOVE)
+    private final List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "buyer", cascade = REMOVE)
+    private final List<Trading> buyerTradings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "seller", cascade = REMOVE)
+    private final List<Trading> sellerTradings = new ArrayList<>();
 
     @Builder
     public Member(
@@ -73,5 +87,9 @@ public class Member {
         this.password = password;
         this.email = email;
         this.phoneNum = phoneNum;
+    }
+
+    public void updateProfileImage(final String profileImage) {
+        this.profileImage = profileImage;
     }
 }

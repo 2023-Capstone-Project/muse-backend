@@ -1,16 +1,21 @@
 package custom.capstone.domain.posts.domain;
 
-import custom.capstone.domain.category.domain.Category;
+import custom.capstone.domain.interest.domain.Interest;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.global.common.BaseTimeEntity;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
-import static javax.persistence.EnumType.*;
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
@@ -19,10 +24,6 @@ public class Post extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "post_id")
     private Long id;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
@@ -43,6 +44,9 @@ public class Post extends BaseTimeEntity {
     private int likeCnt;
 
     private int views;
+
+    @OneToMany(mappedBy = "post")
+    private final Set<Interest> interests = new HashSet<>();
 
     @Builder
     public Post(
