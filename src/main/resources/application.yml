@@ -1,22 +1,16 @@
 spring:
-  h2:
-    console:
-      enabled: true
-      path: "/h2-console"
   datasource:
-    hikari:
-      jdbc-url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/musedb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&useSSL=false
+    username: root
     password:
   jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        #        show_sql: true
-        format_sql: true
-        default_batch_fetch_size: 100
+      ddl-auto: update
+    show_sql: true
+    format_sql: true
   devtools:
     restart:
       enabled: true

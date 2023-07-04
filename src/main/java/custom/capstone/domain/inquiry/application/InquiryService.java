@@ -69,7 +69,7 @@ public class InquiryService {
     // 작성자가 맞는지 확인
     private Member getValidMember() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return memberRepository.findMemberByEmail(email)
+        return memberRepository.findByEmail(email)
                 .orElseThrow(IllegalArgumentException::new);
     }
 }
