@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static javax.persistence.CascadeType.*;
-import static javax.persistence.GenerationType.*;
+import static javax.persistence.CascadeType.REMOVE;
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -28,7 +28,8 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class Member extends BaseTimeEntity implements UserDetails {
-    @Id @GeneratedValue(strategy = IDENTITY)
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
@@ -51,7 +52,6 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Column(nullable = false)
     private MemberStatus status;
 
-    @Column(name = "profile_image")
     private String profileImage;
 
     @OneToMany(mappedBy = "member", cascade = REMOVE)

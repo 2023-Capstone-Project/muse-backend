@@ -1,6 +1,6 @@
-package custom.capstone.domain.members.dto;
+package custom.capstone.domain.members.dto.request;
 
-public record MemberSaveRequestDto (
+public record MemberUpdateRequestDto (
         String nickname,
         String password,
         String email,
