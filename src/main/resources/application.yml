@@ -1,33 +1,3 @@
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/musedb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&useSSL=false
-    username: root
-    password:
-  jpa:
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-    hibernate:
-      ddl-auto: update
-    show_sql: true
-    format_sql: true
-  devtools:
-    restart:
-      enabled: true
-      additional-exclude: static/**, public/**
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type: trace
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    groups-order: desc
-    operationsSorter: method
-    disable-swagger-default-url: true
-    display-request-duration: true
-  api-docs:
-    path: /api-docs
-  show-actuator: true
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json
+  profiles:
+    active: dev
