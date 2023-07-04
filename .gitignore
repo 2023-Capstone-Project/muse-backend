@@ -14,6 +14,9 @@ build
 .idea/**/dictionaries
 .idea/**/shelf
 
+# private info
+src/main/resources/application-dev.yml
+
 # AWS User-specific
 .idea/**/aws.xml
 

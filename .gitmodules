@@ -1,0 +1,4 @@
+[submodule "MUSE-private"]
+	path = MUSE-private
+	url = git@github.com:leeseunghee00/MUSE-private.git
+    branch = main
