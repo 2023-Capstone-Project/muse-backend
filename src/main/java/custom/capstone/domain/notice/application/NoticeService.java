@@ -2,10 +2,10 @@ package custom.capstone.domain.notice.application;
 
 import custom.capstone.domain.notice.dao.NoticeRepository;
 import custom.capstone.domain.notice.domain.Notice;
-import custom.capstone.domain.notice.dto.NoticeListResponseDto;
-import custom.capstone.domain.notice.dto.NoticeResponseDto;
-import custom.capstone.domain.notice.dto.NoticeSaveRequestDto;
-import custom.capstone.domain.notice.dto.NoticeUpdateRequestDto;
+import custom.capstone.domain.notice.dto.response.NoticeListResponseDto;
+import custom.capstone.domain.notice.dto.response.NoticeResponseDto;
+import custom.capstone.domain.notice.dto.request.NoticeSaveRequestDto;
+import custom.capstone.domain.notice.dto.request.NoticeUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

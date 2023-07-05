@@ -2,8 +2,8 @@ package custom.capstone.domain.category.application;
 
 import custom.capstone.domain.category.dao.CategoryRepository;
 import custom.capstone.domain.category.domain.Category;
-import custom.capstone.domain.category.dto.CategorySaveRequestDto;
-import custom.capstone.domain.category.dto.CategoryUpdateRequestDto;
+import custom.capstone.domain.category.dto.request.CategorySaveRequestDto;
+import custom.capstone.domain.category.dto.request.CategoryUpdateRequestDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

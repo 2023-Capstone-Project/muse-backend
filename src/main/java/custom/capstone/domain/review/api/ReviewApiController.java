@@ -1,8 +1,8 @@
 package custom.capstone.domain.review.api;
 
 import custom.capstone.domain.review.application.ReviewService;
-import custom.capstone.domain.review.dto.ReviewSaveRequestDto;
-import custom.capstone.domain.review.dto.ReviewUpdateRequestDto;
+import custom.capstone.domain.review.dto.request.ReviewSaveRequestDto;
+import custom.capstone.domain.review.dto.request.ReviewUpdateRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

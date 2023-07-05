@@ -2,7 +2,7 @@ package custom.capstone.domain.inquiry.application;
 
 import custom.capstone.domain.inquiry.dao.InquiryRepository;
 import custom.capstone.domain.inquiry.domain.Inquiry;
-import custom.capstone.domain.inquiry.dto.InquiryUpdateRequestDto;
+import custom.capstone.domain.inquiry.dto.request.InquiryUpdateRequestDto;
 import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
 import lombok.RequiredArgsConstructor;

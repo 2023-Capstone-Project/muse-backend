@@ -1,9 +1,9 @@
 package custom.capstone.domain.notice.api;
 
 import custom.capstone.domain.notice.application.NoticeService;
-import custom.capstone.domain.notice.dto.NoticeResponseDto;
-import custom.capstone.domain.notice.dto.NoticeSaveRequestDto;
-import custom.capstone.domain.notice.dto.NoticeUpdateRequestDto;
+import custom.capstone.domain.notice.dto.response.NoticeResponseDto;
+import custom.capstone.domain.notice.dto.request.NoticeSaveRequestDto;
+import custom.capstone.domain.notice.dto.request.NoticeUpdateRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

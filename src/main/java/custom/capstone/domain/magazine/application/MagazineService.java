@@ -2,10 +2,10 @@ package custom.capstone.domain.magazine.application;
 
 import custom.capstone.domain.magazine.dao.MagazineRepository;
 import custom.capstone.domain.magazine.domain.Magazine;
-import custom.capstone.domain.magazine.dto.MagazineListResponseDto;
-import custom.capstone.domain.magazine.dto.MagazineResponseDto;
-import custom.capstone.domain.magazine.dto.MagazineSaveRequestDto;
-import custom.capstone.domain.magazine.dto.MagazineUpdateRequestDto;
+import custom.capstone.domain.magazine.dto.response.MagazineListResponseDto;
+import custom.capstone.domain.magazine.dto.response.MagazineResponseDto;
+import custom.capstone.domain.magazine.dto.request.MagazineSaveRequestDto;
+import custom.capstone.domain.magazine.dto.request.MagazineUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -2,8 +2,8 @@ package custom.capstone.domain.category.api;
 
 import custom.capstone.domain.category.application.CategoryService;
 import custom.capstone.domain.category.domain.Category;
-import custom.capstone.domain.category.dto.CategorySaveRequestDto;
-import custom.capstone.domain.category.dto.CategoryUpdateRequestDto;
+import custom.capstone.domain.category.dto.request.CategorySaveRequestDto;
+import custom.capstone.domain.category.dto.request.CategoryUpdateRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;

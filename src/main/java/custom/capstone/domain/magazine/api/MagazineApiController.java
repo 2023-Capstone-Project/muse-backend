@@ -1,9 +1,9 @@
 package custom.capstone.domain.magazine.api;
 
 import custom.capstone.domain.magazine.application.MagazineService;
-import custom.capstone.domain.magazine.dto.MagazineResponseDto;
-import custom.capstone.domain.magazine.dto.MagazineSaveRequestDto;
-import custom.capstone.domain.magazine.dto.MagazineUpdateRequestDto;
+import custom.capstone.domain.magazine.dto.response.MagazineResponseDto;
+import custom.capstone.domain.magazine.dto.request.MagazineSaveRequestDto;
+import custom.capstone.domain.magazine.dto.request.MagazineUpdateRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

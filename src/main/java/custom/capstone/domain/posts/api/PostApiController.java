@@ -1,10 +1,9 @@
 package custom.capstone.domain.posts.api;
 
 import custom.capstone.domain.posts.application.PostService;
-import custom.capstone.domain.posts.domain.Post;
-import custom.capstone.domain.posts.dto.PostResponseDto;
-import custom.capstone.domain.posts.dto.PostSaveRequestDto;
-import custom.capstone.domain.posts.dto.PostUpdateRequestDto;
+import custom.capstone.domain.posts.dto.response.PostResponseDto;
+import custom.capstone.domain.posts.dto.request.PostSaveRequestDto;
+import custom.capstone.domain.posts.dto.request.PostUpdateRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

@@ -2,10 +2,10 @@ package custom.capstone.domain.posts.application;
 
 import custom.capstone.domain.posts.dao.PostRepository;
 import custom.capstone.domain.posts.domain.Post;
-import custom.capstone.domain.posts.dto.PostListResponseDto;
-import custom.capstone.domain.posts.dto.PostResponseDto;
-import custom.capstone.domain.posts.dto.PostSaveRequestDto;
-import custom.capstone.domain.posts.dto.PostUpdateRequestDto;
+import custom.capstone.domain.posts.dto.response.PostListResponseDto;
+import custom.capstone.domain.posts.dto.response.PostResponseDto;
+import custom.capstone.domain.posts.dto.request.PostSaveRequestDto;
+import custom.capstone.domain.posts.dto.request.PostUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
