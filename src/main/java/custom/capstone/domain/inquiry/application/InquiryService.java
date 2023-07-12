@@ -56,7 +56,7 @@ public class InquiryService {
     @Transactional
     public void deleteInquiry(final Long inquiryId) {
         Member member = getValidMember();
-        Inquiry inquiry = inquiryRepository.findByIdWithAnswer(inquiryId)
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (inquiry.getMember() != member) {

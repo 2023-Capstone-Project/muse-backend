@@ -41,7 +41,9 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private PostStatus status;
 
-    private int likeCnt;
+    @Enumerated(STRING)
+    @Column(nullable = false)
+    private PostType type;
 
     private int views;
 
@@ -53,17 +55,24 @@ public class Post extends BaseTimeEntity {
             final String title,
             final String content,
             final int price,
-            final Member member) {
+            final Member member,
+            final PostType type) {
         this.title = title;
         this.content = content;
         this.price = price;
         this.member = member;
         this.status = PostStatus.SALE;
+        this.type = type;
     }
 
-    public void update(final String title, final String content, final int price) {
+    public void update(
+            final String title,
+            final String content,
+            final int price,
+            final PostType type) {
         this.title = title;
         this.content = content;
         this.price = price;
+        this.type = type;
     }
 }

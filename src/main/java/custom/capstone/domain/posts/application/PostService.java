@@ -1,68 +1,85 @@
 package custom.capstone.domain.posts.application;
 
+import custom.capstone.domain.members.application.MemberService;
+import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.posts.dao.PostRepository;
 import custom.capstone.domain.posts.domain.Post;
-import custom.capstone.domain.posts.dto.response.PostListResponseDto;
-import custom.capstone.domain.posts.dto.response.PostResponseDto;
 import custom.capstone.domain.posts.dto.request.PostSaveRequestDto;
 import custom.capstone.domain.posts.dto.request.PostUpdateRequestDto;
+import custom.capstone.domain.posts.dto.response.PostResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.webjars.NotFoundException;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final MemberService memberService;
 
+    /**
+     * 게시글 등록
+     */
     @Transactional
     public Long savePost(final PostSaveRequestDto requestDto) {
-        Post post = Post.builder()
+        final Member member = memberService.findById(requestDto.memberId());
+        final Post post = Post.builder()
                 .title(requestDto.title())
                 .content(requestDto.content())
-                .member(requestDto.author())
+                .price(requestDto.price())
+                .member(member)
+                .type(requestDto.type())
                 .build();
 
         return postRepository.save(post).getId();
     }
 
+    /**
+     * 게시글 수정
+     */
     @Transactional
     public Long updatePost(final Long postId, final PostUpdateRequestDto requestDto) {
-        Post post = postRepository.findById(postId)
+        final Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + postId));
 
-        post.update(requestDto.title(), requestDto.content(), requestDto.price());
+        post.update(requestDto.title(), requestDto.content(), requestDto.price(), requestDto.type());
+
 
         return postId;
     }
 
+    /**
+     * 게시글 페이징 조회
+     */
+    public Page<Post> findAll(final Pageable pageable) {
+        return postRepository.findAll(pageable);
+    }
+
     public Post findById(final Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(NullPointerException::new);
+                .orElseThrow(() -> new NotFoundException("해당 게시글이 존재하지 않습니다."));
     }
 
+    /**
+     * 게시글 상세 조회
+     */
     public PostResponseDto findDetailById(final Long postId) {
-        Post entity = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + postId));
+        Post entity = postRepository.findDetailById(postId)
+                .orElseThrow(() -> new NotFoundException("해당 게시글이 존재하지 않습니다."));
 
-        return new PostResponseDto(entity.getId(), entity.getTitle(), entity.getContent(), entity.getMember());
+        return new PostResponseDto(entity);
     }
 
-    @Transactional
-    public List<PostListResponseDto> findAllDesc() {
-        return postRepository.findAllDesc()
-                .stream()
-                .map(PostListResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
+    /**
+     * 게시글 삭제
+     */
     @Transactional
     public void deletePost(final Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다. id = " + postId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + postId));
 
         postRepository.delete(post);
     }
