@@ -45,6 +45,7 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private PostType type;
 
+    @Column(columnDefinition = "integer default 0", nullable = false)
     private int views;
 
     @OneToMany(mappedBy = "post")

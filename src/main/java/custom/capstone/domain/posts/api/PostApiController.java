@@ -28,7 +28,7 @@ public class PostApiController {
     @Operation(summary = "게시글 수정")
     @PatchMapping("/{postId}/edit")
     public Long updatePost(@PathVariable("postId") final Long id,
-                           @RequestBody PostUpdateRequestDto requestDto){
+                           @RequestBody final PostUpdateRequestDto requestDto){
         return postService.updatePost(id, requestDto);
     }
 

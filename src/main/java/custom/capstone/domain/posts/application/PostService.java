@@ -67,7 +67,7 @@ public class PostService {
      * 게시글 상세 조회
      */
     public PostResponseDto findDetailById(final Long postId) {
-        Post entity = postRepository.findDetailById(postId)
+        final Post entity = postRepository.findDetailById(postId)
                 .orElseThrow(() -> new NotFoundException("해당 게시글이 존재하지 않습니다."));
 
         return new PostResponseDto(entity);
@@ -78,7 +78,7 @@ public class PostService {
      */
     @Transactional
     public void deletePost(final Long postId) {
-        Post post = postRepository.findById(postId)
+        final Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + postId));
 
         postRepository.delete(post);
