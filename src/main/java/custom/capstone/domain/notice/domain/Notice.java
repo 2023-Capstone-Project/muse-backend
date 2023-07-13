@@ -1,5 +1,6 @@
 package custom.capstone.domain.notice.domain;
 
+import custom.capstone.domain.members.domain.Member;
 import custom.capstone.global.common.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -18,19 +20,29 @@ public class Notice extends BaseTimeEntity {
     @Column(name = "notice_id")
     private Long id;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Column(length = 50, nullable = false)
     private String title;
 
     @Column(length = 1000, nullable = false)
     private String content;
 
+    @Column(columnDefinition = "integer default 0")
     private int views;
 
+    public void setMember(final Member member) {
+        this.member = member;
+        member.getNotices().add(this);
+    }
+
     @Builder
-    public Notice(final String title, final String content, final int views) {
+    public Notice(final String title, final String content, final Member member) {
         this.title = title;
         this.content = content;
-        this.views = views;
+        this.member = member;
     }
 
     public void update(final String title, final String content) {

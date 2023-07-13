@@ -41,8 +41,11 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private PostStatus status;
 
-    private int likeCnt;
+    @Enumerated(STRING)
+    @Column(nullable = false)
+    private PostType type;
 
+    @Column(columnDefinition = "integer default 0", nullable = false)
     private int views;
 
     @OneToMany(mappedBy = "post")
@@ -53,17 +56,24 @@ public class Post extends BaseTimeEntity {
             final String title,
             final String content,
             final int price,
-            final Member member) {
+            final Member member,
+            final PostType type) {
         this.title = title;
         this.content = content;
         this.price = price;
         this.member = member;
         this.status = PostStatus.SALE;
+        this.type = type;
     }
 
-    public void update(final String title, final String content, final int price) {
+    public void update(
+            final String title,
+            final String content,
+            final int price,
+            final PostType type) {
         this.title = title;
         this.content = content;
         this.price = price;
+        this.type = type;
     }
 }

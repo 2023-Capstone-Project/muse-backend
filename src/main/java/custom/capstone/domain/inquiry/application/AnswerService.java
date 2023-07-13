@@ -4,7 +4,7 @@ import custom.capstone.domain.inquiry.dao.AnswerRepository;
 import custom.capstone.domain.inquiry.dao.InquiryRepository;
 import custom.capstone.domain.inquiry.domain.Answer;
 import custom.capstone.domain.inquiry.domain.Inquiry;
-import custom.capstone.domain.inquiry.dto.AnswerUpdateRequestDto;
+import custom.capstone.domain.inquiry.dto.request.AnswerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

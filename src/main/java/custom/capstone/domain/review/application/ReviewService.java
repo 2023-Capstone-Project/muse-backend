@@ -2,8 +2,8 @@ package custom.capstone.domain.review.application;
 
 import custom.capstone.domain.review.dao.ReviewRepository;
 import custom.capstone.domain.review.domain.Review;
-import custom.capstone.domain.review.dto.ReviewSaveRequestDto;
-import custom.capstone.domain.review.dto.ReviewUpdateRequestDto;
+import custom.capstone.domain.review.dto.request.ReviewSaveRequestDto;
+import custom.capstone.domain.review.dto.request.ReviewUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

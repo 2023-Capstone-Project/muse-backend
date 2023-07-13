@@ -2,7 +2,7 @@ package custom.capstone.domain.inquiry.application;
 
 import custom.capstone.domain.inquiry.dao.InquiryRepository;
 import custom.capstone.domain.inquiry.domain.Inquiry;
-import custom.capstone.domain.inquiry.dto.InquiryUpdateRequestDto;
+import custom.capstone.domain.inquiry.dto.request.InquiryUpdateRequestDto;
 import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +56,7 @@ public class InquiryService {
     @Transactional
     public void deleteInquiry(final Long inquiryId) {
         Member member = getValidMember();
-        Inquiry inquiry = inquiryRepository.findByIdWithAnswer(inquiryId)
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (inquiry.getMember() != member) {

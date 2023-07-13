@@ -1,9 +1,9 @@
 package custom.capstone.domain.interest.api;
 
 import custom.capstone.domain.interest.application.InterestService;
-import custom.capstone.domain.interest.dto.InterestDeleteResponseDto;
-import custom.capstone.domain.interest.dto.InterestSaveRequestDto;
-import custom.capstone.domain.interest.dto.InterestSaveResponseDto;
+import custom.capstone.domain.interest.dto.response.InterestDeleteResponseDto;
+import custom.capstone.domain.interest.dto.request.InterestSaveRequestDto;
+import custom.capstone.domain.interest.dto.response.InterestSaveResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

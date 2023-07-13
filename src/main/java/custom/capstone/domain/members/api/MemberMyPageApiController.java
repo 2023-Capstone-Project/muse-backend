@@ -1,12 +1,11 @@
 package custom.capstone.domain.members.api;
 
-import custom.capstone.domain.interest.dto.InterestListResponseDto;
+import custom.capstone.domain.interest.dto.response.InterestListResponseDto;
 import custom.capstone.domain.members.application.FollowService;
 import custom.capstone.domain.members.application.MemberMyPageService;
 import custom.capstone.domain.members.dto.MemberProfileDto;
-import custom.capstone.domain.posts.dto.PostListResponseDto;
-import custom.capstone.domain.trading.dto.TradingListResponseDto;
-import custom.capstone.domain.review.dto.ReviewListResponseDto;
+import custom.capstone.domain.posts.dto.response.PostListResponseDto;
+import custom.capstone.domain.review.dto.response.ReviewListResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
