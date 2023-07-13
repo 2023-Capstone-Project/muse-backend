@@ -2,6 +2,7 @@ package custom.capstone.domain.members.domain;
 
 import custom.capstone.domain.interest.domain.Interest;
 import custom.capstone.domain.magazine.domain.Magazine;
+import custom.capstone.domain.notice.domain.Notice;
 import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.review.domain.Review;
 import custom.capstone.domain.trading.domain.Trading;
@@ -59,6 +60,9 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @OneToMany(mappedBy = "member", cascade = REMOVE)
     private final List<Magazine> magazines = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = REMOVE)
+    private final List<Notice> notices = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = REMOVE)
     private final List<Interest> interests = new ArrayList<>();
