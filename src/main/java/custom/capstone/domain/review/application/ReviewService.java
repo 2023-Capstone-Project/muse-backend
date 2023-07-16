@@ -4,10 +4,10 @@ import custom.capstone.domain.review.dao.ReviewRepository;
 import custom.capstone.domain.review.domain.Review;
 import custom.capstone.domain.review.dto.request.ReviewSaveRequestDto;
 import custom.capstone.domain.review.dto.request.ReviewUpdateRequestDto;
+import custom.capstone.domain.review.exception.ReviewNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class ReviewService {
     @Transactional
     public Long updateReview(final Long reviewId, final ReviewUpdateRequestDto requestDto) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(()->new NotFoundException("해당 거래 상품은 존재하지 않습니다."));
+                .orElseThrow(ReviewNotFoundException::new);
 
         review.update(requestDto.content());
 
@@ -47,7 +47,7 @@ public class ReviewService {
     @Transactional
     public void deleteReview(final Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(()->new NotFoundException("거래 상품을 찾을 수 없습니다."));
+                .orElseThrow(ReviewNotFoundException::new);
 
         reviewRepository.delete(review);
     }
@@ -57,6 +57,6 @@ public class ReviewService {
      */
     public Review findById(final Long reviewId) {
         return reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new NotFoundException("후기를 조회할 수 없습니다."));
+                .orElseThrow(ReviewNotFoundException::new);
     }
 }

@@ -5,6 +5,8 @@ import custom.capstone.domain.inquiry.dao.InquiryRepository;
 import custom.capstone.domain.inquiry.domain.Answer;
 import custom.capstone.domain.inquiry.domain.Inquiry;
 import custom.capstone.domain.inquiry.dto.request.AnswerUpdateRequestDto;
+import custom.capstone.domain.inquiry.exception.AnswerNotFoundException;
+import custom.capstone.domain.inquiry.exception.InquiryNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +23,7 @@ public class AnswerService {
     @Transactional
     public Answer saveAnswer(final Long inquiryId, final Answer answer) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(IllegalAccessError::new);
+                .orElseThrow(InquiryNotFoundException::new);
         Answer save = answerRepository.save(answer);
 
         inquiry.setAnswer(save);
@@ -34,9 +36,9 @@ public class AnswerService {
     @Transactional
     public Long updateAnswer(final Long inquiryId, final Long answerId, final AnswerUpdateRequestDto requestDto) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(InquiryNotFoundException::new);
         Answer answer = answerRepository.findById(answerId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(AnswerNotFoundException::new);
 
         inquiry.setAnswer(answer);
         answer.update(requestDto.content());
@@ -49,9 +51,9 @@ public class AnswerService {
      */
     public void deleteAnswer(final Long inquiryId, final Long answerId) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(InquiryNotFoundException::new);
         Answer answer = answerRepository.findById(answerId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(AnswerNotFoundException::new);
 
         answerRepository.delete(answer);
     }

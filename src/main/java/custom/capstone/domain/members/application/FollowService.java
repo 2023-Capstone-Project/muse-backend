@@ -3,11 +3,11 @@ package custom.capstone.domain.members.application;
 import custom.capstone.domain.members.dao.FollowRepository;
 import custom.capstone.domain.members.domain.Follow;
 import custom.capstone.domain.members.dto.MemberProfileDto;
+import custom.capstone.domain.members.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Set;
 
 @Service
@@ -37,7 +37,7 @@ public class FollowService {
     @Transactional
     public void deleteFollow(final Long id) {
         Follow follow = followRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당 팔로우를 찾을 수 없습니다. id = " + id));
+                .orElseThrow(MemberNotFoundException::new);
 
         followRepository.delete(follow);
     }

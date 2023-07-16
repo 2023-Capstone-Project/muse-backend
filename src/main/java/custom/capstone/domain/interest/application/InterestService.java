@@ -3,6 +3,7 @@ package custom.capstone.domain.interest.application;
 import custom.capstone.domain.interest.dao.InterestRepository;
 import custom.capstone.domain.interest.domain.Interest;
 import custom.capstone.domain.interest.dto.request.InterestSaveRequestDto;
+import custom.capstone.domain.interest.exception.InterestNotFoundException;
 import custom.capstone.domain.members.application.MemberService;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.posts.application.PostService;
@@ -42,6 +43,6 @@ public class InterestService {
      */
     public Interest findById(final Long interestId) {
         return interestRepository.findById(interestId)
-                .orElseThrow(NullPointerException::new);
+                .orElseThrow(InterestNotFoundException::new);
     }
 }
