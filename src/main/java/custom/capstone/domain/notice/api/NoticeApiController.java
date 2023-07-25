@@ -5,6 +5,7 @@ import custom.capstone.domain.notice.dto.response.NoticeListResponseDto;
 import custom.capstone.domain.notice.dto.response.NoticeResponseDto;
 import custom.capstone.domain.notice.dto.request.NoticeSaveRequestDto;
 import custom.capstone.domain.notice.dto.request.NoticeUpdateRequestDto;
+import custom.capstone.domain.notice.dto.response.NoticeSaveResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +23,13 @@ public class NoticeApiController {
     private final NoticeService noticeService;
 
     @Operation(summary = "공지사항 등록")
-    @PostMapping("/write")
-    public Long saveNotice(@Valid @RequestBody final NoticeSaveRequestDto requestDto) {
+    @PostMapping
+    public NoticeSaveResponseDto saveNotice(@Valid @RequestBody final NoticeSaveRequestDto requestDto) {
         return noticeService.saveNotice(requestDto);
     }
 
     @Operation(summary = "공지사항 수정")
-    @PatchMapping("/{noticeId}/edit")
+    @PatchMapping("/{noticeId}")
     public Long updateNotice(@PathVariable("noticeId") final Long id,
                              @RequestBody final NoticeUpdateRequestDto requestDto) {
         return noticeService.updateNotice(id, requestDto);

@@ -76,4 +76,8 @@ public class Post extends BaseTimeEntity {
         this.price = price;
         this.type = type;
     }
+
+    public void increaseView() {
+        this.views++;
+    }
 }

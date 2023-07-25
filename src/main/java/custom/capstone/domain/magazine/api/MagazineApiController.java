@@ -5,6 +5,7 @@ import custom.capstone.domain.magazine.dto.response.MagazineListResponseDto;
 import custom.capstone.domain.magazine.dto.response.MagazineResponseDto;
 import custom.capstone.domain.magazine.dto.request.MagazineSaveRequestDto;
 import custom.capstone.domain.magazine.dto.request.MagazineUpdateRequestDto;
+import custom.capstone.domain.magazine.dto.response.MagazineSaveResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +23,13 @@ public class MagazineApiController {
     private final MagazineService magazineService;
 
     @Operation(summary = "매거진 등록")
-    @PostMapping("/write")
-    public Long saveMagazine(@Valid @RequestBody final MagazineSaveRequestDto requestDto) {
+    @PostMapping
+    public MagazineSaveResponseDto saveMagazine(@Valid @RequestBody final MagazineSaveRequestDto requestDto) {
         return magazineService.saveMagazine(requestDto);
     }
 
     @Operation(summary = "매거진 수정")
-    @PatchMapping("/{magazineId}/edit")
+    @PatchMapping("/{magazineId}")
     public Long updateMagazine(@PathVariable("magazineId") final Long id,
                                @RequestBody final MagazineUpdateRequestDto requestDto) {
         return magazineService.updateMagazine(id, requestDto);

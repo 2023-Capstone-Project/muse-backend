@@ -30,10 +30,10 @@ public class Notice extends BaseTimeEntity {
     @Column(length = 1000, nullable = false)
     private String content;
 
-    @Column(columnDefinition = "integer default 0")
+    @Column(columnDefinition = "integer default 0", nullable = false)
     private int views;
 
-    public void setMember(final Member member) {
+    private void setMember(final Member member) {
         this.member = member;
         member.getNotices().add(this);
     }
@@ -42,11 +42,15 @@ public class Notice extends BaseTimeEntity {
     public Notice(final String title, final String content, final Member member) {
         this.title = title;
         this.content = content;
-        this.member = member;
+        this.setMember(member);
     }
 
     public void update(final String title, final String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void increaseView() {
+        this.views++;
     }
 }

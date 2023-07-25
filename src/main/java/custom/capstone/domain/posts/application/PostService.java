@@ -7,6 +7,7 @@ import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.posts.dto.request.PostSaveRequestDto;
 import custom.capstone.domain.posts.dto.request.PostUpdateRequestDto;
 import custom.capstone.domain.posts.dto.response.PostResponseDto;
+import custom.capstone.domain.posts.dto.response.PostSaveResponseDto;
 import custom.capstone.domain.posts.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,8 +25,9 @@ public class PostService {
      * 게시글 등록
      */
     @Transactional
-    public Long savePost(final PostSaveRequestDto requestDto) {
+    public PostSaveResponseDto savePost(final PostSaveRequestDto requestDto) {
         final Member member = memberService.findById(requestDto.memberId());
+
         final Post post = Post.builder()
                 .title(requestDto.title())
                 .content(requestDto.content())
@@ -34,7 +36,10 @@ public class PostService {
                 .type(requestDto.type())
                 .build();
 
-        return postRepository.save(post).getId();
+
+        postRepository.save(post);
+
+        return new PostSaveResponseDto(post.getId());
     }
 
     /**
@@ -46,7 +51,6 @@ public class PostService {
                 .orElseThrow(PostNotFoundException::new);
 
         post.update(requestDto.title(), requestDto.content(), requestDto.price(), requestDto.type());
-
 
         return postId;
     }

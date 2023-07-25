@@ -24,7 +24,7 @@ public class TradingApiController {
     }
 
     @Operation(summary = "거래 수정")
-    @PatchMapping("/{tradingId}/edit")
+    @PatchMapping("/{tradingId}")
     public Long updateTrading(@PathVariable("tradingId") final Long id,
                               @RequestBody final TradingUpdateRequestDto requestDto) {
         return tradingService.updateTrading(id, requestDto);

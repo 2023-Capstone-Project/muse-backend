@@ -1,7 +1,7 @@
 package custom.capstone.domain.interest.api;
 
 import custom.capstone.domain.interest.application.InterestService;
-import custom.capstone.domain.interest.dto.response.InterestDeleteResponseDto;
+import custom.capstone.domain.interest.dto.request.InterestDeleteRequestDto;
 import custom.capstone.domain.interest.dto.request.InterestSaveRequestDto;
 import custom.capstone.domain.interest.dto.response.InterestSaveResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,9 +25,9 @@ public class InterestApiController {
     }
 
     @Operation(summary = "좋아요 취소")
-    @DeleteMapping("/{interestId}")
-    public InterestDeleteResponseDto cancelInterest(@PathVariable("interestId") final Long id) {
-        interestService.cancelInterest(id);
-        return new InterestDeleteResponseDto(id);
+    @DeleteMapping
+    public void cancelInterest(@RequestBody @Valid final InterestDeleteRequestDto requestDto) {
+        interestService.cancelInterest(requestDto);
+//        return new InterestDeleteResponseDto(id);
     }
 }

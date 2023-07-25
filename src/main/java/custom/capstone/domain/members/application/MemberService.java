@@ -4,10 +4,10 @@ import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.members.domain.MemberRole;
 import custom.capstone.domain.members.domain.MemberStatus;
-import custom.capstone.domain.members.dto.response.MemberResponseDto;
 import custom.capstone.domain.members.dto.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.request.MemberLoginRequestDto;
 import custom.capstone.domain.members.dto.request.MemberUpdateRequestDto;
+import custom.capstone.domain.members.dto.response.MemberResponseDto;
 import custom.capstone.domain.members.exception.MemberEmailExistException;
 import custom.capstone.domain.members.exception.MemberNicknameExistException;
 import custom.capstone.domain.members.exception.MemberNotFoundException;
@@ -54,6 +54,8 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
 
         // TODO: 비밀번호 확인 구현
+//        if (!requestDto.password())
+
 //        if (!passwordEncoder.matches(requestDto.password(), member.getPassword()))
 //            throw new PasswordException();
 
@@ -132,7 +134,7 @@ public class MemberService {
      * 비밀번호 확인
      */
 //    private void checkPasswordEquals(final MemberSaveRequestDto requestDto) {
-//        if (!requestDto.password().equals(requestDto.checkPassword()))
+//        if (!(requestDto.password()==(requestDto.checkPassword())))
 //            throw new JoinPasswordException();
 //    }
 }

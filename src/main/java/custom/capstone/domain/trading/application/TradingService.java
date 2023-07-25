@@ -87,7 +87,6 @@ public class TradingService {
         Trading trading = tradingRepository.findById(tradingId)
                 .orElseThrow(TradingNotFoundException::new);
 
-        trading.setTradingStatus(status);
         tradingRepository.save(trading);
 
         return trading;

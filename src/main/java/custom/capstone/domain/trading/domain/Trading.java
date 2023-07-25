@@ -60,10 +60,10 @@ public class Trading extends BaseTimeEntity {
         this.post = post;
         this.buyer = buyer;
         this.seller = seller;
-        this.status = status;
+        this.setTradingStatus(status);
     }
 
-    public void setTradingStatus(final TradingStatus status) {
+    private void setTradingStatus(final TradingStatus status) {
         this.status = status;
     }
 

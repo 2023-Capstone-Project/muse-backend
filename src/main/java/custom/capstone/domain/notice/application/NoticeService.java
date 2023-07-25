@@ -8,6 +8,7 @@ import custom.capstone.domain.notice.dto.request.NoticeSaveRequestDto;
 import custom.capstone.domain.notice.dto.request.NoticeUpdateRequestDto;
 import custom.capstone.domain.notice.dto.response.NoticeListResponseDto;
 import custom.capstone.domain.notice.dto.response.NoticeResponseDto;
+import custom.capstone.domain.notice.dto.response.NoticeSaveResponseDto;
 import custom.capstone.domain.notice.exception.NoticeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,15 +26,18 @@ public class NoticeService {
      * 공지사항 등록
      */
     @Transactional
-    public Long saveNotice(final NoticeSaveRequestDto requestDto) {
+    public NoticeSaveResponseDto saveNotice(final NoticeSaveRequestDto requestDto) {
         final Member member = memberService.findById(requestDto.memberId());
+
         final Notice notice = Notice.builder()
                 .title(requestDto.title())
                 .content(requestDto.content())
                 .member(member)
                 .build();
 
-        return noticeRepository.save(notice).getId();
+        noticeRepository.save(notice);
+
+        return new NoticeSaveResponseDto(notice.getId());
     }
 
     /**

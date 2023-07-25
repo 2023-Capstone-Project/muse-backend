@@ -3,6 +3,7 @@ package custom.capstone.domain.review.api;
 import custom.capstone.domain.review.application.ReviewService;
 import custom.capstone.domain.review.dto.request.ReviewSaveRequestDto;
 import custom.capstone.domain.review.dto.request.ReviewUpdateRequestDto;
+import custom.capstone.domain.review.dto.response.ReviewSaveResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,12 @@ public class ReviewApiController {
 
     @Operation(summary = "후기 생성")
     @PostMapping
-    public Long saveReview(@RequestBody final ReviewSaveRequestDto requestDto) {
+    public ReviewSaveResponseDto saveReview(@RequestBody final ReviewSaveRequestDto requestDto) {
         return reviewService.saveReview(requestDto);
     }
 
     @Operation(summary = "후기 수정")
-    @PatchMapping("/{reviewId}/edit")
+    @PatchMapping("/{reviewId}")
     public Long updateReview(@PathVariable("reviewId") final Long reviewId,
                              @RequestBody final ReviewUpdateRequestDto requestDto) {
         return reviewService.updateReview(reviewId, requestDto);
@@ -33,4 +34,4 @@ public class ReviewApiController {
     public void deleteReview(@PathVariable("reviewId") final Long reviewId){
         reviewService.deleteReview(reviewId);
     }
- }
+}
