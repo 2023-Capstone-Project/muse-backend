@@ -1,4 +1,4 @@
-package custom.capstone.domain.members.dto;
+package custom.capstone.domain.members.dto.response;
 
 import custom.capstone.domain.members.domain.Member;
 import lombok.Getter;

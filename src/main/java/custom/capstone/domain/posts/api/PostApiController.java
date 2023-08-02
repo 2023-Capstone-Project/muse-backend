@@ -5,6 +5,7 @@ import custom.capstone.domain.posts.dto.request.PostSaveRequestDto;
 import custom.capstone.domain.posts.dto.request.PostUpdateRequestDto;
 import custom.capstone.domain.posts.dto.response.PostListResponseDto;
 import custom.capstone.domain.posts.dto.response.PostResponseDto;
+import custom.capstone.domain.posts.dto.response.PostSaveResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +21,13 @@ public class PostApiController {
     private final PostService postService;
 
     @Operation(summary = "게시글 등록")
-    @PostMapping("/write")
-    public Long savePost(@RequestBody final PostSaveRequestDto requestDto) {
+    @PostMapping
+    public PostSaveResponseDto savePost(@RequestBody final PostSaveRequestDto requestDto) {
         return postService.savePost(requestDto);
     };
 
     @Operation(summary = "게시글 수정")
-    @PatchMapping("/{postId}/edit")
+    @PatchMapping("/{postId}")
     public Long updatePost(@PathVariable("postId") final Long id,
                            @RequestBody final PostUpdateRequestDto requestDto){
         return postService.updatePost(id, requestDto);

@@ -6,6 +6,8 @@ import custom.capstone.domain.magazine.dto.request.MagazineSaveRequestDto;
 import custom.capstone.domain.magazine.dto.request.MagazineUpdateRequestDto;
 import custom.capstone.domain.magazine.dto.response.MagazineListResponseDto;
 import custom.capstone.domain.magazine.dto.response.MagazineResponseDto;
+import custom.capstone.domain.magazine.dto.response.MagazineSaveResponseDto;
+import custom.capstone.domain.magazine.exception.MagazineNotFoundException;
 import custom.capstone.domain.members.application.MemberService;
 import custom.capstone.domain.members.domain.Member;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -25,15 +26,18 @@ public class MagazineService {
      * 매거진 등록
      */
     @Transactional
-    public Long saveMagazine(final MagazineSaveRequestDto requestDto) {
+    public MagazineSaveResponseDto saveMagazine(final MagazineSaveRequestDto requestDto) {
         final Member member = memberService.findById(requestDto.memberId());
+
         final Magazine magazine = Magazine.builder()
                 .title(requestDto.title())
                 .content(requestDto.content())
                 .member(member)
                 .build();
 
-        return magazineRepository.save(magazine).getId();
+        magazineRepository.save(magazine);
+
+        return new MagazineSaveResponseDto(magazine.getId());
     }
 
     /**
@@ -42,7 +46,7 @@ public class MagazineService {
     @Transactional
     public Long updateMagazine(final Long magazineId, final MagazineUpdateRequestDto requestDto) {
         final Magazine magazine = magazineRepository.findById(magazineId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 매거진이 없습니다. id = " + magazineId));
+                .orElseThrow(MagazineNotFoundException::new);
 
         magazine.update(requestDto.title(), requestDto.content());
 
@@ -59,15 +63,18 @@ public class MagazineService {
 
     public Magazine findById(final Long magazineId) {
         return magazineRepository.findById(magazineId)
-                .orElseThrow(() -> new NotFoundException("해당 매거진이 존재하지 않습니다."));
+                .orElseThrow(MagazineNotFoundException::new);
     }
 
     /*
      * 매거진 상세 조회
      */
+    @Transactional
     public MagazineResponseDto findDetailById(final Long magazineId) {
         final Magazine entity = magazineRepository.findDetailById(magazineId)
-                .orElseThrow(() -> new NotFoundException("해당 매거진이 존재하지 않습니다."));
+                .orElseThrow(MagazineNotFoundException::new);
+
+        entity.increaseView();
 
         return new MagazineResponseDto(entity);
     }
@@ -78,7 +85,7 @@ public class MagazineService {
     @Transactional
     public void deleteMagazine(final Long magazineId) {
         final Magazine magazine = magazineRepository.findById(magazineId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 매거진이 없습니다. id = " + magazineId));
+                .orElseThrow(MagazineNotFoundException::new);
 
         magazineRepository.delete(magazine);
     }

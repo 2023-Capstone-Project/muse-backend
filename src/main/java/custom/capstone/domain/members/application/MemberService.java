@@ -4,16 +4,18 @@ import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.members.domain.MemberRole;
 import custom.capstone.domain.members.domain.MemberStatus;
-import custom.capstone.domain.members.dto.MemberResponseDto;
 import custom.capstone.domain.members.dto.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.request.MemberLoginRequestDto;
 import custom.capstone.domain.members.dto.request.MemberUpdateRequestDto;
+import custom.capstone.domain.members.dto.response.MemberResponseDto;
+import custom.capstone.domain.members.exception.MemberEmailExistException;
+import custom.capstone.domain.members.exception.MemberNicknameExistException;
+import custom.capstone.domain.members.exception.MemberNotFoundException;
 import custom.capstone.global.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,11 +51,13 @@ public class MemberService {
      */
     public String login(final MemberLoginRequestDto requestDto) {
         Member member = memberRepository.findByEmail(requestDto.email())
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다."));
+                .orElseThrow(MemberNotFoundException::new);
 
         // TODO: 비밀번호 확인 구현
+//        if (!requestDto.password())
+
 //        if (!passwordEncoder.matches(requestDto.password(), member.getPassword()))
-//            throw new IllegalArgumentException("비밀번호를 잘못 입력하였습니다.");
+//            throw new PasswordException();
 
         List<String> roles = new ArrayList<>();
         roles.add(member.getRole().name());
@@ -67,7 +71,7 @@ public class MemberService {
     @Transactional
     public Long updateMember(final Long memberId, final MemberUpdateRequestDto requestDto) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(MemberNotFoundException::new);
 
         member.update(requestDto.nickname(), requestDto.password(), requestDto.email(), requestDto.phoneNum());
 
@@ -88,17 +92,17 @@ public class MemberService {
      */
     public Member findById(final Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(NullPointerException::new);
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     public Member findByEmail(final String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     public MemberResponseDto findDetailById(final Long memberId) {
         Member entity = memberRepository.findById(memberId)
-                .orElseThrow(NullPointerException::new);
+                .orElseThrow(MemberNotFoundException::new);
 
         return new MemberResponseDto(entity);
     }
@@ -113,12 +117,12 @@ public class MemberService {
      */
     private void checkEmailDuplicate(final MemberSaveRequestDto requestDto) {
         if (memberRepository.existsMemberByEmail(requestDto.email()))
-            throw new IllegalStateException("이미 존재하는 이메일 입니다.");
+            throw new MemberEmailExistException();
     }
 
     private void checkNicknameDuplicate(final MemberSaveRequestDto requestDto) {
         if (memberRepository.existsMemberByNickname(requestDto.nickname()))
-            throw new IllegalStateException("이미 존재하는 닉네임 입니다.");
+            throw new MemberNicknameExistException();
     }
 
     private void validateSingUpRequest(final MemberSaveRequestDto requestDto) {
@@ -130,8 +134,7 @@ public class MemberService {
      * 비밀번호 확인
      */
 //    private void checkPasswordEquals(final MemberSaveRequestDto requestDto) {
-//        if (!requestDto.password().equals(requestDto.checkPassword()))
-//            throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
-//
+//        if (!(requestDto.password()==(requestDto.checkPassword())))
+//            throw new JoinPasswordException();
 //    }
 }

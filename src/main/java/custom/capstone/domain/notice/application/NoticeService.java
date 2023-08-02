@@ -4,19 +4,17 @@ import custom.capstone.domain.members.application.MemberService;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.notice.dao.NoticeRepository;
 import custom.capstone.domain.notice.domain.Notice;
-import custom.capstone.domain.notice.dto.response.NoticeListResponseDto;
-import custom.capstone.domain.notice.dto.response.NoticeResponseDto;
 import custom.capstone.domain.notice.dto.request.NoticeSaveRequestDto;
 import custom.capstone.domain.notice.dto.request.NoticeUpdateRequestDto;
+import custom.capstone.domain.notice.dto.response.NoticeListResponseDto;
+import custom.capstone.domain.notice.dto.response.NoticeResponseDto;
+import custom.capstone.domain.notice.dto.response.NoticeSaveResponseDto;
+import custom.capstone.domain.notice.exception.NoticeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,15 +26,18 @@ public class NoticeService {
      * 공지사항 등록
      */
     @Transactional
-    public Long saveNotice(final NoticeSaveRequestDto requestDto) {
+    public NoticeSaveResponseDto saveNotice(final NoticeSaveRequestDto requestDto) {
         final Member member = memberService.findById(requestDto.memberId());
+
         final Notice notice = Notice.builder()
                 .title(requestDto.title())
                 .content(requestDto.content())
                 .member(member)
                 .build();
 
-        return noticeRepository.save(notice).getId();
+        noticeRepository.save(notice);
+
+        return new NoticeSaveResponseDto(notice.getId());
     }
 
     /**
@@ -45,7 +46,7 @@ public class NoticeService {
     @Transactional
     public Long updateNotice(final Long noticeId, final NoticeUpdateRequestDto requestDto) {
         final Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 공지사항이 없습니다. id = " + noticeId));
+                .orElseThrow(NoticeNotFoundException::new);
 
         notice.update(requestDto.title(), requestDto.content());
 
@@ -63,7 +64,7 @@ public class NoticeService {
 
     public Notice findById(final Long noticeId) {
         return noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new NotFoundException("해당 공지사항이 없습니다. id = " + noticeId));
+                .orElseThrow(NoticeNotFoundException::new);
     }
 
     /**
@@ -71,7 +72,7 @@ public class NoticeService {
      */
     public NoticeResponseDto findDetailById(final Long noticeId) {
         final Notice entity = noticeRepository.findDetailById(noticeId)
-                .orElseThrow(() -> new NotFoundException("해당 공지사항이 없습니다. id = " + noticeId));
+                .orElseThrow(NoticeNotFoundException::new);
 
         return new NoticeResponseDto(entity);
     }
@@ -82,7 +83,7 @@ public class NoticeService {
     @Transactional
     public void deleteNotice(final Long noticeId) {
         final Notice notice = noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 공지사항이 없습니다. id = " + noticeId));
+                .orElseThrow(NoticeNotFoundException::new);
 
         noticeRepository.delete(notice);
     }

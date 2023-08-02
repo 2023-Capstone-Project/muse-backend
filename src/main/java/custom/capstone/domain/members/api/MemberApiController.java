@@ -43,7 +43,7 @@ public class MemberApiController {
     }
 
     @Operation(summary = "회원 정보 수정")
-    @PatchMapping("/{memberId}/edit")
+    @PatchMapping("/{memberId}")
     public Long updateMember(@PathVariable("memberId") final Long id,
                              @RequestBody final MemberUpdateRequestDto requestDto) {
         return memberService.updateMember(id, requestDto);

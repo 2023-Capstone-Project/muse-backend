@@ -27,12 +27,12 @@ public class Interest {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    public void setMember(final Member member) {
+    private void setMember(final Member member) {
         this.member = member;
         member.getInterests().add(this);
     }
 
-    public void setPost(final Post post) {
+    private void setPost(final Post post) {
         this.post = post;
         post.getInterests().add(this);
     }
@@ -40,8 +40,8 @@ public class Interest {
     public static Interest save(final Member member, final Post post) {
         final Interest interest = new Interest();
 
-        interest.member = member;
-        interest.post = post;
+        interest.setMember(member);
+        interest.setPost(post);
 
         return interest;
     }

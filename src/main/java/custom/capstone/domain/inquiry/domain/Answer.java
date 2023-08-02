@@ -1,5 +1,6 @@
 package custom.capstone.domain.inquiry.domain;
 
+import custom.capstone.global.common.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,15 +16,18 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Answer {
+public class Answer extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "answer_id")
     private Long id;
 
+    private String admin;
+
     private String content;
 
     @Builder
-    public Answer(final String content) {
+    public Answer(final String admin, final String content) {
+        this.admin = admin;
         this.content = content;
     }
 

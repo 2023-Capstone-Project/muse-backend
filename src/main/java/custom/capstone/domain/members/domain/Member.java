@@ -1,5 +1,6 @@
 package custom.capstone.domain.members.domain;
 
+import custom.capstone.domain.inquiry.domain.Inquiry;
 import custom.capstone.domain.interest.domain.Interest;
 import custom.capstone.domain.magazine.domain.Magazine;
 import custom.capstone.domain.notice.domain.Notice;
@@ -59,12 +60,6 @@ public class Member extends BaseTimeEntity implements UserDetails {
     private final List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = REMOVE)
-    private final List<Magazine> magazines = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = REMOVE)
-    private final List<Notice> notices = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = REMOVE)
     private final List<Interest> interests = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = REMOVE)
@@ -75,6 +70,19 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @OneToMany(mappedBy = "seller", cascade = REMOVE)
     private final List<Trading> sellerTradings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = REMOVE)
+    private final List<Inquiry> inquiries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = REMOVE)
+    private final List<Magazine> magazines = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = REMOVE)
+    private final List<Notice> notices = new ArrayList<>();
+
+//    @OneToMany(mappedBy = "member", cascade = REMOVE)
+//    private final List<Answer> answers = new ArrayList<>();
+
 
     @Builder
     public Member(

@@ -33,7 +33,7 @@ public class Magazine extends BaseTimeEntity {
     @Column(columnDefinition = "integer default 0", nullable = false)
     private int views;
 
-    public void setMember(final Member member) {
+    private void setMember(final Member member) {
         this.member = member;
         member.getMagazines().add(this);
     }
@@ -42,11 +42,15 @@ public class Magazine extends BaseTimeEntity {
     public Magazine(final String title, final String content, final Member member) {
         this.title = title;
         this.content = content;
-        this.member = member;
+        setMember(member);
     }
 
     public void update(final String title, final String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void increaseView() {
+        this.views++;
     }
 }
