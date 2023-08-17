@@ -16,7 +16,7 @@ build
 
 # private info
 src/main/resources/application-*.yml
-src/main/resources/*.sql
+src/main/resources/schema.sql
 
 # AWS User-specific
 .idea/**/aws.xml
