@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Service
@@ -43,30 +42,5 @@ public class CategoryService {
                 .orElseThrow();
 
         categoryRepository.delete(category);
-    }
-
-    /**
-     * 카테고리 초기화
-     */
-    @PostConstruct
-    public void initCategory() {
-        List<Category> categories = categoryRepository.findAll();
-
-        if(!categories.isEmpty())
-            return;
-
-        Category female = Category.builder().title("여성의류").build();
-        Category male = Category.builder().title("남성의류").build();
-        Category shoes = Category.builder().title("가방").build();
-        Category bag = Category.builder().title("가방").build();
-        Category acc = Category.builder().title("악세사리").build();
-        Category tech = Category.builder().title("폰케이스/테크").build();
-
-        categoryRepository.save(female);
-        categoryRepository.save(male);
-        categoryRepository.save(shoes);
-        categoryRepository.save(bag);
-        categoryRepository.save(acc);
-        categoryRepository.save(tech);
     }
 }
