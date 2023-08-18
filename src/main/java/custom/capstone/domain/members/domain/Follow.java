@@ -16,7 +16,6 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Follow extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "follow_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)

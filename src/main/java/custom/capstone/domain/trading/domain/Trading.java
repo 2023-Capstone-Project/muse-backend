@@ -22,7 +22,6 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Trading extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "trading_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)

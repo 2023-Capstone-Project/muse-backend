@@ -32,8 +32,10 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Member extends BaseTimeEntity implements UserDetails {
     @Id @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "member_id")
     private Long id;
+
+    @Column(length = 50, unique = true, nullable = false)
+    private String email;
 
     @Column(length = 150, nullable = false)
     private String password;
@@ -41,11 +43,8 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Column(length = 20, unique = true, nullable = false)
     private String nickname;
 
-    @Column(length = 50, unique = true, nullable = false)
-    private String email;
-
     @Column(length = 20, nullable = false)
-    private String phoneNum;
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     private MemberRole role;
@@ -54,6 +53,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Column(nullable = false)
     private MemberStatus status;
 
+    @Column(name = "profile_img_url")
     private String profileImage;
 
     @OneToMany(mappedBy = "member", cascade = REMOVE)
@@ -86,29 +86,29 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @Builder
     public Member(
-            final String nickname,
-            final String password,
             final String email,
-            final String phoneNum,
+            final String password,
+            final String nickname,
+            final String phoneNumber,
             final MemberRole role,
             final MemberStatus status) {
         this.nickname = nickname;
-        this.password = password;
         this.email = email;
-        this.phoneNum = phoneNum;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
         this.role = role;
         this.status = status;
     }
 
     public void update(
             final String nickname,
-            final String password,
             final String email,
-            final String phoneNum) {
+            final String password,
+            final String phoneNumber) {
         this.nickname = nickname;
         this.password = password;
         this.email = email;
-        this.phoneNum = phoneNum;
+        this.phoneNumber = phoneNumber;
     }
 
     public void encodePassword(PasswordEncoder passwordEncoder){

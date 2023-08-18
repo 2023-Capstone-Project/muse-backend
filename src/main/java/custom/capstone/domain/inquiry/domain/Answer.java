@@ -18,9 +18,9 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Answer extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "answer_id")
     private Long id;
 
+    @Column(name = "admin_role")
     private String admin;
 
     private String content;

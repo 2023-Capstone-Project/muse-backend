@@ -4,7 +4,7 @@ import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.members.domain.MemberRole;
 import custom.capstone.domain.members.domain.MemberStatus;
-import custom.capstone.domain.members.dto.MemberSaveRequestDto;
+import custom.capstone.domain.members.dto.request.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.request.MemberLoginRequestDto;
 import custom.capstone.domain.members.dto.request.MemberUpdateRequestDto;
 import custom.capstone.domain.members.dto.response.MemberResponseDto;
@@ -38,9 +38,9 @@ public class MemberService {
 
         return memberRepository.save(Member.builder()
                 .nickname(requestDto.nickname())
-                .password(passwordEncoder.encode(requestDto.password()))
                 .email(requestDto.email())
-                .phoneNum(requestDto.phoneNum())
+                .password(passwordEncoder.encode(requestDto.password()))
+                .phoneNumber(requestDto.phoneNumber())
                 .role(MemberRole.NORMAL)        //default 값은 일반인으로 설정
                 .status(MemberStatus.ACTIVE)    //default 값은 활동중으로 설정
                 .build()).getId();
@@ -73,7 +73,7 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        member.update(requestDto.nickname(), requestDto.password(), requestDto.email(), requestDto.phoneNum());
+        member.update(requestDto.nickname(), requestDto.password(), requestDto.email(), requestDto.phoneNumber());
 
         return memberId;
     }
