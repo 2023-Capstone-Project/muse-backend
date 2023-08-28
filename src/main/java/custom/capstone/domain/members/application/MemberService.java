@@ -8,6 +8,7 @@ import custom.capstone.domain.members.dto.request.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.request.MemberLoginRequestDto;
 import custom.capstone.domain.members.dto.request.MemberUpdateRequestDto;
 import custom.capstone.domain.members.dto.response.MemberResponseDto;
+import custom.capstone.domain.members.exception.JoinPasswordException;
 import custom.capstone.domain.members.exception.MemberEmailExistException;
 import custom.capstone.domain.members.exception.MemberNicknameExistException;
 import custom.capstone.domain.members.exception.MemberNotFoundException;
@@ -34,7 +35,7 @@ public class MemberService {
     @Transactional
     public Long saveMember(final MemberSaveRequestDto requestDto) {
         validateSingUpRequest(requestDto);
-//        checkPasswordEquals(requestDto);
+        checkPasswordEquals(requestDto);
 
         return memberRepository.save(Member.builder()
                 .nickname(requestDto.nickname())
@@ -133,8 +134,8 @@ public class MemberService {
     /**
      * 비밀번호 확인
      */
-//    private void checkPasswordEquals(final MemberSaveRequestDto requestDto) {
-//        if (!(requestDto.password()==(requestDto.checkPassword())))
-//            throw new JoinPasswordException();
-//    }
+    private void checkPasswordEquals(final MemberSaveRequestDto requestDto) {
+        if (!requestDto.password().equals(requestDto.checkPassword()))
+            throw new JoinPasswordException();
+    }
 }
