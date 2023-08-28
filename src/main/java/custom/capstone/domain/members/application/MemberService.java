@@ -8,10 +8,7 @@ import custom.capstone.domain.members.dto.request.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.request.MemberLoginRequestDto;
 import custom.capstone.domain.members.dto.request.MemberUpdateRequestDto;
 import custom.capstone.domain.members.dto.response.MemberResponseDto;
-import custom.capstone.domain.members.exception.JoinPasswordException;
-import custom.capstone.domain.members.exception.MemberEmailExistException;
-import custom.capstone.domain.members.exception.MemberNicknameExistException;
-import custom.capstone.domain.members.exception.MemberNotFoundException;
+import custom.capstone.domain.members.exception.*;
 import custom.capstone.global.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -54,11 +51,8 @@ public class MemberService {
         Member member = memberRepository.findByEmail(requestDto.email())
                 .orElseThrow(MemberNotFoundException::new);
 
-        // TODO: 비밀번호 확인 구현
-//        if (!requestDto.password())
-
-//        if (!passwordEncoder.matches(requestDto.password(), member.getPassword()))
-//            throw new PasswordException();
+        if (!passwordEncoder.matches(requestDto.password(), member.getPassword()))
+            throw new PasswordException();
 
         List<String> roles = new ArrayList<>();
         roles.add(member.getRole().name());
