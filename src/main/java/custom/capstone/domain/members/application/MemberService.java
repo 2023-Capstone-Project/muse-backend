@@ -4,13 +4,11 @@ import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.members.domain.MemberRole;
 import custom.capstone.domain.members.domain.MemberStatus;
-import custom.capstone.domain.members.dto.MemberSaveRequestDto;
+import custom.capstone.domain.members.dto.request.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.request.MemberLoginRequestDto;
 import custom.capstone.domain.members.dto.request.MemberUpdateRequestDto;
 import custom.capstone.domain.members.dto.response.MemberResponseDto;
-import custom.capstone.domain.members.exception.MemberEmailExistException;
-import custom.capstone.domain.members.exception.MemberNicknameExistException;
-import custom.capstone.domain.members.exception.MemberNotFoundException;
+import custom.capstone.domain.members.exception.*;
 import custom.capstone.global.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,13 +32,13 @@ public class MemberService {
     @Transactional
     public Long saveMember(final MemberSaveRequestDto requestDto) {
         validateSingUpRequest(requestDto);
-//        checkPasswordEquals(requestDto);
+        checkPasswordEquals(requestDto);
 
         return memberRepository.save(Member.builder()
                 .nickname(requestDto.nickname())
-                .password(passwordEncoder.encode(requestDto.password()))
                 .email(requestDto.email())
-                .phoneNum(requestDto.phoneNum())
+                .password(passwordEncoder.encode(requestDto.password()))
+                .phoneNumber(requestDto.phoneNumber())
                 .role(MemberRole.NORMAL)        //default 값은 일반인으로 설정
                 .status(MemberStatus.ACTIVE)    //default 값은 활동중으로 설정
                 .build()).getId();
@@ -53,11 +51,8 @@ public class MemberService {
         Member member = memberRepository.findByEmail(requestDto.email())
                 .orElseThrow(MemberNotFoundException::new);
 
-        // TODO: 비밀번호 확인 구현
-//        if (!requestDto.password())
-
-//        if (!passwordEncoder.matches(requestDto.password(), member.getPassword()))
-//            throw new PasswordException();
+        if (!passwordEncoder.matches(requestDto.password(), member.getPassword()))
+            throw new PasswordException();
 
         List<String> roles = new ArrayList<>();
         roles.add(member.getRole().name());
@@ -73,7 +68,7 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        member.update(requestDto.nickname(), requestDto.password(), requestDto.email(), requestDto.phoneNum());
+        member.update(requestDto.nickname(), requestDto.password(), requestDto.email(), requestDto.phoneNumber());
 
         return memberId;
     }
@@ -133,8 +128,8 @@ public class MemberService {
     /**
      * 비밀번호 확인
      */
-//    private void checkPasswordEquals(final MemberSaveRequestDto requestDto) {
-//        if (!(requestDto.password()==(requestDto.checkPassword())))
-//            throw new JoinPasswordException();
-//    }
+    private void checkPasswordEquals(final MemberSaveRequestDto requestDto) {
+        if (!requestDto.password().equals(requestDto.checkPassword()))
+            throw new JoinPasswordException();
+    }
 }

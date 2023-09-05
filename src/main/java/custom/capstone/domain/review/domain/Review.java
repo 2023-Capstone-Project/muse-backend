@@ -18,16 +18,15 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Review extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "review_id")
     private Long id;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "trading_id")
-    private Trading trading;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "trading_id")
+    private Trading trading;
 
     @Column(length = 500)
     private String content;

@@ -61,7 +61,7 @@ tasks.named('test') {
 task copyPrivate(type: Copy) {
     copy {
         from './MUSE-private'
-        include "*.yml"
+        include "*.yml", "*.sql"
         into 'src/main/resources'
     }
 }

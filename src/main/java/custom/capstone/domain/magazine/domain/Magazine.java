@@ -17,7 +17,6 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Magazine extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "magazine_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)

@@ -2,7 +2,7 @@ package custom.capstone.domain.members.api;
 
 import custom.capstone.domain.members.application.MemberService;
 import custom.capstone.domain.members.domain.Member;
-import custom.capstone.domain.members.dto.MemberSaveRequestDto;
+import custom.capstone.domain.members.dto.request.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.request.MemberLoginRequestDto;
 import custom.capstone.domain.members.dto.request.MemberUpdateRequestDto;
 import io.swagger.v3.oas.annotations.Operation;

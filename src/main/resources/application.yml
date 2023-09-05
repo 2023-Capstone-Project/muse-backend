@@ -1,3 +1,12 @@
+server:
+#  servlet:
+#    context-path: /api
+  port: 8080
+
 spring:
   profiles:
     active: dev
+    include: jwt, mysql
+
+logging.level:
+  org.hibernate.SQL: debug

@@ -15,7 +15,8 @@ build
 .idea/**/shelf
 
 # private info
-src/main/resources/application-dev.yml
+src/main/resources/application-*.yml
+src/main/resources/schema.sql
 
 # AWS User-specific
 .idea/**/aws.xml
@@ -198,4 +199,5 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
-# End of https://www.toptal.com/developers/gitignore/api/intellij,java,windows,gradle
+# docker
+docker/

@@ -16,7 +16,6 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Image {
     @Id @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "img_id")
     private Long id;
 
     private String url;
