@@ -6,6 +6,7 @@ import custom.capstone.domain.posts.dao.PostRepository;
 import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.posts.dto.request.PostSaveRequestDto;
 import custom.capstone.domain.posts.dto.request.PostUpdateRequestDto;
+import custom.capstone.domain.posts.dto.response.PostListResponseDto;
 import custom.capstone.domain.posts.dto.response.PostResponseDto;
 import custom.capstone.domain.posts.dto.response.PostSaveResponseDto;
 import custom.capstone.domain.posts.exception.PostNotFoundException;
@@ -14,6 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -86,5 +90,13 @@ public class PostService {
                 .orElseThrow(PostNotFoundException::new);
 
         postRepository.delete(post);
+    }
+
+    /**
+     * 게시글 통합 검색
+     */
+    @Transactional
+    public Page<Post> searchPosts(final String keyword, final Pageable pageable) {
+        return postRepository.findPostsByTitleContainingOrContentContaining(keyword, pageable);
     }
 }
