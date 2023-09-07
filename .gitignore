@@ -15,6 +15,7 @@ build
 .idea/**/shelf
 
 # private info
+MUSE-private/
 src/main/resources/application-*.yml
 src/main/resources/schema.sql
 

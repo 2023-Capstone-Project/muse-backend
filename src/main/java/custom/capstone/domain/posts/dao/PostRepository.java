@@ -25,4 +25,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             " from Post p" +
             " where p.id = :id")
     Optional<Post> findDetailById(@Param("id") final Long postId);
+
+    /**
+     * 게시글 통합 검색
+     */
+    @Query(value = "select p" +
+            " from Post p" +
+            " where p.title like %:keyword% or p.content like %:keyword%")
+    Page<Post> findPostsByTitleContainingOrContentContaining(final String keyword, final Pageable pageable);
 }
