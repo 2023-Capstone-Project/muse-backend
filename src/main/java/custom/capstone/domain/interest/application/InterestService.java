@@ -4,6 +4,7 @@ import custom.capstone.domain.interest.dao.InterestRepository;
 import custom.capstone.domain.interest.domain.Interest;
 import custom.capstone.domain.interest.dto.request.InterestDeleteRequestDto;
 import custom.capstone.domain.interest.dto.request.InterestSaveRequestDto;
+import custom.capstone.domain.interest.exception.InterestDuplicateException;
 import custom.capstone.domain.interest.exception.InterestNotFoundException;
 import custom.capstone.domain.members.application.MemberService;
 import custom.capstone.domain.members.domain.Member;
@@ -27,9 +28,17 @@ public class InterestService {
     @Transactional
     public Long saveInterest(final InterestSaveRequestDto requestDto) {
         final Member member = memberService.findById(requestDto.memberId());
+
         final Post post = postService.findById(requestDto.postId());
 
-        return interestRepository.save(Interest.save(member, post)).getId();
+        if (interestRepository.existsByMemberAndPost(member, post)) {
+            throw new InterestDuplicateException();
+        }
+
+        final Interest interest = interestRepository.save(Interest.save(member, post));
+        interest.getPost().increaseInterestCount();
+
+        return interest.getId();
     }
 
     /**
@@ -37,19 +46,10 @@ public class InterestService {
      */
     @Transactional
     public void cancelInterest(final InterestDeleteRequestDto requestDto) {
-        final Member member = memberService.findById(requestDto.memberId());
-        final Post post = postService.findById(requestDto.postId());
-
-        final Interest interest = interestRepository.findByMemberAndPost(member, post);
-
-        interestRepository.delete(interest);
-    }
-
-    /**
-     * 좋아요 조회
-     */
-    public Interest findById(final Long interestId) {
-        return interestRepository.findById(interestId)
+        final Interest interest = interestRepository.findById(requestDto.interestId())
                 .orElseThrow(InterestNotFoundException::new);
+
+        interest.getPost().decreaseInterestCount();
+        interestRepository.delete(interest);
     }
 }

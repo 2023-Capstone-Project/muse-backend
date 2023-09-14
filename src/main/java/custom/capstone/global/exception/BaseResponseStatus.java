@@ -17,8 +17,8 @@ public enum BaseResponseStatus {
     // MEMBER
     EMPTY_JWT(false, 2000, "JWT 가 존재하지 않습니다."),
     INVALID_JWT(false, 2001, "유효하지 않은 JWT 입니다."),
-    POST_MEMBER_EXISTS_EMAIL(false, 2002, "이미 존재하는 이메일입니다."),
-    POST_MEMBER_EXISTS_NICKNAME(false, 2003, "이미 존재하는 닉네임입니다."),
+    MEMBER_EXISTS_EMAIL(false, 2002, "이미 존재하는 이메일입니다."),
+    MEMBER_EXISTS_NICKNAME(false, 2003, "이미 존재하는 닉네임입니다."),
     WRONG_PASSWORD(false, 2004, "잘못된 비밀번호입니다."),
     WRONG_JOIN_PASSWORD(false, 2005, "비밀번호 확인이 일치하지 않습니다."),
     FOLLOW_EXISTS_TO(false, 2006, "이미 팔로우 했습니다."),
@@ -40,6 +40,7 @@ public enum BaseResponseStatus {
 
     // INTEREST
     INTEREST_NOT_FOUND(false, 2500, "해당 좋아요 게시글을 찾을 수 없습니다."),
+    INTEREST_EXISTS_STATUS(false, 2501, "이미 좋아요 한 상태입니다."),
 
     // REVIEW
     REVIEW_NOT_FOUND(false, 2600, "해당 후기를 찾을 수 없습니다."),
@@ -64,8 +65,8 @@ public enum BaseResponseStatus {
     SERVER_ERROR(false, 4001, "서버 연결에 실패하였습니다."),
 
     // MEMBER
-    POST_MEMBER_FAILED_JOIN(false, 2009, "회원가입에 실패하였습니다."),
-    POST_MEMBER_FAILED_LOGIN(false, 2010, "로그인에 실패하였습니다.");
+    MEMBER_FAILED_JOIN(false, 2009, "회원가입에 실패하였습니다."),
+    MEMBER_FAILED_LOGIN(false, 2010, "로그인에 실패하였습니다.");
 
 
     private final boolean isSuccess;
