@@ -5,6 +5,6 @@ import custom.capstone.global.exception.BaseResponseStatus;
 
 public class MemberEmailExistException extends BaseException {
     public MemberEmailExistException() {
-        super(BaseResponseStatus.POST_MEMBER_EXISTS_EMAIL);
+        super(BaseResponseStatus.MEMBER_EXISTS_EMAIL);
     }
 }

@@ -47,6 +47,9 @@ public class Post extends BaseTimeEntity {
     @Column(columnDefinition = "integer default 0", nullable = false)
     private int views;
 
+    @Column(name = "interest_cnt", columnDefinition = "integer default 0", nullable = false)
+    private int interestCount;
+
     @OneToMany(mappedBy = "post")
     private final Set<Interest> interests = new HashSet<>();
 
@@ -78,5 +81,15 @@ public class Post extends BaseTimeEntity {
 
     public void increaseView() {
         this.views++;
+    }
+
+    public void increaseInterestCount() {
+        this.interestCount++;
+    }
+
+    public void decreaseInterestCount() {
+        if (this.interestCount > 0) {
+            this.interestCount--;
+        }
     }
 }

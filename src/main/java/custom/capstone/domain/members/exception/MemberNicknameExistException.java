@@ -5,6 +5,6 @@ import custom.capstone.global.exception.BaseResponseStatus;
 
 public class MemberNicknameExistException extends BaseException {
     public MemberNicknameExistException() {
-        super(BaseResponseStatus.POST_MEMBER_EXISTS_NICKNAME);
+        super(BaseResponseStatus.MEMBER_EXISTS_NICKNAME);
     }
 }

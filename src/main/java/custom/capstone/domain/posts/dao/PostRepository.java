@@ -32,5 +32,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = "select p" +
             " from Post p" +
             " where p.title like %:keyword% or p.content like %:keyword%")
-    Page<Post> findPostsByTitleContainingOrContentContaining(final String keyword, final Pageable pageable);
+    Page<Post> findByKeyword(final String keyword, final Pageable pageable);
 }
