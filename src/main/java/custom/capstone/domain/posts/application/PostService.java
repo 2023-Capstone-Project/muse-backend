@@ -36,7 +36,6 @@ public class PostService {
                 .type(requestDto.type())
                 .build();
 
-
         postRepository.save(post);
 
         return new PostSaveResponseDto(post.getId());
@@ -71,10 +70,13 @@ public class PostService {
      * 게시글 상세 조회
      */
     public PostResponseDto findDetailById(final Long postId) {
-        final Post entity = postRepository.findDetailById(postId)
+        final Post post = postRepository.findDetailById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        return new PostResponseDto(entity);
+        post.increaseView();
+        postRepository.save(post);
+
+        return new PostResponseDto(post);
     }
 
     /**
