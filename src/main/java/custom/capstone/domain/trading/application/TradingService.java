@@ -2,16 +2,19 @@ package custom.capstone.domain.trading.application;
 
 import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
+import custom.capstone.domain.members.exception.MemberNotFoundException;
 import custom.capstone.domain.posts.dao.PostRepository;
 import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.posts.exception.PostNotFoundException;
 import custom.capstone.domain.trading.dao.TradingRepository;
 import custom.capstone.domain.trading.domain.Trading;
-import custom.capstone.domain.trading.domain.TradingStatus;
 import custom.capstone.domain.trading.dto.request.TradingSaveRequestDto;
 import custom.capstone.domain.trading.dto.request.TradingUpdateRequestDto;
+import custom.capstone.domain.trading.dto.response.TradingResponseDto;
 import custom.capstone.domain.trading.exception.TradingNotFoundException;
+import custom.capstone.global.exception.InvalidAccessException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
@@ -28,36 +31,52 @@ public class TradingService {
      */
     @Transactional
     public Long saveTrading(final TradingSaveRequestDto requestDto) {
-        Post post = postRepository.findById(requestDto.postId())
+        final Post post = postRepository.findById(requestDto.postId())
                 .orElseThrow(PostNotFoundException::new);
 
-        Member buyer = memberRepository.findById(requestDto.buyerId())
+        final Member buyer = memberRepository.findById(requestDto.buyerId())
                 .orElseThrow(() -> new NotFoundException("구매자를 찾을 수 없습니다."));
 
-        Member seller = memberRepository.findById(requestDto.sellerId())
+        final Member seller = memberRepository.findById(requestDto.sellerId())
                 .orElseThrow(() -> new NotFoundException("판매자를 찾을 수 없습니다."));
 
+        // 게시글 작성자 = 판매자 즉, 판매자가 아닐 시 예외 발생
+        if (!post.getMember().getId().equals(seller.getId())) {
+            throw new InvalidAccessException();
+        }
 
-        Trading trading = Trading.builder()
+        final Trading trading = Trading.builder()
                 .post(post)
                 .buyer(buyer)
                 .seller(seller)
                 .build();
 
-        return tradingRepository.save(trading).getId();
+        tradingRepository.save(trading);
+
+        return trading.getId();
     }
 
     /**
      * 거래 수정
      */
     @Transactional
-    public Long updateTrading(final Long tradingId, final TradingUpdateRequestDto requestDto) {
-        Trading trading = tradingRepository.findById(tradingId)
+    public TradingResponseDto updateTrading(final Long tradingId, final TradingUpdateRequestDto requestDto) {
+        final Trading trading = tradingRepository.findById(tradingId)
                 .orElseThrow(TradingNotFoundException::new);
 
-        trading.update(requestDto.post(), requestDto.buyer(), requestDto.buyer(), requestDto.status());
+        final Post post = postRepository.findById(requestDto.postId())
+                .orElseThrow(PostNotFoundException::new);
 
-        return tradingId;
+        final Member seller = getValidMember();
+
+        // 게시글 작성자 = 판매자 즉, 판매자가 아닐 시 예외 발생
+        if (!post.getMember().getId().equals(seller.getId())) {
+            throw new InvalidAccessException();
+        }
+
+        trading.update(requestDto.status());
+
+        return new TradingResponseDto(seller.getNickname(), requestDto.status());
     }
 
     /**
@@ -73,22 +92,20 @@ public class TradingService {
      */
     @Transactional
     public void deleteTrading(final Long tradingId) {
-        Trading trading = tradingRepository.findById(tradingId)
+        final Trading trading = tradingRepository.findById(tradingId)
                 .orElseThrow(TradingNotFoundException::new);
+
+        getValidMember();
 
         tradingRepository.delete(trading);
     }
 
     /**
-     * 거래 상태 변경
+     * 판매자 확인
      */
-    @Transactional
-    public Trading changeTradingStatus(final Long tradingId, final TradingStatus status) {
-        Trading trading = tradingRepository.findById(tradingId)
-                .orElseThrow(TradingNotFoundException::new);
-
-        tradingRepository.save(trading);
-
-        return trading;
+    private Member getValidMember() {
+        final String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
     }
 }

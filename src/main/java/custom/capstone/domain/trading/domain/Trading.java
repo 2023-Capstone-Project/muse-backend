@@ -26,11 +26,11 @@ public class Trading extends BaseTimeEntity {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "buyer_id")
-    private Member buyer;
+    private Member buyer;           // 구매자
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "seller_id")
-    private Member seller;
+    private Member seller;          // 판매자 = 작성자
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "post_id")
@@ -51,27 +51,17 @@ public class Trading extends BaseTimeEntity {
         this.status = TradingStatus.PENDING;
     }
 
-    public void update(
-            final Post post,
-            final Member buyer,
-            final Member seller,
-            final TradingStatus status) {
-        this.post = post;
-        this.buyer = buyer;
-        this.seller = seller;
-        this.setTradingStatus(status);
-    }
-
-    private void setTradingStatus(final TradingStatus status) {
+    public void update(final TradingStatus status) {
         this.status = status;
+        setPostStatus(status);
     }
 
-    public Post setPostStatus() {
-        if (status.equals(TradingStatus.PENDING)) { post.setStatus(PostStatus.SALE); }
-        if (status.equals(TradingStatus.APPROVE)) { post.setStatus(PostStatus.SOLD); }
-        if (status.equals(TradingStatus.RESERVE)) { post.setStatus(PostStatus.RESERVED); }
-        if (status.equals(TradingStatus.CANCEL)) { post.setStatus(PostStatus.SALE); }
-
-        return post;
+    private void setPostStatus(final TradingStatus status) {
+        switch (status) {
+            case PENDING, CANCEL -> post.setStatus(PostStatus.SALE);
+            case APPROVE -> post.setStatus(PostStatus.SOLD);
+            case RESERVE -> post.setStatus(PostStatus.RESERVED);
+            default -> throw new IllegalArgumentException("Invalid TradingStatus");
+        }
     }
 }

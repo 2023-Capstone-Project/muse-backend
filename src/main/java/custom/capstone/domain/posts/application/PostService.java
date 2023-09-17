@@ -49,7 +49,7 @@ public class PostService {
         final Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        post.update(requestDto.title(), requestDto.content(), requestDto.price(), requestDto.type());
+        post.update(requestDto.title(), requestDto.content(), requestDto.price(), requestDto.status());
 
         return postId;
     }

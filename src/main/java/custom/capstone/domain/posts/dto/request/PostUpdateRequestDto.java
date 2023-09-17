@@ -1,6 +1,6 @@
 package custom.capstone.domain.posts.dto.request;
 
-import custom.capstone.domain.posts.domain.PostType;
+import custom.capstone.domain.posts.domain.PostStatus;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
@@ -15,7 +15,7 @@ public record PostUpdateRequestDto (
         @NotBlank(message = "가격을 입력해 주세요.")
         int price,
 
-        @NotBlank(message = "게시글 타입을 선택해 주세요.")
-        PostType type
+        @NotBlank(message = "게시글 상태를 선택해 주세요.")
+        PostStatus status
 ) {
 }

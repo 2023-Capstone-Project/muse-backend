@@ -6,6 +6,7 @@ import custom.capstone.domain.members.application.MemberMyPageService;
 import custom.capstone.domain.members.dto.MemberProfileDto;
 import custom.capstone.domain.posts.dto.response.PostListResponseDto;
 import custom.capstone.domain.review.dto.response.ReviewListResponseDto;
+import custom.capstone.domain.trading.dto.response.TradingListResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -39,14 +40,13 @@ public class MemberMyPageApiController {
                 .map(ReviewListResponseDto::new);
     }
 
-    // TODO: 수정 필요
-//    @Operation(summary = "자신이 거래한 시안 목록 페이징 조회")
-//    @GetMapping("/{memberId}/mypage/trading")
-//    public Page<TradingListResponseDto> productsByMember(@PathVariable("memberId") final Long id,
-//                                                         final Pageable pageable) {
-//        return memberMyPageService.findTradingByMemberId(id, pageable)
-//                .map(TradingListResponseDto::new);
-//    }
+    @Operation(summary = "자신이 거래한 시안 목록 페이징 조회")
+    @GetMapping("/{memberId}/mypage/trading")
+    public Page<TradingListResponseDto> productsByMember(@PathVariable("memberId") final Long id,
+                                                         final Pageable pageable) {
+        return memberMyPageService.findTradingByMemberId(id, pageable)
+                .map(TradingListResponseDto::new);
+    }
 
     @Operation(summary = "자신이 좋아요한 시안 목록 페이징 조회")
     @GetMapping("/{memberId}/mypage/interest")

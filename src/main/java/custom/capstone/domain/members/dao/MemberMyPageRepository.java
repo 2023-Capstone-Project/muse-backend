@@ -34,16 +34,15 @@ public interface MemberMyPageRepository extends JpaRepository<Member, Long> {
             , countQuery = "select count(r) from Review r")
     Page<Review> findReviewsByMemberId(@Param("id") final Long memberId, final Pageable pageable);
 
-    // TODO: 수정 필요
     /**
      * 자신이 거래한 시안 목록 페이징 조회
      */
-//    @Query(value = "select t" +
-//            " from Trading t" +
-//            " join fetch t.member m" +
-//            " where m.id = :id"
-//            , countQuery = "select count(t) from Trading t")
-//    Page<Trading> findTradingByMemberId(@Param("id") final Long memberId, final Pageable pageable);
+    @Query(value = "select t" +
+            " from Trading t" +
+            " join fetch t.buyer m" +
+            " where m.id = :id"
+            , countQuery = "select count(t) from Trading t")
+    Page<Trading> findTradingByMemberId(@Param("id") final Long memberId, final Pageable pageable);
 
     /**
      * 자신이 좋아요한 시안 목록 페이징 조회
