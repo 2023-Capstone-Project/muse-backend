@@ -4,6 +4,7 @@ import custom.capstone.domain.trading.application.TradingService;
 import custom.capstone.domain.trading.domain.Trading;
 import custom.capstone.domain.trading.dto.request.TradingSaveRequestDto;
 import custom.capstone.domain.trading.dto.request.TradingUpdateRequestDto;
+import custom.capstone.domain.trading.dto.response.TradingResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +25,8 @@ public class TradingApiController {
 
     @Operation(summary = "거래 수정")
     @PatchMapping("/{tradingId}")
-    public Long updateTrading(@PathVariable("tradingId") final Long id,
-                              @RequestBody final TradingUpdateRequestDto requestDto) {
+    public TradingResponseDto updateTrading(@PathVariable("tradingId") final Long id,
+                                            @RequestBody final TradingUpdateRequestDto requestDto) {
         return tradingService.updateTrading(id, requestDto);
     }
 
@@ -41,11 +42,4 @@ public class TradingApiController {
         tradingService.deleteTrading(id);
         return id;
     }
-
-//    @Operation(summary = "거래 상태 변경")
-//    @PatchMapping("/{tradingId}")
-//    public Trading changeTradingStatus(@PathVariable("tradingId") final Long id,
-//                                       @RequestBody final TradingStatus status) {
-//        return tradingService.changeTradingStatus(id, status);
-//    }
 }

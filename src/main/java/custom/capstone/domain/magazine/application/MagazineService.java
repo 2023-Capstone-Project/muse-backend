@@ -66,7 +66,7 @@ public class MagazineService {
                 .orElseThrow(MagazineNotFoundException::new);
     }
 
-    /*
+    /**
      * 매거진 상세 조회
      */
     @Transactional

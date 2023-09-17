@@ -23,6 +23,7 @@ public enum BaseResponseStatus {
     WRONG_JOIN_PASSWORD(false, 2005, "비밀번호 확인이 일치하지 않습니다."),
     FOLLOW_EXISTS_TO(false, 2006, "이미 팔로우 했습니다."),
     MEMBER_NOT_FOUND(false, 2007, "해당 사용자를 찾을 수 없습니다."),
+    INVALID_ACCESS(false, 2008, "접근 권한이 없습니다."),
 
     // POST
     POST_NOT_FOUND(false, 2100, "해당 게시글을 찾을 수 없습니다."),

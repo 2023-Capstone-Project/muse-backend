@@ -32,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .authorizeRequests()
                 .antMatchers("/api-docs", "/swagger*/**").permitAll()
-                .antMatchers("/api/members/**", "/api/posts/**", "/api/notice/**", "/api/magazine/**").permitAll()
+                .antMatchers("/api/members/**", "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/interests/**", "/api/trades/**").permitAll()
                 .antMatchers("/api/members/join").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/members/login").anonymous()
                 .antMatchers("/api/members").hasAnyRole("NORMAL", "DESIGNER")
