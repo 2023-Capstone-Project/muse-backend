@@ -3,6 +3,9 @@ package custom.capstone.domain.interest.api;
 import custom.capstone.domain.interest.application.InterestService;
 import custom.capstone.domain.interest.dto.request.InterestDeleteRequestDto;
 import custom.capstone.domain.interest.dto.request.InterestSaveRequestDto;
+import custom.capstone.domain.interest.dto.response.InterestSaveResponseDto;
+import custom.capstone.global.common.BaseResponse;
+import custom.capstone.global.exception.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +22,13 @@ public class InterestApiController {
 
     @Operation(summary = "좋아요 생성")
     @PostMapping
-    public Long saveInterest(@RequestBody @Valid final InterestSaveRequestDto requestDto) {
-        return interestService.saveInterest(requestDto);
+    public BaseResponse<InterestSaveResponseDto> saveInterest(@RequestBody @Valid final InterestSaveRequestDto requestDto) {
+        final InterestSaveResponseDto result = interestService.saveInterest(requestDto);
+
+        return BaseResponse.of(
+                BaseResponseStatus.INTEREST_SAVE_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "좋아요 취소")

@@ -5,6 +5,7 @@ import custom.capstone.domain.inquiry.domain.Inquiry;
 import custom.capstone.domain.inquiry.dto.request.InquirySaveRequestDto;
 import custom.capstone.domain.inquiry.dto.request.InquiryUpdateRequestDto;
 import custom.capstone.domain.inquiry.dto.response.InquirySaveResponseDto;
+import custom.capstone.domain.inquiry.dto.response.InquiryUpdateResponseDto;
 import custom.capstone.domain.inquiry.exception.InquiryNotFoundException;
 import custom.capstone.domain.inquiry.exception.InvalidInquiryException;
 import custom.capstone.domain.members.dao.MemberRepository;
@@ -45,12 +46,12 @@ public class InquiryService {
      * 문의 수정
      */
     @Transactional
-    public Long updateInquiry(final Long inquiryId, final InquiryUpdateRequestDto requestDto) {
+    public InquiryUpdateResponseDto updateInquiry(final Long inquiryId, final InquiryUpdateRequestDto requestDto) {
         final Inquiry inquiry = getValidInquiryMember(inquiryId);
 
         inquiry.update(requestDto.title(), requestDto.content());
 
-        return inquiryId;
+        return new InquiryUpdateResponseDto(inquiryId);
     }
 
     /**

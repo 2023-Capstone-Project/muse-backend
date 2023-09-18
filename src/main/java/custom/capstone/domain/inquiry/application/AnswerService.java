@@ -7,6 +7,7 @@ import custom.capstone.domain.inquiry.domain.Inquiry;
 import custom.capstone.domain.inquiry.dto.request.AnswerSaveRequestDto;
 import custom.capstone.domain.inquiry.dto.request.AnswerUpdateRequestDto;
 import custom.capstone.domain.inquiry.dto.response.AnswerSaveResponseDto;
+import custom.capstone.domain.inquiry.dto.response.AnswerUpdateResponseDto;
 import custom.capstone.domain.inquiry.exception.AnswerNotFoundException;
 import custom.capstone.domain.inquiry.exception.InquiryNotFoundException;
 import custom.capstone.domain.members.dao.MemberRepository;
@@ -51,7 +52,7 @@ public class AnswerService {
      * 답변 수정
      */
     @Transactional
-    public Long updateAnswer(final Long inquiryId, final Long answerId, final AnswerUpdateRequestDto requestDto) {
+    public AnswerUpdateResponseDto updateAnswer(final Long inquiryId, final Long answerId, final AnswerUpdateRequestDto requestDto) {
         getValidMember();
 
         final Inquiry inquiry = inquiryRepository.findById(inquiryId)
@@ -62,7 +63,7 @@ public class AnswerService {
 
         answer.update(requestDto.content());
 
-        return answerId;
+        return new AnswerUpdateResponseDto(answerId);
     }
 
     /**

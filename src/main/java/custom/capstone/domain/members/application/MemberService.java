@@ -7,7 +7,9 @@ import custom.capstone.domain.members.domain.MemberStatus;
 import custom.capstone.domain.members.dto.request.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.request.MemberLoginRequestDto;
 import custom.capstone.domain.members.dto.request.MemberUpdateRequestDto;
+import custom.capstone.domain.members.dto.response.MemberLoginResponseDto;
 import custom.capstone.domain.members.dto.response.MemberResponseDto;
+import custom.capstone.domain.members.dto.response.MemberUpdateResponseDto;
 import custom.capstone.domain.members.exception.*;
 import custom.capstone.global.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -30,47 +32,51 @@ public class MemberService {
      * 회원 가입
      */
     @Transactional
-    public Long saveMember(final MemberSaveRequestDto requestDto) {
+    public MemberResponseDto saveMember(final MemberSaveRequestDto requestDto) {
         validateSingUpRequest(requestDto);
         checkPasswordEquals(requestDto);
 
-        return memberRepository.save(Member.builder()
+        final Member member = memberRepository.save(Member.builder()
                 .nickname(requestDto.nickname())
                 .email(requestDto.email())
                 .password(passwordEncoder.encode(requestDto.password()))
                 .phoneNumber(requestDto.phoneNumber())
                 .role(MemberRole.NORMAL)        //default 값은 일반인으로 설정
                 .status(MemberStatus.ACTIVE)    //default 값은 활동중으로 설정
-                .build()).getId();
+                .build());
+
+        return new MemberResponseDto(member);
     }
 
     /**
      * 로그인
      */
-    public String login(final MemberLoginRequestDto requestDto) {
-        Member member = memberRepository.findByEmail(requestDto.email())
+    public MemberLoginResponseDto login(final MemberLoginRequestDto requestDto) {
+        final Member member = memberRepository.findByEmail(requestDto.email())
                 .orElseThrow(MemberNotFoundException::new);
 
         if (!passwordEncoder.matches(requestDto.password(), member.getPassword()))
             throw new PasswordException();
 
-        List<String> roles = new ArrayList<>();
+        final List<String> roles = new ArrayList<>();
         roles.add(member.getRole().name());
 
-        return jwtTokenProvider.createToken(requestDto.email(), roles);
+        final String token = jwtTokenProvider.createToken(requestDto.email(), roles);
+
+        return new MemberLoginResponseDto(member.getId(), token);
     }
 
     /**
      * 회원 정보 수정
      */
     @Transactional
-    public Long updateMember(final Long memberId, final MemberUpdateRequestDto requestDto) {
-        Member member = memberRepository.findById(memberId)
+    public MemberUpdateResponseDto updateMember(final Long memberId, final MemberUpdateRequestDto requestDto) {
+        final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
         member.update(requestDto.nickname(), requestDto.password(), requestDto.email(), requestDto.phoneNumber());
 
-        return memberId;
+        return new MemberUpdateResponseDto(member.getId());
     }
 
     /**
@@ -78,7 +84,7 @@ public class MemberService {
      */
     @Transactional
     public void deleteMember(final Long memberId) {
-        Optional<Member> member = memberRepository.findById(memberId);
+        final Optional<Member> member = memberRepository.findById(memberId);
         member.ifPresent(memberRepository::delete);
     }
 
@@ -96,7 +102,7 @@ public class MemberService {
     }
 
     public MemberResponseDto findDetailById(final Long memberId) {
-        Member entity = memberRepository.findById(memberId)
+        final Member entity = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
         return new MemberResponseDto(entity);

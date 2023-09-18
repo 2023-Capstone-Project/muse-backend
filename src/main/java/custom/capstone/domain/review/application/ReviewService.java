@@ -5,6 +5,7 @@ import custom.capstone.domain.review.domain.Review;
 import custom.capstone.domain.review.dto.request.ReviewSaveRequestDto;
 import custom.capstone.domain.review.dto.request.ReviewUpdateRequestDto;
 import custom.capstone.domain.review.dto.response.ReviewSaveResponseDto;
+import custom.capstone.domain.review.dto.response.ReviewUpdateResponseDto;
 import custom.capstone.domain.review.exception.ReviewNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,6 @@ public class ReviewService {
                 .content(requestDto.content())
                 .build();
 
-
         reviewRepository.save(review);
 
         return new ReviewSaveResponseDto(review.getId());
@@ -36,13 +36,13 @@ public class ReviewService {
      * 후기 수정
      */
     @Transactional
-    public Long updateReview(final Long reviewId, final ReviewUpdateRequestDto requestDto) {
+    public ReviewUpdateResponseDto updateReview(final Long reviewId, final ReviewUpdateRequestDto requestDto) {
         final Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(ReviewNotFoundException::new);
 
         review.update(requestDto.content());
 
-        return reviewId;
+        return new ReviewUpdateResponseDto(reviewId);
     }
 
     /**

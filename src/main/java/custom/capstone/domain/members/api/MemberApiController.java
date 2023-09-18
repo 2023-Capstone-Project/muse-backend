@@ -2,9 +2,14 @@ package custom.capstone.domain.members.api;
 
 import custom.capstone.domain.members.application.MemberService;
 import custom.capstone.domain.members.domain.Member;
-import custom.capstone.domain.members.dto.request.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.request.MemberLoginRequestDto;
+import custom.capstone.domain.members.dto.request.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.request.MemberUpdateRequestDto;
+import custom.capstone.domain.members.dto.response.MemberLoginResponseDto;
+import custom.capstone.domain.members.dto.response.MemberResponseDto;
+import custom.capstone.domain.members.dto.response.MemberUpdateResponseDto;
+import custom.capstone.global.common.BaseResponse;
+import custom.capstone.global.exception.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +30,24 @@ public class MemberApiController {
 
     @Operation(summary = "회원 가입")
     @PostMapping("/join")
-    public Long join(@Valid @RequestBody final MemberSaveRequestDto requestDto) {
-        return memberService.saveMember(requestDto);
+    public BaseResponse<MemberResponseDto> join(@Valid @RequestBody final MemberSaveRequestDto requestDto) {
+        final MemberResponseDto result = memberService.saveMember(requestDto);
+
+        return BaseResponse.of(
+                BaseResponseStatus.JOIN_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
-    public String login(@RequestBody final MemberLoginRequestDto requestDto) {
-        return memberService.login(requestDto);
+    public BaseResponse<MemberLoginResponseDto> login(@RequestBody final MemberLoginRequestDto requestDto) {
+        final MemberLoginResponseDto result = memberService.login(requestDto);
+
+        return BaseResponse.of(
+                BaseResponseStatus.LOGIN_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "로그아웃")
@@ -44,9 +59,14 @@ public class MemberApiController {
 
     @Operation(summary = "회원 정보 수정")
     @PatchMapping("/{memberId}")
-    public Long updateMember(@PathVariable("memberId") final Long id,
-                             @RequestBody final MemberUpdateRequestDto requestDto) {
-        return memberService.updateMember(id, requestDto);
+    public BaseResponse<MemberUpdateResponseDto> updateMember(@PathVariable("memberId") final Long id,
+                                                              @RequestBody final MemberUpdateRequestDto requestDto) {
+        final MemberUpdateResponseDto result = memberService.updateMember(id, requestDto);
+
+        return BaseResponse.of(
+                BaseResponseStatus.MEMBER_UPDATE_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "회원 조회")

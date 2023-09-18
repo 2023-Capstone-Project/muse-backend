@@ -11,6 +11,7 @@ import custom.capstone.domain.trading.domain.Trading;
 import custom.capstone.domain.trading.dto.request.TradingSaveRequestDto;
 import custom.capstone.domain.trading.dto.request.TradingUpdateRequestDto;
 import custom.capstone.domain.trading.dto.response.TradingResponseDto;
+import custom.capstone.domain.trading.dto.response.TradingSaveResponseDto;
 import custom.capstone.domain.trading.exception.TradingNotFoundException;
 import custom.capstone.global.exception.InvalidAccessException;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class TradingService {
      * 거래 생성
      */
     @Transactional
-    public Long saveTrading(final TradingSaveRequestDto requestDto) {
+    public TradingSaveResponseDto saveTrading(final TradingSaveRequestDto requestDto) {
         final Post post = postRepository.findById(requestDto.postId())
                 .orElseThrow(PostNotFoundException::new);
 
@@ -53,7 +54,7 @@ public class TradingService {
 
         tradingRepository.save(trading);
 
-        return trading.getId();
+        return new TradingSaveResponseDto(trading.getId());
     }
 
     /**

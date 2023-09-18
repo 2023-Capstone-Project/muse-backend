@@ -6,6 +6,8 @@ import custom.capstone.domain.posts.dto.request.PostUpdateRequestDto;
 import custom.capstone.domain.posts.dto.response.PostListResponseDto;
 import custom.capstone.domain.posts.dto.response.PostResponseDto;
 import custom.capstone.domain.posts.dto.response.PostSaveResponseDto;
+import custom.capstone.global.common.BaseResponse;
+import custom.capstone.global.exception.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +26,25 @@ public class PostApiController {
 
     @Operation(summary = "게시글 등록")
     @PostMapping
-    public PostSaveResponseDto savePost(@RequestBody final PostSaveRequestDto requestDto) {
-        return postService.savePost(requestDto);
+    public BaseResponse<PostSaveResponseDto> savePost(@RequestBody final PostSaveRequestDto requestDto) {
+        final PostSaveResponseDto result = postService.savePost(requestDto);
+
+        return BaseResponse.of(
+                BaseResponseStatus.POST_SAVE_SUCCESS,
+                result
+        );
     };
 
     @Operation(summary = "게시글 수정")
     @PatchMapping("/{postId}")
-    public Long updatePost(@PathVariable("postId") final Long id,
+    public BaseResponse<PostResponseDto> updatePost(@PathVariable("postId") final Long id,
                            @RequestBody final PostUpdateRequestDto requestDto) {
-        return postService.updatePost(id, requestDto);
+        final PostResponseDto result = postService.updatePost(id, requestDto);
+
+        return BaseResponse.of(
+                BaseResponseStatus.POST_UPDATE_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "게시글 페이징 조회")
@@ -44,8 +56,13 @@ public class PostApiController {
 
     @Operation(summary = "게시글 상세 조회")
     @GetMapping("/{postId}")
-    public PostResponseDto findDetailById(@PathVariable("postId") final Long id) {
-        return postService.findDetailById(id);
+    public BaseResponse<PostResponseDto> findDetailById(@PathVariable("postId") final Long id) {
+        final PostResponseDto result = postService.findDetailById(id);
+
+        return BaseResponse.of(
+                BaseResponseStatus.POST_READ_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "게시글 삭제")

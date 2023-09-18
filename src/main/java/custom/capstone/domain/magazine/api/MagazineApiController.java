@@ -6,6 +6,9 @@ import custom.capstone.domain.magazine.dto.response.MagazineResponseDto;
 import custom.capstone.domain.magazine.dto.request.MagazineSaveRequestDto;
 import custom.capstone.domain.magazine.dto.request.MagazineUpdateRequestDto;
 import custom.capstone.domain.magazine.dto.response.MagazineSaveResponseDto;
+import custom.capstone.domain.magazine.dto.response.MagazineUpdateResponseDto;
+import custom.capstone.global.common.BaseResponse;
+import custom.capstone.global.exception.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +27,25 @@ public class MagazineApiController {
 
     @Operation(summary = "매거진 등록")
     @PostMapping
-    public MagazineSaveResponseDto saveMagazine(@Valid @RequestBody final MagazineSaveRequestDto requestDto) {
-        return magazineService.saveMagazine(requestDto);
+    public BaseResponse<MagazineSaveResponseDto> saveMagazine(@Valid @RequestBody final MagazineSaveRequestDto requestDto) {
+        final MagazineSaveResponseDto result = magazineService.saveMagazine(requestDto);
+
+        return BaseResponse.of(
+                BaseResponseStatus.MAGAZINE_SAVE_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "매거진 수정")
     @PatchMapping("/{magazineId}")
-    public Long updateMagazine(@PathVariable("magazineId") final Long id,
-                               @RequestBody final MagazineUpdateRequestDto requestDto) {
-        return magazineService.updateMagazine(id, requestDto);
+    public BaseResponse<MagazineUpdateResponseDto> updateMagazine(@PathVariable("magazineId") final Long id,
+                                                                  @RequestBody final MagazineUpdateRequestDto requestDto) {
+        final MagazineUpdateResponseDto result = magazineService.updateMagazine(id, requestDto);
+
+        return BaseResponse.of(
+                BaseResponseStatus.MAGAZINE_UPDATE_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "매거진 삭제")
@@ -50,7 +63,12 @@ public class MagazineApiController {
 
     @Operation(summary = "매거진 상세 조회")
     @GetMapping("/{magazineId}")
-    public MagazineResponseDto findDetailById(@PathVariable("magazineId") final Long id) {
-        return magazineService.findDetailById(id);
+    public BaseResponse<MagazineResponseDto> findDetailById(@PathVariable("magazineId") final Long id) {
+        final MagazineResponseDto result = magazineService.findDetailById(id);
+
+        return BaseResponse.of(
+                BaseResponseStatus.MAGAZINE_READ_SUCCESS,
+                result
+        );
     }
 }

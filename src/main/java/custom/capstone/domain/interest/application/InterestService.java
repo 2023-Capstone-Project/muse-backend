@@ -4,6 +4,7 @@ import custom.capstone.domain.interest.dao.InterestRepository;
 import custom.capstone.domain.interest.domain.Interest;
 import custom.capstone.domain.interest.dto.request.InterestDeleteRequestDto;
 import custom.capstone.domain.interest.dto.request.InterestSaveRequestDto;
+import custom.capstone.domain.interest.dto.response.InterestSaveResponseDto;
 import custom.capstone.domain.interest.exception.InterestDuplicateException;
 import custom.capstone.domain.interest.exception.InterestNotFoundException;
 import custom.capstone.domain.members.application.MemberService;
@@ -26,7 +27,7 @@ public class InterestService {
      * 좋아요 생성
      */
     @Transactional
-    public Long saveInterest(final InterestSaveRequestDto requestDto) {
+    public InterestSaveResponseDto saveInterest(final InterestSaveRequestDto requestDto) {
         final Member member = memberService.findById(requestDto.memberId());
 
         final Post post = postService.findById(requestDto.postId());
@@ -38,7 +39,7 @@ public class InterestService {
         final Interest interest = interestRepository.save(Interest.save(member, post));
         interest.getPost().increaseInterestCount();
 
-        return interest.getId();
+        return new InterestSaveResponseDto(interest.getId());
     }
 
     /**
