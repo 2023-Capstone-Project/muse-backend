@@ -9,6 +9,7 @@ import custom.capstone.domain.notice.dto.request.NoticeUpdateRequestDto;
 import custom.capstone.domain.notice.dto.response.NoticeListResponseDto;
 import custom.capstone.domain.notice.dto.response.NoticeResponseDto;
 import custom.capstone.domain.notice.dto.response.NoticeSaveResponseDto;
+import custom.capstone.domain.notice.dto.response.NoticeUpdateResponseDto;
 import custom.capstone.domain.notice.exception.NoticeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -44,13 +45,13 @@ public class NoticeService {
      * 공지사항 수정
      */
     @Transactional
-    public Long updateNotice(final Long noticeId, final NoticeUpdateRequestDto requestDto) {
+    public NoticeUpdateResponseDto updateNotice(final Long noticeId, final NoticeUpdateRequestDto requestDto) {
         final Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(NoticeNotFoundException::new);
 
         notice.update(requestDto.title(), requestDto.content());
 
-        return noticeId;
+        return new NoticeUpdateResponseDto(noticeId);
     }
 
     /**
@@ -71,10 +72,10 @@ public class NoticeService {
      * 공지사항 상세 조회
      */
     public NoticeResponseDto findDetailById(final Long noticeId) {
-        final Notice entity = noticeRepository.findDetailById(noticeId)
+        final Notice notice = noticeRepository.findDetailById(noticeId)
                 .orElseThrow(NoticeNotFoundException::new);
 
-        return new NoticeResponseDto(entity);
+        return new NoticeResponseDto(notice);
     }
 
     /**

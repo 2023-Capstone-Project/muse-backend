@@ -15,6 +15,44 @@ public enum BaseResponseStatus {
     LOGIN_SUCCESS(HttpStatus.OK, 1001, "성공적으로 로그인 되었습니다."),
     MEMBER_UPDATE_SUCCESS(HttpStatus.OK, 1002, "성공적으로 회원 정보가 수정되었습니다."),
 
+    // POST
+    POST_SAVE_SUCCESS(HttpStatus.CREATED, 1100, "게시글을 성공적으로 등록했습니다."),
+    POST_UPDATE_SUCCESS(HttpStatus.OK, 1101, "성공적으로 게시글 정보가 수정되었습니다."),
+    POST_READ_SUCCESS(HttpStatus.OK, 1102, "성공적으로 게시글 정보가 조회되었습니다."),
+
+    // MAGAZINE
+    MAGAZINE_SAVE_SUCCESS(HttpStatus.CREATED, 1200, "게시글을 성공적으로 등록했습니다."),
+    MAGAZINE_UPDATE_SUCCESS(HttpStatus.OK, 1201, "성공적으로 게시글 정보가 수정되었습니다."),
+    MAGAZINE_READ_SUCCESS(HttpStatus.OK, 1202, "성공적으로 게시글 정보가 조회되었습니다."),
+
+    // NOTICE
+    NOTICE_SAVE_SUCCESS(HttpStatus.CREATED, 1300, "게시글을 성공적으로 등록했습니다."),
+    NOTICE_UPDATE_SUCCESS(HttpStatus.OK, 1301, "성공적으로 게시글 정보가 수정되었습니다."),
+    NOTICE_READ_SUCCESS(HttpStatus.OK, 1302, "성공적으로 게시글 정보가 조회되었습니다."),
+
+    // INQUIRY & ANSWER
+    INQUIRY_SAVE_SUCCESS(HttpStatus.CREATED, 1400, "게시글을 성공적으로 등록했습니다."),
+    INQUIRY_UPDATE_SUCCESS(HttpStatus.OK, 1401, "성공적으로 게시글 정보가 수정되었습니다."),
+    INQUIRY_READ_SUCCESS(HttpStatus.OK, 1402, "성공적으로 게시글 정보가 조회되었습니다."),
+
+    ANSWER_SAVE_SUCCESS(HttpStatus.CREATED, 1500, "게시글을 성공적으로 등록했습니다."),
+    ANSWER_UPDATE_SUCCESS(HttpStatus.OK, 1501, "성공적으로 게시글 정보가 수정되었습니다."),
+    ANSWER_READ_SUCCESS(HttpStatus.OK, 1502, "성공적으로 게시글 정보가 조회되었습니다."),
+
+    // INTEREST
+    INTEREST_SAVE_SUCCESS(HttpStatus.CREATED, 1600, "게시글을 성공적으로 등록했습니다."),
+    INTEREST_READ_SUCCESS(HttpStatus.OK, 1601, "성공적으로 게시글 정보가 조회되었습니다."),
+
+    // REVIEW
+    REVIEW_SAVE_SUCCESS(HttpStatus.CREATED, 1700, "게시글을 성공적으로 등록했습니다."),
+    REVIEW_UPDATE_SUCCESS(HttpStatus.OK, 1701, "성공적으로 게시글 정보가 수정되었습니다."),
+    REVIEW_READ_SUCCESS(HttpStatus.OK, 1702, "성공적으로 게시글 정보가 조회되었습니다."),
+
+    // TRADING
+    TRADING_SAVE_SUCCESS(HttpStatus.CREATED, 1800, "게시글을 성공적으로 등록했습니다."),
+    TRADING_UPDATE_SUCCESS(HttpStatus.OK, 1801, "성공적으로 게시글 정보가 수정되었습니다."),
+    TRADING_READ_SUCCESS(HttpStatus.OK, 1802, "성공적으로 게시글 정보가 조회되었습니다."),
+
     /**
      * 2000: Request 오류
      */

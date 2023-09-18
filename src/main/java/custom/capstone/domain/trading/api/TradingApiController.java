@@ -5,6 +5,9 @@ import custom.capstone.domain.trading.domain.Trading;
 import custom.capstone.domain.trading.dto.request.TradingSaveRequestDto;
 import custom.capstone.domain.trading.dto.request.TradingUpdateRequestDto;
 import custom.capstone.domain.trading.dto.response.TradingResponseDto;
+import custom.capstone.domain.trading.dto.response.TradingSaveResponseDto;
+import custom.capstone.global.common.BaseResponse;
+import custom.capstone.global.exception.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +22,25 @@ public class TradingApiController {
 
     @Operation(summary = "거래 생성")
     @PostMapping
-    public Long saveTrading(@RequestBody final TradingSaveRequestDto requestDto) {
-        return  tradingService.saveTrading(requestDto);
+    public BaseResponse<TradingSaveResponseDto> saveTrading(@RequestBody final TradingSaveRequestDto requestDto) {
+        final TradingSaveResponseDto result = tradingService.saveTrading(requestDto);
+
+        return BaseResponse.of(
+                BaseResponseStatus.TRADING_SAVE_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "거래 수정")
     @PatchMapping("/{tradingId}")
-    public TradingResponseDto updateTrading(@PathVariable("tradingId") final Long id,
+    public BaseResponse<TradingResponseDto> updateTrading(@PathVariable("tradingId") final Long id,
                                             @RequestBody final TradingUpdateRequestDto requestDto) {
-        return tradingService.updateTrading(id, requestDto);
+        final TradingResponseDto result = tradingService.updateTrading(id, requestDto);
+
+        return BaseResponse.of(
+                BaseResponseStatus.TRADING_UPDATE_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "거래 조회")

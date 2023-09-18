@@ -6,6 +6,9 @@ import custom.capstone.domain.notice.dto.response.NoticeResponseDto;
 import custom.capstone.domain.notice.dto.request.NoticeSaveRequestDto;
 import custom.capstone.domain.notice.dto.request.NoticeUpdateRequestDto;
 import custom.capstone.domain.notice.dto.response.NoticeSaveResponseDto;
+import custom.capstone.domain.notice.dto.response.NoticeUpdateResponseDto;
+import custom.capstone.global.common.BaseResponse;
+import custom.capstone.global.exception.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +27,25 @@ public class NoticeApiController {
 
     @Operation(summary = "공지사항 등록")
     @PostMapping
-    public NoticeSaveResponseDto saveNotice(@Valid @RequestBody final NoticeSaveRequestDto requestDto) {
-        return noticeService.saveNotice(requestDto);
+    public BaseResponse<NoticeSaveResponseDto> saveNotice(@Valid @RequestBody final NoticeSaveRequestDto requestDto) {
+        final NoticeSaveResponseDto result = noticeService.saveNotice(requestDto);
+
+        return  BaseResponse.of(
+                BaseResponseStatus.NOTICE_SAVE_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "공지사항 수정")
     @PatchMapping("/{noticeId}")
-    public Long updateNotice(@PathVariable("noticeId") final Long id,
-                             @RequestBody final NoticeUpdateRequestDto requestDto) {
-        return noticeService.updateNotice(id, requestDto);
+    public BaseResponse<NoticeUpdateResponseDto> updateNotice(@PathVariable("noticeId") final Long id,
+                                                @RequestBody final NoticeUpdateRequestDto requestDto) {
+        final NoticeUpdateResponseDto result = noticeService.updateNotice(id, requestDto);
+
+        return  BaseResponse.of(
+                BaseResponseStatus.NOTICE_UPDATE_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "공지사항 삭제")
@@ -50,7 +63,12 @@ public class NoticeApiController {
 
     @Operation(summary = "공지사항 상세 조회")
     @GetMapping("/{noticeId}")
-    public NoticeResponseDto findNoticeById(@PathVariable("noticeId") final Long id) {
-        return noticeService.findDetailById(id);
+    public BaseResponse<NoticeResponseDto> findNoticeById(@PathVariable("noticeId") final Long id) {
+        final NoticeResponseDto result = noticeService.findDetailById(id);
+
+        return BaseResponse.of(
+                BaseResponseStatus.REVIEW_READ_SUCCESS,
+                result
+        );
     }
 }

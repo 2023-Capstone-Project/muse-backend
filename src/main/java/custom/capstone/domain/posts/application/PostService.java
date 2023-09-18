@@ -45,13 +45,13 @@ public class PostService {
      * 게시글 수정
      */
     @Transactional
-    public Long updatePost(final Long postId, final PostUpdateRequestDto requestDto) {
+    public PostResponseDto updatePost(final Long postId, final PostUpdateRequestDto requestDto) {
         final Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
         post.update(requestDto.title(), requestDto.content(), requestDto.price(), requestDto.status());
 
-        return postId;
+        return new PostResponseDto(post);
     }
 
     /**

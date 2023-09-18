@@ -7,6 +7,7 @@ import custom.capstone.domain.magazine.dto.request.MagazineUpdateRequestDto;
 import custom.capstone.domain.magazine.dto.response.MagazineListResponseDto;
 import custom.capstone.domain.magazine.dto.response.MagazineResponseDto;
 import custom.capstone.domain.magazine.dto.response.MagazineSaveResponseDto;
+import custom.capstone.domain.magazine.dto.response.MagazineUpdateResponseDto;
 import custom.capstone.domain.magazine.exception.MagazineNotFoundException;
 import custom.capstone.domain.members.application.MemberService;
 import custom.capstone.domain.members.domain.Member;
@@ -44,13 +45,13 @@ public class MagazineService {
      * 매거진 수정
      */
     @Transactional
-    public Long updateMagazine(final Long magazineId, final MagazineUpdateRequestDto requestDto) {
+    public MagazineUpdateResponseDto updateMagazine(final Long magazineId, final MagazineUpdateRequestDto requestDto) {
         final Magazine magazine = magazineRepository.findById(magazineId)
                 .orElseThrow(MagazineNotFoundException::new);
 
         magazine.update(requestDto.title(), requestDto.content());
 
-        return magazineId;
+        return new MagazineUpdateResponseDto(magazineId);
     }
 
     /**
@@ -71,12 +72,12 @@ public class MagazineService {
      */
     @Transactional
     public MagazineResponseDto findDetailById(final Long magazineId) {
-        final Magazine entity = magazineRepository.findDetailById(magazineId)
+        final Magazine magazine = magazineRepository.findDetailById(magazineId)
                 .orElseThrow(MagazineNotFoundException::new);
 
-        entity.increaseView();
+        magazine.increaseView();
 
-        return new MagazineResponseDto(entity);
+        return new MagazineResponseDto(magazine);
     }
 
     /**
