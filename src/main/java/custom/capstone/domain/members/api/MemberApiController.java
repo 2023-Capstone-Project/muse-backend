@@ -60,7 +60,7 @@ public class MemberApiController {
     @Operation(summary = "회원 정보 수정")
     @PatchMapping("/{memberId}")
     public BaseResponse<MemberUpdateResponseDto> updateMember(@PathVariable("memberId") final Long id,
-                                                              @RequestBody final MemberUpdateRequestDto requestDto) {
+                                                              @Valid @RequestBody final MemberUpdateRequestDto requestDto) {
         final MemberUpdateResponseDto result = memberService.updateMember(id, requestDto);
 
         return BaseResponse.of(
