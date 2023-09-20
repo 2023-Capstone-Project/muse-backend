@@ -34,7 +34,7 @@ public class MemberService {
     @Transactional
     public MemberResponseDto saveMember(final MemberSaveRequestDto requestDto) {
         validateSingUpRequest(requestDto);
-        checkPasswordEquals(requestDto);
+        checkPasswordEquals(requestDto.password(), requestDto.checkPassword());
 
         final Member member = memberRepository.save(Member.builder()
                 .nickname(requestDto.nickname())
@@ -74,7 +74,9 @@ public class MemberService {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        member.update(requestDto.nickname(), requestDto.password(), requestDto.email(), requestDto.phoneNumber());
+        checkPasswordEquals(requestDto.password(), requestDto.checkPassword());
+
+        member.update(requestDto.nickname(), passwordEncoder.encode(requestDto.password()), requestDto.phoneNumber());
 
         return new MemberUpdateResponseDto(member.getId());
     }
@@ -134,8 +136,8 @@ public class MemberService {
     /**
      * 비밀번호 확인
      */
-    private void checkPasswordEquals(final MemberSaveRequestDto requestDto) {
-        if (!requestDto.password().equals(requestDto.checkPassword()))
+    private void checkPasswordEquals(final String password, final String checkPassword) {
+        if (!password.equals(checkPassword))
             throw new JoinPasswordException();
     }
 }

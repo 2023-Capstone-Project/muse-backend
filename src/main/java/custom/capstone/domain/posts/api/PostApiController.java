@@ -17,6 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Tag(name = "게시글 API")
 @RestController
 @RequestMapping("/api/posts")
@@ -26,7 +28,7 @@ public class PostApiController {
 
     @Operation(summary = "게시글 등록")
     @PostMapping
-    public BaseResponse<PostSaveResponseDto> savePost(@RequestBody final PostSaveRequestDto requestDto) {
+    public BaseResponse<PostSaveResponseDto> savePost(@Valid @RequestBody final PostSaveRequestDto requestDto) {
         final PostSaveResponseDto result = postService.savePost(requestDto);
 
         return BaseResponse.of(
@@ -37,8 +39,10 @@ public class PostApiController {
 
     @Operation(summary = "게시글 수정")
     @PatchMapping("/{postId}")
-    public BaseResponse<PostResponseDto> updatePost(@PathVariable("postId") final Long id,
-                           @RequestBody final PostUpdateRequestDto requestDto) {
+    public BaseResponse<PostResponseDto> updatePost(
+            @PathVariable("postId") final Long id,
+            @Valid @RequestBody final PostUpdateRequestDto requestDto
+    ) {
         final PostResponseDto result = postService.updatePost(id, requestDto);
 
         return BaseResponse.of(

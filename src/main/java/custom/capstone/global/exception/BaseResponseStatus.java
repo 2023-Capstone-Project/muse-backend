@@ -1,11 +1,10 @@
 package custom.capstone.global.exception;
 
 import lombok.Getter;
-import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 @Getter
-@ToString
+//@ToString
 public enum BaseResponseStatus {
     /**
      * 1000: 요청 성공
@@ -115,7 +114,7 @@ public enum BaseResponseStatus {
     private final int code;
     private final String message;
 
-    private BaseResponseStatus(final HttpStatus httpStatus, final int code, final String message) {
+    BaseResponseStatus(final HttpStatus httpStatus, final int code, final String message) {
         this.httpStatus = httpStatus;
         this.code = code;
         this.message = message;

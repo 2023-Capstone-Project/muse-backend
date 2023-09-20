@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,13 +18,19 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class JwtTokenProvider {
-    private String secretKey = "WelcomeToMuse";
 
-    // 토큰 유효시간 168 시간(7일)
+    @Value("${security.jwt.secret-key}")
+    private String secretKey;
+
+    @Value("${security.jwt.secret-expiration}")
+    private Long tokenValidTime;
+    
     private final UserDetailsService userDetailsService;
-    private final long tokenValidTime = 1440 * 60 * 7 * 1000L;
+
+    protected JwtTokenProvider(final UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     // 객체 초기화, secretKey 를 Base64로 인코딩
     @PostConstruct
@@ -59,9 +65,9 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Request 의 Header 에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN 값'
+    // Request 의 Header 에서 token 값을 가져옵니다. "Bearer" : "TOKEN 값'
     public String resolveToken(final HttpServletRequest request) {
-        return request.getHeader("X-AUTH-TOKEN");
+        return request.getHeader("Bearer");
     }
 
     // 토큰의 유효성 + 만료일자 확인

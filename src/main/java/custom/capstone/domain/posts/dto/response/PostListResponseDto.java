@@ -1,9 +1,12 @@
 package custom.capstone.domain.posts.dto.response;
 
 import custom.capstone.domain.posts.domain.Post;
+import custom.capstone.domain.posts.domain.PostType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -11,15 +14,21 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class PostListResponseDto {
+    private Long postId;
     private String writer;
     private String title;
-    private String content;
+    private int price;
+    private PostType type;
+    private LocalDateTime createAt;
 //    private String previewImgUrl; -> TODO: 이미지 구현 후 적용하기
 
     public PostListResponseDto(final Post post) {
+        this.postId = post.getId();
         this.writer = post.getMember().getNickname();
         this.title = post.getTitle();
-        this.content = post.getContent();
+        this.price = post.getPrice();
+        this.type = post.getType();
+        this.createAt = post.getCreatedAt();
 //        this.previewImgUrl = previewImgUrl;
     }
 }

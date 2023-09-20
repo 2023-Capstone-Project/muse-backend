@@ -102,12 +102,10 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     public void update(
             final String nickname,
-            final String email,
             final String password,
             final String phoneNumber) {
         this.nickname = nickname;
         this.password = password;
-        this.email = email;
         this.phoneNumber = phoneNumber;
     }
 

@@ -3,7 +3,10 @@ package custom.capstone.domain.posts.dto.request;
 import custom.capstone.domain.posts.domain.PostType;
 import org.hibernate.validator.constraints.Length;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public record PostSaveRequestDto (
         Long memberId,
@@ -14,9 +17,10 @@ public record PostSaveRequestDto (
         @NotBlank(message = "내용을 입력해 주세요.")
         String content,
 
-        @NotBlank(message = "가격을 입력해 주세요.")
+        @NotNull(message = "가격을 입력해 주세요.")
         int price,
-        @NotBlank(message = "게시글 타입을 선택해 주세요.")
+
+        @Enumerated(EnumType.STRING)
         PostType type
 ) {
 }
