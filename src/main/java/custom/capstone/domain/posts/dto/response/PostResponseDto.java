@@ -13,7 +13,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class PostResponseDto {
-    private Long postId;
+    private Long postI;
     private String title;
     private String content;
     private int views;
