@@ -13,6 +13,7 @@ import custom.capstone.global.exception.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
@@ -59,8 +60,10 @@ public class MemberApiController {
 
     @Operation(summary = "회원 정보 수정")
     @PatchMapping("/{memberId}")
-    public BaseResponse<MemberUpdateResponseDto> updateMember(@PathVariable("memberId") final Long id,
-                                                              @Valid @RequestBody final MemberUpdateRequestDto requestDto) {
+    public BaseResponse<MemberUpdateResponseDto> updateMember(
+            @AuthenticationPrincipal @PathVariable("memberId") final Long id,
+            @Valid @RequestBody final MemberUpdateRequestDto requestDto
+    ) {
         final MemberUpdateResponseDto result = memberService.updateMember(id, requestDto);
 
         return BaseResponse.of(
@@ -71,13 +74,13 @@ public class MemberApiController {
 
     @Operation(summary = "회원 조회")
     @GetMapping("/{memberId}")
-    public Member findById(@PathVariable("memberId") final Long id) {
+    public Member findById(@AuthenticationPrincipal @PathVariable("memberId") final Long id) {
         return memberService.findById(id);
     }
 
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping("/{memberId}")
-    public Long deleteMember(@PathVariable("memberId") final Long id) {
+    public Long deleteMember(@AuthenticationPrincipal @PathVariable("memberId") final Long id) {
         memberService.deleteMember(id);
         return id;
     }

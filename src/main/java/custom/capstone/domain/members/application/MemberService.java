@@ -140,4 +140,11 @@ public class MemberService {
         if (!password.equals(checkPassword))
             throw new JoinPasswordException();
     }
+
+//    /**
+//     * 로그인 확인
+//     */
+//    private void checkLoginUser(final Member member) {
+//        if (!memberRepository.)
+//    }
 }

@@ -10,7 +10,7 @@ public record MemberUpdateRequestDto (
         String nickname,
 
         @NotBlank(message = "비밀번호를 입력해 주세요.")
-        @Pattern(regexp = "^[A-Za-z[0-9]]{8,16}$",
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,16}$",
                 message = "비밀번호는 영문, 숫자 포함 8~16자 이어야 합니다.")
         String password,
 
