@@ -3,10 +3,12 @@ package custom.capstone.global.config;
 import custom.capstone.global.config.jwt.JwtAuthenticationFilter;
 import custom.capstone.global.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,6 +24,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                .antMatchers("/api-docs", "/swagger*/**")
+                .antMatchers(HttpMethod.POST, "/api/members/join", "/api/members/login")
+                .antMatchers(HttpMethod.GET, "/api/posts/**", "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**");
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
             .formLogin().disable()
@@ -29,17 +39,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
             .and()
                 .authorizeRequests()
-                .antMatchers("/api-docs", "/swagger*/**").permitAll()
-                .antMatchers("/api/members/**", "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/interests/**", "/api/trades/**").permitAll()
-                .antMatchers("/api/members/join").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/members/login").anonymous()
-                .antMatchers("/api/members").hasAnyRole("NORMAL", "DESIGNER")
+
+                // 모두 접근 가능
+                .antMatchers(HttpMethod.POST, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
+
+                // 인증 후 접근
                 .anyRequest().authenticated()
-            .and()
-                .csrf()
-                .ignoringAntMatchers("/api/**")
+
             .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
