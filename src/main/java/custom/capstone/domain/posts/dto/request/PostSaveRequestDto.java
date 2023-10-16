@@ -9,8 +9,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public record PostSaveRequestDto (
-        Long memberId,
-
         @Length(min = 1, max = 50, message = "제목은 50자 이하로 입력해주세요.")
         String title,
 

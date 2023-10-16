@@ -13,7 +13,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class PostResponseDto {
-    private Long postI;
+    private Long postId;
     private String title;
     private String content;
     private int views;
@@ -35,7 +35,6 @@ public class PostResponseDto {
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();
         this.writer = new MemberProfileDto(
-                post.getMember().getId(),
                 post.getMember().getNickname()
         );
     }
