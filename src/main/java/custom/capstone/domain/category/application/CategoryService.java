@@ -40,7 +40,7 @@ public class CategoryService {
         final Category category = categoryRepository.findById(id)
                 .orElseThrow();
 
-        category.updateTitle(requestDto.changeTitle());
+        category.updateTitle(requestDto.title());
 
         return id;
     }

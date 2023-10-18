@@ -35,6 +35,7 @@ public class PostResponseDto {
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();
         this.writer = new MemberProfileDto(
+                post.getId(),
                 post.getMember().getNickname()
         );
     }

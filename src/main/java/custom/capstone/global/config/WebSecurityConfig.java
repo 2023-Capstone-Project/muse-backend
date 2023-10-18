@@ -43,12 +43,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .authorizeRequests()
 
-                // 모두 접근 가능
+                // 관리자만 접근 가능
                 .antMatchers(HttpMethod.POST, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
 
-                // 인증 후 접근
+                // 그 외 모든 요청은 인증 후 접근
                 .anyRequest().authenticated()
 
             .and()

@@ -10,13 +10,9 @@ import custom.capstone.domain.inquiry.dto.response.AnswerSaveResponseDto;
 import custom.capstone.domain.inquiry.dto.response.AnswerUpdateResponseDto;
 import custom.capstone.domain.inquiry.exception.AnswerNotFoundException;
 import custom.capstone.domain.inquiry.exception.InquiryNotFoundException;
-import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
-import custom.capstone.domain.members.domain.MemberRole;
-import custom.capstone.domain.members.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,20 +21,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class AnswerService {
     private final InquiryRepository inquiryRepository;
     private final AnswerRepository answerRepository;
-    private final MemberRepository memberRepository;
 
     /**
      * 답변 등록
      */
     @Transactional
-    public AnswerSaveResponseDto saveAnswer(final Long inquiryId, final AnswerSaveRequestDto requestDto) {
-        getValidMember();
-
+    public AnswerSaveResponseDto saveAnswer(
+            final Member member,
+            final Long inquiryId,
+            final AnswerSaveRequestDto requestDto
+    ) {
         final Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(InquiryNotFoundException::new);
 
         final Answer answer = Answer.builder()
-                .admin("관리자")
+                .admin(member.getEmail())
                 .content(requestDto.content())
                 .build();
 
@@ -52,14 +49,15 @@ public class AnswerService {
      * 답변 수정
      */
     @Transactional
-    public AnswerUpdateResponseDto updateAnswer(final Long inquiryId, final Long answerId, final AnswerUpdateRequestDto requestDto) {
-        getValidMember();
-
-        final Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(InquiryNotFoundException::new);
-
+    public AnswerUpdateResponseDto updateAnswer(
+            final Member member,
+            final Long answerId,
+            final AnswerUpdateRequestDto requestDto
+    ) {
         final Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(AnswerNotFoundException::new);
+
+        checkEqualMember(member, answer);
 
         answer.update(requestDto.content());
 
@@ -69,26 +67,18 @@ public class AnswerService {
     /**
      * 답변 삭제
      */
-    public void deleteAnswer(final Long inquiryId, final Long answerId) {
-        final Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(InquiryNotFoundException::new);
-
+    public void deleteAnswer(final Member member, final Long answerId) {
         final Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(AnswerNotFoundException::new);
 
-        getValidMember();
+        checkEqualMember(member, answer);
 
         answerRepository.delete(answer);
     }
 
     // 관리자가 맞는지 확인
-    private void getValidMember() {
-        final String email =  SecurityContextHolder.getContext().getAuthentication().getName();
-
-        final Member member = memberRepository.findByEmail(email)
-                .orElseThrow(MemberNotFoundException::new);
-
-        if (member.getRole() != MemberRole.ADMIN)
+    private void checkEqualMember(final Member member, final Answer answer) {
+        if (!answer.getAdmin().equals(member.getEmail()))
             throw new AccessDeniedException("해당 권한이 없습니다.");
     }
 }
