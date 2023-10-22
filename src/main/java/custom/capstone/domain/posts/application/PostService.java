@@ -1,5 +1,6 @@
 package custom.capstone.domain.posts.application;
 
+import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.posts.dao.PostRepository;
 import custom.capstone.domain.posts.domain.Post;
@@ -12,6 +13,7 @@ import custom.capstone.domain.posts.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 게시글 등록
      */
     @Transactional
-    public PostSaveResponseDto savePost(final Member member, final PostSaveRequestDto requestDto) {
+    public PostSaveResponseDto savePost(final String loginEmail, final PostSaveRequestDto requestDto) {
+        final Member member = getValidMember(loginEmail);
 
         final Post post = Post.builder()
                 .title(requestDto.title())
@@ -44,10 +48,13 @@ public class PostService {
      * 게시글 수정
      */
     @Transactional
-    public PostResponseDto updatePost(final Member member,
-                                      final Long postId,
-                                      final PostUpdateRequestDto requestDto
+    public PostResponseDto updatePost(
+            final String loginEmail,
+            final Long postId,
+            final PostUpdateRequestDto requestDto
     ) {
+        final Member member = getValidMember(loginEmail);
+
         final Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
@@ -87,7 +94,9 @@ public class PostService {
      * 게시글 삭제
      */
     @Transactional
-    public void deletePost(final Member member, final Long postId) {
+    public void deletePost(final String loginEmail, final Long postId) {
+        final Member member = getValidMember(loginEmail);
+
         final Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
@@ -104,9 +113,13 @@ public class PostService {
         return postRepository.findByKeyword(keyword, pageable);
     }
 
-    /**
-     * 작성자 확인
-     */
+    // 회원 인지 확인
+    private Member getValidMember(final String loginEmail) {
+        return memberRepository.findByEmail(loginEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+    }
+
+    // 작성한 사용자가 맞는지 확인
     private void checkEqualMember(final Member member, final Post post) {
         if (!post.getMember().getId().equals(member.getId())) {
             throw new PostInvalidAccessException();

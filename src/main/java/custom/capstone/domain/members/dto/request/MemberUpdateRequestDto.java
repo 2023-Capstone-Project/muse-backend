@@ -21,5 +21,7 @@ public record MemberUpdateRequestDto (
         @Pattern(regexp = "^01[016789]-\\d{4}-\\d{4}$",
                 message = "핸드폰 양식과 맞지 않습니다.(01x-xxxx-xxxx)")
         String phoneNumber
+
+        //TODO: profile Image Url
 ) {
 }

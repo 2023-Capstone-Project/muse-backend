@@ -11,6 +11,7 @@ import custom.capstone.global.exception.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "거래 API")
@@ -22,8 +23,11 @@ public class TradingApiController {
 
     @Operation(summary = "거래 생성")
     @PostMapping
-    public BaseResponse<TradingSaveResponseDto> saveTrading(@RequestBody final TradingSaveRequestDto requestDto) {
-        final TradingSaveResponseDto result = tradingService.saveTrading(requestDto);
+    public BaseResponse<TradingSaveResponseDto> saveTrading(
+            @AuthenticationPrincipal final String loginEmail,
+            @RequestBody final TradingSaveRequestDto requestDto
+    ) {
+        final TradingSaveResponseDto result = tradingService.saveTrading(loginEmail, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.TRADING_SAVE_SUCCESS,
@@ -33,9 +37,12 @@ public class TradingApiController {
 
     @Operation(summary = "거래 수정")
     @PatchMapping("/{tradingId}")
-    public BaseResponse<TradingResponseDto> updateTrading(@PathVariable("tradingId") final Long id,
-                                            @RequestBody final TradingUpdateRequestDto requestDto) {
-        final TradingResponseDto result = tradingService.updateTrading(id, requestDto);
+    public BaseResponse<TradingResponseDto> updateTrading(
+            @AuthenticationPrincipal final String loginEmail,
+            @PathVariable("tradingId") final Long id,
+            @RequestBody final TradingUpdateRequestDto requestDto
+    ) {
+        final TradingResponseDto result = tradingService.updateTrading(loginEmail, id, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.TRADING_UPDATE_SUCCESS,
@@ -47,12 +54,5 @@ public class TradingApiController {
     @GetMapping("/{tradingId}")
     public Trading findTradingById(@PathVariable("tradingId") final Long id) {
         return tradingService.findById(id);
-    }
-
-    @Operation(summary = "거래 삭제")
-    @DeleteMapping("/{tradingId}")
-    public Long deleteTrading(@PathVariable("tradingId") final Long id) {
-        tradingService.deleteTrading(id);
-        return id;
     }
 }

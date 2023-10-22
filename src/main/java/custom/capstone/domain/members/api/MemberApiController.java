@@ -53,7 +53,7 @@ public class MemberApiController {
 
     @Operation(summary = "로그아웃")
     @GetMapping("/logout")
-    public String logout(final HttpServletRequest request, final HttpServletResponse response) {
+    public java.lang.String logout(final HttpServletRequest request, final HttpServletResponse response) {
         new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
         return "redirect:/";
     }
@@ -61,10 +61,11 @@ public class MemberApiController {
     @Operation(summary = "회원 정보 수정")
     @PatchMapping("/{memberId}")
     public BaseResponse<MemberUpdateResponseDto> updateMember(
-            @AuthenticationPrincipal @PathVariable("memberId") final Long id,
+            @AuthenticationPrincipal final String loginEmail,
+            @PathVariable("memberId") final Long id,
             @Valid @RequestBody final MemberUpdateRequestDto requestDto
     ) {
-        final MemberUpdateResponseDto result = memberService.updateMember(id, requestDto);
+        final MemberUpdateResponseDto result = memberService.updateMember(loginEmail, id, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.MEMBER_UPDATE_SUCCESS,
@@ -74,13 +75,13 @@ public class MemberApiController {
 
     @Operation(summary = "회원 조회")
     @GetMapping("/{memberId}")
-    public Member findById(@AuthenticationPrincipal @PathVariable("memberId") final Long id) {
+    public Member findById(@PathVariable("memberId") final Long id) {
         return memberService.findById(id);
     }
 
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping("/{memberId}")
-    public Long deleteMember(@AuthenticationPrincipal @PathVariable("memberId") final Long id) {
+    public Long deleteMember(@PathVariable("memberId") final Long id) {
         memberService.deleteMember(id);
         return id;
     }

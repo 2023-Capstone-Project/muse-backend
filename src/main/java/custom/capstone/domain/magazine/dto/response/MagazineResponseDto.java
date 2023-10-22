@@ -14,6 +14,7 @@ public class MagazineResponseDto {
     private String title;
     private String content;
     private int views;
+    // TODO: image Urls
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

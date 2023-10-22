@@ -24,5 +24,7 @@ public record PostUpdateRequestDto (
 
         @Enumerated(EnumType.STRING)
         PostStatus status
+
+        // TODO: image Urls
 ) {
 }

@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,8 +28,11 @@ public class NoticeApiController {
 
     @Operation(summary = "공지사항 등록")
     @PostMapping
-    public BaseResponse<NoticeSaveResponseDto> saveNotice(@Valid @RequestBody final NoticeSaveRequestDto requestDto) {
-        final NoticeSaveResponseDto result = noticeService.saveNotice(requestDto);
+    public BaseResponse<NoticeSaveResponseDto> saveNotice(
+            @AuthenticationPrincipal final String loginEmail,
+            @Valid @RequestBody final NoticeSaveRequestDto requestDto
+    ) {
+        final NoticeSaveResponseDto result = noticeService.saveNotice(loginEmail, requestDto);
 
         return  BaseResponse.of(
                 BaseResponseStatus.NOTICE_SAVE_SUCCESS,
@@ -38,9 +42,12 @@ public class NoticeApiController {
 
     @Operation(summary = "공지사항 수정")
     @PatchMapping("/{noticeId}")
-    public BaseResponse<NoticeUpdateResponseDto> updateNotice(@PathVariable("noticeId") final Long id,
-                                                @RequestBody final NoticeUpdateRequestDto requestDto) {
-        final NoticeUpdateResponseDto result = noticeService.updateNotice(id, requestDto);
+    public BaseResponse<NoticeUpdateResponseDto> updateNotice(
+            @AuthenticationPrincipal final String loginEmail,
+            @PathVariable("noticeId") final Long id,
+            @RequestBody final NoticeUpdateRequestDto requestDto
+    ) {
+        final NoticeUpdateResponseDto result = noticeService.updateNotice(loginEmail, id, requestDto);
 
         return  BaseResponse.of(
                 BaseResponseStatus.NOTICE_UPDATE_SUCCESS,
@@ -50,8 +57,11 @@ public class NoticeApiController {
 
     @Operation(summary = "공지사항 삭제")
     @DeleteMapping("/{noticeId}")
-    public Long deleteNotice(@PathVariable("noticeId") final Long id) {
-        noticeService.deleteNotice(id);
+    public Long deleteNotice(
+            @AuthenticationPrincipal final String loginEmail,
+            @PathVariable("noticeId") final Long id
+    ) {
+        noticeService.deleteNotice(loginEmail, id);
         return id;
     }
 

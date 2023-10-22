@@ -8,12 +8,14 @@ import custom.capstone.domain.magazine.dto.response.MagazineListResponseDto;
 import custom.capstone.domain.magazine.dto.response.MagazineResponseDto;
 import custom.capstone.domain.magazine.dto.response.MagazineSaveResponseDto;
 import custom.capstone.domain.magazine.dto.response.MagazineUpdateResponseDto;
+import custom.capstone.domain.magazine.exception.MagazineInvalidException;
 import custom.capstone.domain.magazine.exception.MagazineNotFoundException;
-import custom.capstone.domain.members.application.MemberService;
+import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,19 +23,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MagazineService {
     private final MagazineRepository magazineRepository;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     /**
      * 매거진 등록
      */
     @Transactional
-    public MagazineSaveResponseDto saveMagazine(final MagazineSaveRequestDto requestDto) {
-        final Member member = memberService.findById(requestDto.memberId());
+    public MagazineSaveResponseDto saveMagazine(final String loginEmail, final MagazineSaveRequestDto requestDto) {
+        final Member admin = getValidAdmin(loginEmail);
 
         final Magazine magazine = Magazine.builder()
                 .title(requestDto.title())
                 .content(requestDto.content())
-                .member(member)
+                .member(admin)
                 .build();
 
         magazineRepository.save(magazine);
@@ -45,9 +47,17 @@ public class MagazineService {
      * 매거진 수정
      */
     @Transactional
-    public MagazineUpdateResponseDto updateMagazine(final Long magazineId, final MagazineUpdateRequestDto requestDto) {
+    public MagazineUpdateResponseDto updateMagazine(
+            final String loginEmail,
+            final Long magazineId,
+            final MagazineUpdateRequestDto requestDto
+    ) {
+        final Member admin = getValidAdmin(loginEmail);
+
         final Magazine magazine = magazineRepository.findById(magazineId)
                 .orElseThrow(MagazineNotFoundException::new);
+
+        checkEqualAdmin(admin, magazine);
 
         magazine.update(requestDto.title(), requestDto.content());
 
@@ -84,10 +94,26 @@ public class MagazineService {
      * 매거진 삭제
      */
     @Transactional
-    public void deleteMagazine(final Long magazineId) {
+    public void deleteMagazine(final String loginEmail, final Long magazineId) {
+        final Member admin = getValidAdmin(loginEmail);
+
         final Magazine magazine = magazineRepository.findById(magazineId)
                 .orElseThrow(MagazineNotFoundException::new);
 
+        checkEqualAdmin(admin, magazine);
+
         magazineRepository.delete(magazine);
+    }
+
+    // 관리자인지 확인
+    private Member getValidAdmin(final String loginEmail) {
+        return  memberRepository.findByEmail(loginEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("관리자를 찾을 수 없습니다."));
+    }
+
+    // 작성한 관리자가 맞는지 확인
+    private void checkEqualAdmin(final Member admin, final Magazine magazine) {
+        if (!magazine.getMember().getId().equals(admin.getId()))
+            throw new MagazineInvalidException();
     }
 }

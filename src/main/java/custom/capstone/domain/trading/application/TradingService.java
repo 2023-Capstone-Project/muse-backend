@@ -2,7 +2,6 @@ package custom.capstone.domain.trading.application;
 
 import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
-import custom.capstone.domain.members.exception.MemberNotFoundException;
 import custom.capstone.domain.posts.dao.PostRepository;
 import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.posts.exception.PostNotFoundException;
@@ -12,13 +11,12 @@ import custom.capstone.domain.trading.dto.request.TradingSaveRequestDto;
 import custom.capstone.domain.trading.dto.request.TradingUpdateRequestDto;
 import custom.capstone.domain.trading.dto.response.TradingResponseDto;
 import custom.capstone.domain.trading.dto.response.TradingSaveResponseDto;
+import custom.capstone.domain.trading.exception.TradingInvalidException;
 import custom.capstone.domain.trading.exception.TradingNotFoundException;
-import custom.capstone.global.exception.InvalidAccessException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -31,19 +29,16 @@ public class TradingService {
      * 거래 생성
      */
     @Transactional
-    public TradingSaveResponseDto saveTrading(final TradingSaveRequestDto requestDto) {
-        final Post post = postRepository.findById(requestDto.postId())
-                .orElseThrow(PostNotFoundException::new);
+    public TradingSaveResponseDto saveTrading(final String loginEmail, final TradingSaveRequestDto requestDto) {
+        final Member buyer = getValidMember(loginEmail);
 
-        final Member buyer = memberRepository.findById(requestDto.buyerId())
-                .orElseThrow(() -> new NotFoundException("구매자를 찾을 수 없습니다."));
+        final Post post = getValidPost(requestDto.postId());
 
-        final Member seller = memberRepository.findById(requestDto.sellerId())
-                .orElseThrow(() -> new NotFoundException("판매자를 찾을 수 없습니다."));
+        final Member seller = post.getMember();
 
-        // 게시글 작성자 = 판매자 즉, 판매자가 아닐 시 예외 발생
-        if (!post.getMember().getId().equals(seller.getId())) {
-            throw new InvalidAccessException();
+        // 판매자(게시글 작성자)와 구매자가 같을 시 예외처리
+        if (seller.getId().equals(buyer.getId())) {
+            throw new TradingInvalidException();
         }
 
         final Trading trading = Trading.builder()
@@ -61,19 +56,19 @@ public class TradingService {
      * 거래 수정
      */
     @Transactional
-    public TradingResponseDto updateTrading(final Long tradingId, final TradingUpdateRequestDto requestDto) {
+    public TradingResponseDto updateTrading(
+            final String loginEmail,
+            final Long tradingId,
+            final TradingUpdateRequestDto requestDto
+    ) {
+        final Member seller = getValidMember(loginEmail);
+
         final Trading trading = tradingRepository.findById(tradingId)
                 .orElseThrow(TradingNotFoundException::new);
 
-        final Post post = postRepository.findById(requestDto.postId())
-                .orElseThrow(PostNotFoundException::new);
-
-        final Member seller = getValidMember();
-
-        // 게시글 작성자 = 판매자 즉, 판매자가 아닐 시 예외 발생
-        if (!post.getMember().getId().equals(seller.getId())) {
-            throw new InvalidAccessException();
-        }
+        // 판매자가 아닐 경우 예외처리
+        if (!trading.getSeller().equals(seller))
+            throw new TradingInvalidException();
 
         trading.update(requestDto.status());
 
@@ -88,25 +83,15 @@ public class TradingService {
                 .orElseThrow(TradingNotFoundException::new);
     }
 
-    /**
-     * 거래 삭제
-     */
-    @Transactional
-    public void deleteTrading(final Long tradingId) {
-        final Trading trading = tradingRepository.findById(tradingId)
-                .orElseThrow(TradingNotFoundException::new);
-
-        getValidMember();
-
-        tradingRepository.delete(trading);
+    // 회원 인지 확인
+    private Member getValidMember(final String loginEmail) {
+        return memberRepository.findByEmail(loginEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
     }
 
-    /**
-     * 판매자 확인
-     */
-    private Member getValidMember() {
-        final String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return memberRepository.findByEmail(email)
-                .orElseThrow(MemberNotFoundException::new);
+    // 거래되는 디자인 시안 게시글 확인
+    private Post getValidPost(final Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(PostNotFoundException::new);
     }
 }

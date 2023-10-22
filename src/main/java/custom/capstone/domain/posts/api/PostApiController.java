@@ -1,6 +1,5 @@
 package custom.capstone.domain.posts.api;
 
-import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.posts.application.PostService;
 import custom.capstone.domain.posts.dto.request.PostSaveRequestDto;
 import custom.capstone.domain.posts.dto.request.PostUpdateRequestDto;
@@ -31,10 +30,10 @@ public class PostApiController {
     @Operation(summary = "게시글 등록")
     @PostMapping
     public BaseResponse<PostSaveResponseDto> savePost(
-            @AuthenticationPrincipal final Member member,
+            @AuthenticationPrincipal final String loginEmail,
             @Valid @RequestBody final PostSaveRequestDto requestDto
     ) {
-        final PostSaveResponseDto result = postService.savePost(member, requestDto);
+        final PostSaveResponseDto result = postService.savePost(loginEmail, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.POST_SAVE_SUCCESS,
@@ -45,11 +44,11 @@ public class PostApiController {
     @Operation(summary = "게시글 수정")
     @PatchMapping("/{postId}")
     public BaseResponse<PostResponseDto> updatePost(
-            @AuthenticationPrincipal final Member member,
+            @AuthenticationPrincipal final String loginEmail,
             @PathVariable("postId") final Long id,
             @Valid @RequestBody final PostUpdateRequestDto requestDto
     ) {
-        final PostResponseDto result = postService.updatePost(member, id, requestDto);
+        final PostResponseDto result = postService.updatePost(loginEmail, id, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.POST_UPDATE_SUCCESS,
@@ -78,10 +77,10 @@ public class PostApiController {
     @Operation(summary = "게시글 삭제")
     @DeleteMapping("/{postId}")
     public Long deletePost(
-            @AuthenticationPrincipal final Member member,
+            @AuthenticationPrincipal final String loginEmail,
             @PathVariable("postId") final Long id
     ) {
-        postService.deletePost(member, id);
+        postService.deletePost(loginEmail, id);
         return id;
     }
 

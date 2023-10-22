@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,8 +28,11 @@ public class MagazineApiController {
 
     @Operation(summary = "매거진 등록")
     @PostMapping
-    public BaseResponse<MagazineSaveResponseDto> saveMagazine(@Valid @RequestBody final MagazineSaveRequestDto requestDto) {
-        final MagazineSaveResponseDto result = magazineService.saveMagazine(requestDto);
+    public BaseResponse<MagazineSaveResponseDto> saveMagazine(
+            @AuthenticationPrincipal final String loginEmail,
+            @Valid @RequestBody final MagazineSaveRequestDto requestDto
+    ) {
+        final MagazineSaveResponseDto result = magazineService.saveMagazine(loginEmail, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.MAGAZINE_SAVE_SUCCESS,
@@ -38,9 +42,12 @@ public class MagazineApiController {
 
     @Operation(summary = "매거진 수정")
     @PatchMapping("/{magazineId}")
-    public BaseResponse<MagazineUpdateResponseDto> updateMagazine(@PathVariable("magazineId") final Long id,
-                                                                  @RequestBody final MagazineUpdateRequestDto requestDto) {
-        final MagazineUpdateResponseDto result = magazineService.updateMagazine(id, requestDto);
+    public BaseResponse<MagazineUpdateResponseDto> updateMagazine(
+            @AuthenticationPrincipal final String loginEmail,
+            @PathVariable("magazineId") final Long id,
+            @RequestBody final MagazineUpdateRequestDto requestDto
+    ) {
+        final MagazineUpdateResponseDto result = magazineService.updateMagazine(loginEmail, id, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.MAGAZINE_UPDATE_SUCCESS,
@@ -50,8 +57,11 @@ public class MagazineApiController {
 
     @Operation(summary = "매거진 삭제")
     @DeleteMapping("/{magazineId}")
-    public Long deleteMagazine(@PathVariable("magazineId") final Long id) {
-        magazineService.deleteMagazine(id);
+    public Long deleteMagazine(
+            @AuthenticationPrincipal final String loginEmail,
+            @PathVariable("magazineId") final Long id
+    ) {
+        magazineService.deleteMagazine(loginEmail, id);
         return id;
     }
 

@@ -21,23 +21,30 @@ public class CategoryApiController {
 
     @Operation(summary = "카테고리 설정")
     @PostMapping
-    public Long saveCategory(@AuthenticationPrincipal @RequestBody final CategorySaveRequestDto requestDto) {
-        return categoryService.saveCategory(requestDto);
+    public Long saveCategory(
+            @AuthenticationPrincipal final String loginEmail,
+            @RequestBody final CategorySaveRequestDto requestDto
+    ) {
+        return categoryService.saveCategory(loginEmail, requestDto);
     }
 
     @Operation(summary = "카테고리 수정")
     @PatchMapping("/{categoryId}")
     public Long updateCategory(
-            @AuthenticationPrincipal @PathVariable("categoryId") final Long id,
+            @AuthenticationPrincipal final String loginEmail,
+            @PathVariable("categoryId") final Long id,
             @RequestBody final CategoryUpdateRequestDto requestDto
     ) {
-        return categoryService.updateCategory(id, requestDto);
+        return categoryService.updateCategory(loginEmail, id, requestDto);
     }
 
     @Operation(summary = "카테고리 삭제")
     @DeleteMapping("/{categoryId}")
-    public Long deleteCategory(@AuthenticationPrincipal @PathVariable("categoryId") final Long id) {
-        categoryService.deleteCategory(id);
+    public Long deleteCategory(
+            @AuthenticationPrincipal final String loginEmail,
+            @PathVariable("categoryId") final Long id
+    ) {
+        categoryService.deleteCategory(loginEmail, id);
         return id;
     }
 

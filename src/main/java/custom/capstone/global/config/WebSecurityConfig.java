@@ -48,7 +48,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PATCH, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
 
-                // 그 외 모든 요청은 인증 후 접근
+                // 회원만 접근 가능
+//                .antMatchers(HttpMethod.POST, "/api/posts/**", "/api/interests/**", "/api/reviews/**").hasAnyRole("GENERAL")
+//                .antMatchers()
+//                .authenticated()
+
+                // 인증 요청
                 .anyRequest().authenticated()
 
             .and()

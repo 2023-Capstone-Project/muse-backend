@@ -1,10 +1,10 @@
 package custom.capstone.domain.members.application;
 
-import custom.capstone.domain.members.dao.MemberMyPageRepository;
 import custom.capstone.domain.interest.domain.Interest;
+import custom.capstone.domain.members.dao.MemberMyPageRepository;
 import custom.capstone.domain.posts.domain.Post;
-import custom.capstone.domain.trading.domain.Trading;
 import custom.capstone.domain.review.domain.Review;
+import custom.capstone.domain.trading.domain.Trading;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

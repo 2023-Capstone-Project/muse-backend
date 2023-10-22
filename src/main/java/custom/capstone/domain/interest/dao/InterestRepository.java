@@ -6,10 +6,7 @@ import custom.capstone.domain.posts.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public interface InterestRepository extends JpaRepository<Interest, Long> {
-     Optional<Interest> findById(final Long interestId);
      boolean existsByMemberAndPost(final Member member, final Post post);
 }

@@ -20,5 +20,9 @@ public record PostSaveRequestDto (
 
         @Enumerated(EnumType.STRING)
         PostType type
+
+        // TODO: category
+
+        // TODO: image urls
 ) {
 }

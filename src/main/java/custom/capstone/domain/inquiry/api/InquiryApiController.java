@@ -3,12 +3,14 @@ package custom.capstone.domain.inquiry.api;
 import custom.capstone.domain.inquiry.application.AnswerService;
 import custom.capstone.domain.inquiry.application.InquiryService;
 import custom.capstone.domain.inquiry.domain.Inquiry;
-import custom.capstone.domain.inquiry.dto.request.*;
+import custom.capstone.domain.inquiry.dto.request.AnswerSaveRequestDto;
+import custom.capstone.domain.inquiry.dto.request.AnswerUpdateRequestDto;
+import custom.capstone.domain.inquiry.dto.request.InquirySaveRequestDto;
+import custom.capstone.domain.inquiry.dto.request.InquiryUpdateRequestDto;
 import custom.capstone.domain.inquiry.dto.response.AnswerSaveResponseDto;
 import custom.capstone.domain.inquiry.dto.response.AnswerUpdateResponseDto;
 import custom.capstone.domain.inquiry.dto.response.InquirySaveResponseDto;
 import custom.capstone.domain.inquiry.dto.response.InquiryUpdateResponseDto;
-import custom.capstone.domain.members.domain.Member;
 import custom.capstone.global.common.BaseResponse;
 import custom.capstone.global.exception.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,10 +32,10 @@ public class InquiryApiController {
     @Operation(summary = "1:1 문의 등록")
     @PostMapping
     public BaseResponse<InquirySaveResponseDto> saveInquiry(
-            @AuthenticationPrincipal final Member member,
+            @AuthenticationPrincipal final String loginEmail,
             final InquirySaveRequestDto requestDto
     ) {
-        final InquirySaveResponseDto result = inquiryService.saveInquiry(member, requestDto);
+        final InquirySaveResponseDto result = inquiryService.saveInquiry(loginEmail, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.INQUIRY_SAVE_SUCCESS,
@@ -44,11 +46,11 @@ public class InquiryApiController {
     @Operation(summary = "1:1 문의 수정")
     @PatchMapping("/{inquiryId}")
     public BaseResponse<InquiryUpdateResponseDto> updateInquiry(
-            @AuthenticationPrincipal final Member member,
+            @AuthenticationPrincipal final String loginEmail,
             @PathVariable("inquiryId") final Long id,
             @RequestBody final InquiryUpdateRequestDto requestDto
     ) {
-        final InquiryUpdateResponseDto result = inquiryService.updateInquiry(member, id, requestDto);
+        final InquiryUpdateResponseDto result = inquiryService.updateInquiry(loginEmail, id, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.INQUIRY_UPDATE_SUCCESS,
@@ -65,21 +67,20 @@ public class InquiryApiController {
     @Operation(summary = "문의 삭제")
     @DeleteMapping("/{inquiryId}")
     public Long deleteInquiry(
-            @AuthenticationPrincipal final Member member,
+            @AuthenticationPrincipal final String loginEmail,
             @PathVariable("inquiryId") final Long id
     ) {
-        inquiryService.deleteInquiry(member, id);
+        inquiryService.deleteInquiry(loginEmail, id);
         return id;
     }
 
     @Operation(summary = "1:1 문의 답변 등록")
     @PostMapping("/answer")
     public BaseResponse<AnswerSaveResponseDto> saveAnswer(
-            @AuthenticationPrincipal final Member member,
-            @PathVariable("inquiryId") final Long id,
+            @AuthenticationPrincipal final String loginEmail,
             @RequestBody final AnswerSaveRequestDto requestDto
     ) {
-        final AnswerSaveResponseDto result = answerService.saveAnswer(member, id, requestDto);
+        final AnswerSaveResponseDto result = answerService.saveAnswer(loginEmail, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.ANSWER_SAVE_SUCCESS,
@@ -90,11 +91,11 @@ public class InquiryApiController {
     @Operation(summary = "1:1 문의 답변 수정")
     @PatchMapping("/answer/{answerId}")
     public BaseResponse<AnswerUpdateResponseDto> updateAnswer(
-            @AuthenticationPrincipal final Member member,
-            @PathVariable("answerId") final Long answerId,
+            @AuthenticationPrincipal final String loginEmail,
+            @PathVariable("answerId") final Long id,
             @RequestBody final AnswerUpdateRequestDto requestDto
     ) {
-        final AnswerUpdateResponseDto result = answerService.updateAnswer(member, answerId, requestDto);
+        final AnswerUpdateResponseDto result = answerService.updateAnswer(loginEmail, id, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.ANSWER_UPDATE_SUCCESS,
@@ -105,10 +106,10 @@ public class InquiryApiController {
     @Operation(summary = "1:1 문의 답변 삭제")
     @DeleteMapping("/answer/{answerId}")
     public Long deleteAnswer(
-            @AuthenticationPrincipal final Member member,
-            @PathVariable("answerId") final Long answerId
+            @AuthenticationPrincipal final String loginEmail,
+            @PathVariable("answerId") final Long id
     ) {
-        answerService.deleteAnswer(member, answerId);
-        return answerId;
+        answerService.deleteAnswer(loginEmail, id);
+        return id;
     }
 }
