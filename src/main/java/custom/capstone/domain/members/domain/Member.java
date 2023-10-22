@@ -80,10 +80,6 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @OneToMany(mappedBy = "member", cascade = REMOVE)
     private final List<Notice> notices = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "member", cascade = REMOVE)
-//    private final List<Answer> answers = new ArrayList<>();
-
-
     @Builder
     public Member(
             final String email,
@@ -103,7 +99,8 @@ public class Member extends BaseTimeEntity implements UserDetails {
     public void update(
             final String nickname,
             final String password,
-            final String phoneNumber) {
+            final String phoneNumber
+    ) {
         this.nickname = nickname;
         this.password = password;
         this.phoneNumber = phoneNumber;
@@ -119,7 +116,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("member"));
+        return List.of(new SimpleGrantedAuthority(getRole().name()));
     }
 
     @Override

@@ -57,7 +57,7 @@ public class JwtTokenProvider {
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(final String token) {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(this.getUserPk(token), "", userDetails.getAuthorities());
     }
 
     // 토큰에서 회원 정보 추출
@@ -65,9 +65,11 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Request 의 Header 에서 token 값을 가져옵니다. "Bearer" : "TOKEN 값'
+    // Request 의 Header 에서 token 값을 가져옵니다. "Authorization" : "Bearer {TOKEN 값}'
     public String resolveToken(final HttpServletRequest request) {
-        return request.getHeader("Bearer");
+        final String authorizationHeader = request.getHeader("Authorization");
+
+        return authorizationHeader.substring(7);    // Bearer 를 제외한 TOKEN 값만 반환
     }
 
     // 토큰의 유효성 + 만료일자 확인

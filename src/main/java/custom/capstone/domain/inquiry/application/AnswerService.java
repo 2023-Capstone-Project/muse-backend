@@ -8,15 +8,13 @@ import custom.capstone.domain.inquiry.dto.request.AnswerSaveRequestDto;
 import custom.capstone.domain.inquiry.dto.request.AnswerUpdateRequestDto;
 import custom.capstone.domain.inquiry.dto.response.AnswerSaveResponseDto;
 import custom.capstone.domain.inquiry.dto.response.AnswerUpdateResponseDto;
+import custom.capstone.domain.inquiry.exception.AnswerInvalidException;
 import custom.capstone.domain.inquiry.exception.AnswerNotFoundException;
 import custom.capstone.domain.inquiry.exception.InquiryNotFoundException;
 import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
-import custom.capstone.domain.members.domain.MemberRole;
-import custom.capstone.domain.members.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,14 +29,17 @@ public class AnswerService {
      * 답변 등록
      */
     @Transactional
-    public AnswerSaveResponseDto saveAnswer(final Long inquiryId, final AnswerSaveRequestDto requestDto) {
-        getValidMember();
+    public AnswerSaveResponseDto saveAnswer(
+            final String loginEmail,
+            final AnswerSaveRequestDto requestDto
+    ) {
+        final Member admin = getValidAdmin(loginEmail);
 
-        final Inquiry inquiry = inquiryRepository.findById(inquiryId)
+        final Inquiry inquiry = inquiryRepository.findById(requestDto.inquiryId())
                 .orElseThrow(InquiryNotFoundException::new);
 
         final Answer answer = Answer.builder()
-                .admin("관리자")
+                .admin(admin.getNickname())
                 .content(requestDto.content())
                 .build();
 
@@ -52,14 +53,17 @@ public class AnswerService {
      * 답변 수정
      */
     @Transactional
-    public AnswerUpdateResponseDto updateAnswer(final Long inquiryId, final Long answerId, final AnswerUpdateRequestDto requestDto) {
-        getValidMember();
-
-        final Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(InquiryNotFoundException::new);
+    public AnswerUpdateResponseDto updateAnswer(
+            final String loginEmail,
+            final Long answerId,
+            final AnswerUpdateRequestDto requestDto
+    ) {
+        final Member admin = getValidAdmin(loginEmail);
 
         final Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(AnswerNotFoundException::new);
+
+        checkEqualAdmin(admin, answer);
 
         answer.update(requestDto.content());
 
@@ -69,26 +73,26 @@ public class AnswerService {
     /**
      * 답변 삭제
      */
-    public void deleteAnswer(final Long inquiryId, final Long answerId) {
-        final Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(InquiryNotFoundException::new);
+    public void deleteAnswer(final String loginEmail, final Long answerId) {
+        final Member admin = getValidAdmin(loginEmail);
 
         final Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(AnswerNotFoundException::new);
 
-        getValidMember();
+        checkEqualAdmin(admin, answer);
 
         answerRepository.delete(answer);
     }
 
-    // 관리자가 맞는지 확인
-    private void getValidMember() {
-        final String email =  SecurityContextHolder.getContext().getAuthentication().getName();
+    // 관리자인지 확인
+    private Member getValidAdmin(final String loginEmail) {
+        return memberRepository.findByEmail(loginEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("관리자를 찾을 수 없습니다."));
+    }
 
-        final Member member = memberRepository.findByEmail(email)
-                .orElseThrow(MemberNotFoundException::new);
-
-        if (member.getRole() != MemberRole.ADMIN)
-            throw new AccessDeniedException("해당 권한이 없습니다.");
+    // 답변한 관리자가 맞는지 확인
+    private void checkEqualAdmin(final Member admin, final Answer answer) {
+        if (!answer.getAdmin().equals(admin))
+            throw new AnswerInvalidException();
     }
 }

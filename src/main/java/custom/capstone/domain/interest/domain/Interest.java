@@ -36,12 +36,8 @@ public class Interest {
         post.getInterests().add(this);
     }
 
-    public static Interest save(final Member member, final Post post) {
-        final Interest interest = new Interest();
-
-        interest.setMember(member);
-        interest.setPost(post);
-
-        return interest;
+    public Interest(final Member member, final Post post) {
+        setMember(member);
+        setPost(post);
     }
 }

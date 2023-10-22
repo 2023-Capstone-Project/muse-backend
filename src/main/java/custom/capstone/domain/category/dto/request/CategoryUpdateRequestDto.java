@@ -1,7 +1,9 @@
 package custom.capstone.domain.category.dto.request;
 
+import javax.validation.constraints.NotBlank;
+
 public record CategoryUpdateRequestDto (
-        String title,
-        String changeTitle
+        @NotBlank
+        String title
 ) {
 }

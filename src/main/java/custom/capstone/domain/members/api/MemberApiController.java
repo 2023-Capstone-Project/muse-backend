@@ -13,6 +13,7 @@ import custom.capstone.global.exception.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
@@ -52,16 +53,19 @@ public class MemberApiController {
 
     @Operation(summary = "로그아웃")
     @GetMapping("/logout")
-    public String logout(final HttpServletRequest request, final HttpServletResponse response) {
+    public java.lang.String logout(final HttpServletRequest request, final HttpServletResponse response) {
         new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
         return "redirect:/";
     }
 
     @Operation(summary = "회원 정보 수정")
     @PatchMapping("/{memberId}")
-    public BaseResponse<MemberUpdateResponseDto> updateMember(@PathVariable("memberId") final Long id,
-                                                              @Valid @RequestBody final MemberUpdateRequestDto requestDto) {
-        final MemberUpdateResponseDto result = memberService.updateMember(id, requestDto);
+    public BaseResponse<MemberUpdateResponseDto> updateMember(
+            @AuthenticationPrincipal final String loginEmail,
+            @PathVariable("memberId") final Long id,
+            @Valid @RequestBody final MemberUpdateRequestDto requestDto
+    ) {
+        final MemberUpdateResponseDto result = memberService.updateMember(loginEmail, id, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.MEMBER_UPDATE_SUCCESS,

@@ -6,30 +6,29 @@ import custom.capstone.domain.inquiry.dto.request.InquirySaveRequestDto;
 import custom.capstone.domain.inquiry.dto.request.InquiryUpdateRequestDto;
 import custom.capstone.domain.inquiry.dto.response.InquirySaveResponseDto;
 import custom.capstone.domain.inquiry.dto.response.InquiryUpdateResponseDto;
+import custom.capstone.domain.inquiry.exception.InquiryInvalidException;
 import custom.capstone.domain.inquiry.exception.InquiryNotFoundException;
-import custom.capstone.domain.inquiry.exception.InvalidInquiryException;
 import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
-import custom.capstone.domain.members.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class InquiryService {
-    private final MemberRepository memberRepository;
     private final InquiryRepository inquiryRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 문의 등록
      */
     @Transactional(readOnly = true)
-    public InquirySaveResponseDto saveInquiry(final InquirySaveRequestDto requestDto) {
-        final Member member = getValidMember();
+    public InquirySaveResponseDto saveInquiry(final String loginEmail, final InquirySaveRequestDto requestDto) {
+        final Member member = getValidMember(loginEmail);
 
         final Inquiry inquiry = Inquiry.builder()
                 .member(member)
@@ -46,8 +45,17 @@ public class InquiryService {
      * 문의 수정
      */
     @Transactional
-    public InquiryUpdateResponseDto updateInquiry(final Long inquiryId, final InquiryUpdateRequestDto requestDto) {
-        final Inquiry inquiry = getValidInquiryMember(inquiryId);
+    public InquiryUpdateResponseDto updateInquiry(
+            final String loginEmail,
+            final Long inquiryId,
+            final InquiryUpdateRequestDto requestDto
+    ) {
+        final Member member = getValidMember(loginEmail);
+
+        final Inquiry inquiry = inquiryRepository.findById(inquiryId)
+                        .orElseThrow(InquiryNotFoundException::new);
+
+        checkEqualMember(member, inquiry);
 
         inquiry.update(requestDto.title(), requestDto.content());
 
@@ -66,29 +74,26 @@ public class InquiryService {
      * 문의 삭제
      */
     @Transactional
-    public void deleteInquiry(final Long inquiryId) {
-        final Inquiry inquiry = getValidInquiryMember(inquiryId);
+    public void deleteInquiry(final String loginEmail, final Long inquiryId) {
+        final Member member = getValidMember(loginEmail);
+
+        final Inquiry inquiry = inquiryRepository.findById(inquiryId)
+                .orElseThrow(InquiryInvalidException::new);
+
+        checkEqualMember(member, inquiry);
 
         inquiryRepository.delete(inquiry);
     }
 
-    // 작성자가 맞는지 확인
-    private Member getValidMember() {
-        final String email =  SecurityContextHolder.getContext().getAuthentication().getName();
-
-        return memberRepository.findByEmail(email)
-                .orElseThrow(MemberNotFoundException::new);
+    // 회원인지 확인
+    private Member getValidMember(final String loginEmail) {
+        return memberRepository.findByEmail(loginEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
     }
 
-    private Inquiry getValidInquiryMember(final Long inquiryId) {
-        final Member member = getValidMember();
-
-        final Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(InquiryNotFoundException::new);
-
-        if (inquiry.getMember() != member)
-            throw new InvalidInquiryException();
-
-        return inquiry;
+    // 작성자가 맞는지 확인
+    private void checkEqualMember(final Member member, final Inquiry inquiry) {
+        if (!inquiry.getMember().getId().equals(member.getId()))
+            throw new InquiryInvalidException();
     }
 }

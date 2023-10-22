@@ -4,8 +4,8 @@ import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.members.domain.MemberRole;
 import custom.capstone.domain.members.domain.MemberStatus;
-import custom.capstone.domain.members.dto.request.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.request.MemberLoginRequestDto;
+import custom.capstone.domain.members.dto.request.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.request.MemberUpdateRequestDto;
 import custom.capstone.domain.members.dto.response.MemberLoginResponseDto;
 import custom.capstone.domain.members.dto.response.MemberResponseDto;
@@ -13,6 +13,7 @@ import custom.capstone.domain.members.dto.response.MemberUpdateResponseDto;
 import custom.capstone.domain.members.exception.*;
 import custom.capstone.global.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,7 @@ public class MemberService {
                 .email(requestDto.email())
                 .password(passwordEncoder.encode(requestDto.password()))
                 .phoneNumber(requestDto.phoneNumber())
-                .role(MemberRole.NORMAL)        //default 값은 일반인으로 설정
+                .role(MemberRole.GENERAL)        //default 값은 일반인으로 설정
                 .status(MemberStatus.ACTIVE)    //default 값은 활동중으로 설정
                 .build());
 
@@ -70,9 +71,12 @@ public class MemberService {
      * 회원 정보 수정
      */
     @Transactional
-    public MemberUpdateResponseDto updateMember(final Long memberId, final MemberUpdateRequestDto requestDto) {
-        final Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+    public MemberUpdateResponseDto updateMember(
+            final String loginEmail,
+            final Long id,
+            final MemberUpdateRequestDto requestDto
+    ) {
+        final Member member = getValidMember(loginEmail);
 
         checkPasswordEquals(requestDto.password(), requestDto.checkPassword());
 
@@ -115,9 +119,13 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
-    /**
-     * 이메일, 닉네임 중복 여부 확인
-     */
+    // 회원인지 확인
+    private Member getValidMember(final String loginEmail) {
+        return memberRepository.findByEmail(loginEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+    }
+    
+     // 이메일, 닉네임 중복 여부 확인
     private void checkEmailDuplicate(final MemberSaveRequestDto requestDto) {
         if (memberRepository.existsMemberByEmail(requestDto.email()))
             throw new MemberEmailExistException();
@@ -133,9 +141,7 @@ public class MemberService {
         checkNicknameDuplicate(requestDto);
     }
 
-    /**
-     * 비밀번호 확인
-     */
+    // 비밀번호 확인
     private void checkPasswordEquals(final String password, final String checkPassword) {
         if (!password.equals(checkPassword))
             throw new JoinPasswordException();

@@ -9,6 +9,7 @@ import custom.capstone.global.exception.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,8 +23,11 @@ public class InterestApiController {
 
     @Operation(summary = "좋아요 생성")
     @PostMapping
-    public BaseResponse<InterestSaveResponseDto> saveInterest(@RequestBody @Valid final InterestSaveRequestDto requestDto) {
-        final InterestSaveResponseDto result = interestService.saveInterest(requestDto);
+    public BaseResponse<InterestSaveResponseDto> saveInterest(
+            @AuthenticationPrincipal final String loginEmail,
+            @RequestBody @Valid final InterestSaveRequestDto requestDto
+    ) {
+        final InterestSaveResponseDto result = interestService.saveInterest(loginEmail, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.INTEREST_SAVE_SUCCESS,
@@ -33,7 +37,10 @@ public class InterestApiController {
 
     @Operation(summary = "좋아요 취소")
     @DeleteMapping
-    public void cancelInterest(@RequestBody @Valid final InterestDeleteRequestDto requestDto) {
-        interestService.cancelInterest(requestDto);
+    public void cancelInterest(
+            @AuthenticationPrincipal final String loginEmail,
+            @RequestBody@Valid final InterestDeleteRequestDto requestDto
+    ) {
+        interestService.cancelInterest(loginEmail, requestDto);
     }
 }

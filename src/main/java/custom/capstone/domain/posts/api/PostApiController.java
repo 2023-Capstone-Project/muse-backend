@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,8 +29,11 @@ public class PostApiController {
 
     @Operation(summary = "게시글 등록")
     @PostMapping
-    public BaseResponse<PostSaveResponseDto> savePost(@Valid @RequestBody final PostSaveRequestDto requestDto) {
-        final PostSaveResponseDto result = postService.savePost(requestDto);
+    public BaseResponse<PostSaveResponseDto> savePost(
+            @AuthenticationPrincipal final String loginEmail,
+            @Valid @RequestBody final PostSaveRequestDto requestDto
+    ) {
+        final PostSaveResponseDto result = postService.savePost(loginEmail, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.POST_SAVE_SUCCESS,
@@ -40,10 +44,11 @@ public class PostApiController {
     @Operation(summary = "게시글 수정")
     @PatchMapping("/{postId}")
     public BaseResponse<PostResponseDto> updatePost(
+            @AuthenticationPrincipal final String loginEmail,
             @PathVariable("postId") final Long id,
             @Valid @RequestBody final PostUpdateRequestDto requestDto
     ) {
-        final PostResponseDto result = postService.updatePost(id, requestDto);
+        final PostResponseDto result = postService.updatePost(loginEmail, id, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.POST_UPDATE_SUCCESS,
@@ -71,8 +76,11 @@ public class PostApiController {
 
     @Operation(summary = "게시글 삭제")
     @DeleteMapping("/{postId}")
-    public Long deletePost(@PathVariable("postId") final Long id) {
-        postService.deletePost(id);
+    public Long deletePost(
+            @AuthenticationPrincipal final String loginEmail,
+            @PathVariable("postId") final Long id
+    ) {
+        postService.deletePost(loginEmail, id);
         return id;
     }
 

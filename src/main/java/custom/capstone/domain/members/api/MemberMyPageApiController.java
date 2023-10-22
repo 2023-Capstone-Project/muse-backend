@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -26,32 +27,28 @@ public class MemberMyPageApiController {
 
     @Operation(summary = "자신이 작성한 게시글 목록 페이징 조회")
     @GetMapping("/{memberId}/mypage/posts")
-    public Page<PostListResponseDto> postsByMember(@PathVariable("memberId") final Long id,
-                                                   final Pageable pageable) {
+    public Page<PostListResponseDto> postsByMember(@PathVariable("memberId") final Long id, final Pageable pageable) {
         return memberMyPageService.findPostsByMemberId(id, pageable)
                 .map(PostListResponseDto::new);
     }
 
     @Operation(summary = "자신이 작성한 후기 목록 페이징 조회")
     @GetMapping("/{memberId}/mypage/reviews")
-    public Page<ReviewListResponseDto> reviewsByMember(@PathVariable("memberId") final Long id,
-                                                       final Pageable pageable) {
+    public Page<ReviewListResponseDto> reviewsByMember(@PathVariable("memberId") final Long id, final Pageable pageable) {
         return memberMyPageService.findReviewsByMemberId(id, pageable)
                 .map(ReviewListResponseDto::new);
     }
 
     @Operation(summary = "자신이 거래한 시안 목록 페이징 조회")
     @GetMapping("/{memberId}/mypage/trading")
-    public Page<TradingListResponseDto> productsByMember(@PathVariable("memberId") final Long id,
-                                                         final Pageable pageable) {
+    public Page<TradingListResponseDto> productsByMember(@PathVariable("memberId") final Long id, final Pageable pageable) {
         return memberMyPageService.findTradingByMemberId(id, pageable)
                 .map(TradingListResponseDto::new);
     }
 
     @Operation(summary = "자신이 좋아요한 시안 목록 페이징 조회")
     @GetMapping("/{memberId}/mypage/interest")
-    public Page<InterestListResponseDto> interestByMember(@PathVariable("memberId") final Long id,
-                                                          final Pageable pageable) {
+    public Page<InterestListResponseDto> interestByMember(@PathVariable("memberId") final Long id, final Pageable pageable) {
         return memberMyPageService.findInterestByMemberId(id, pageable)
                 .map(InterestListResponseDto::new);
     }

@@ -72,10 +72,12 @@ public class Post extends BaseTimeEntity {
             final String title,
             final String content,
             final int price,
+            final PostType type,
             final PostStatus status) {
         this.title = title;
         this.content = content;
         this.price = price;
+        this.type = type;
         this.status = status;
     }
 

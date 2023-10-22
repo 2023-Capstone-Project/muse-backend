@@ -1,6 +1,7 @@
 package custom.capstone.domain.posts.dto.request;
 
 import custom.capstone.domain.posts.domain.PostStatus;
+import custom.capstone.domain.posts.domain.PostType;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.EnumType;
@@ -19,6 +20,11 @@ public record PostUpdateRequestDto (
         int price,
 
         @Enumerated(EnumType.STRING)
+        PostType type,
+
+        @Enumerated(EnumType.STRING)
         PostStatus status
+
+        // TODO: image Urls
 ) {
 }

@@ -10,7 +10,7 @@ public record MemberUpdateRequestDto (
         String nickname,
 
         @NotBlank(message = "비밀번호를 입력해 주세요.")
-        @Pattern(regexp = "^[A-Za-z[0-9]]{8,16}$",
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,16}$",
                 message = "비밀번호는 영문, 숫자 포함 8~16자 이어야 합니다.")
         String password,
 
@@ -21,5 +21,7 @@ public record MemberUpdateRequestDto (
         @Pattern(regexp = "^01[016789]-\\d{4}-\\d{4}$",
                 message = "핸드폰 양식과 맞지 않습니다.(01x-xxxx-xxxx)")
         String phoneNumber
+
+        //TODO: profile Image Url
 ) {
 }
