@@ -10,6 +10,15 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
+
+    /**
+     * 카테고리별 게시글 페이징 조회
+     */
+    @Query(value = "select p" +
+            " from Post p" +
+            " where p.category.id = :categoryId")
+    Page<Post> findPostsByCategory(final Long categoryId, final Pageable pageable);
+
     /**
      * 게시글 페이징 조회
      */
@@ -23,8 +32,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
      */
     @Query(value = "select p" +
             " from Post p" +
-            " where p.id = :id")
-    Optional<Post> findDetailById(@Param("id") final Long postId);
+            " join fetch p.category c" +
+            " where c.id = :categoryId AND p.id = :postId")
+    Optional<Post> findDetailById(@Param("categoryId") final Long categoryId, @Param("postId") final Long postId);
 
     /**
      * 게시글 통합 검색

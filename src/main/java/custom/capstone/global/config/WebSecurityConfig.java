@@ -28,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 .antMatchers("/api-docs", "/swagger*/**")
                 .antMatchers(HttpMethod.POST, "/api/members/join", "/api/members/login")
-                .antMatchers(HttpMethod.GET, "/api/posts/**", "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**");
+                .antMatchers(HttpMethod.GET, "/api/categories", "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**");
     }
 
     @Override
@@ -44,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
 
                 // 관리자만 접근 가능
-                .antMatchers(HttpMethod.POST, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.POST,  "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
 

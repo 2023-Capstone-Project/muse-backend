@@ -56,6 +56,13 @@ public class PostApiController {
         );
     }
 
+    @Operation(summary = "카테고리별 페이징 조회")
+    @GetMapping("/{categoryId}")
+    public Page<PostListResponseDto> getCategoryPost(@PathVariable("categoryId") final Long id, final Pageable pageable) {
+        return postService.findPostsByCategory(id, pageable)
+                .map(PostListResponseDto::new);
+    }
+
     @Operation(summary = "게시글 페이징 조회")
     @GetMapping
     public Page<PostListResponseDto> findAll(final Pageable pageable) {
@@ -64,9 +71,12 @@ public class PostApiController {
     }
 
     @Operation(summary = "게시글 상세 조회")
-    @GetMapping("/{postId}")
-    public BaseResponse<PostResponseDto> findDetailById(@PathVariable("postId") final Long id) {
-        final PostResponseDto result = postService.findDetailById(id);
+    @GetMapping("/{categoryId}/{postId}")
+    public BaseResponse<PostResponseDto> getPostDetail(
+            @PathVariable("categoryId") final Long categoryId,
+            @PathVariable("postId") final Long postId
+    ) {
+        final PostResponseDto result = postService.findDetailById(categoryId, postId);
 
         return BaseResponse.of(
                 BaseResponseStatus.POST_READ_SUCCESS,

@@ -19,6 +19,9 @@ public record PostUpdateRequestDto (
         @NotNull(message = "가격을 입력해 주세요.")
         int price,
 
+        @NotNull(message = "카테고리를 설정해 주세요.")
+        String categoryTitle,
+
         @Enumerated(EnumType.STRING)
         PostType type,
 
