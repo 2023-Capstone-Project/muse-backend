@@ -1,5 +1,6 @@
 package custom.capstone.domain.posts.domain;
 
+import custom.capstone.domain.category.domain.Category;
 import custom.capstone.domain.interest.domain.Interest;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.global.common.BaseTimeEntity;
@@ -28,6 +29,10 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
     @Column(length = 50, nullable = false)
     private String title;
 
@@ -53,18 +58,25 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post")
     private final Set<Interest> interests = new HashSet<>();
 
+    private void setCategory(final Category category) {
+        this.category = category;
+        category.getPost().add(this);
+    }
+
     @Builder
     public Post(
             final String title,
             final String content,
             final int price,
             final Member member,
+            final Category category,
             final PostType type) {
         this.title = title;
         this.content = content;
         this.price = price;
         this.member = member;
         this.status = PostStatus.SALE;
+        setCategory(category);
         this.type = type;
     }
 
@@ -72,11 +84,13 @@ public class Post extends BaseTimeEntity {
             final String title,
             final String content,
             final int price,
+            final Category category,
             final PostType type,
             final PostStatus status) {
         this.title = title;
         this.content = content;
         this.price = price;
+        setCategory(category);
         this.type = type;
         this.status = status;
     }

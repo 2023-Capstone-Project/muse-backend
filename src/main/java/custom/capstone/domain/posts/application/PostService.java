@@ -1,5 +1,7 @@
 package custom.capstone.domain.posts.application;
 
+import custom.capstone.domain.category.dao.CategoryRepository;
+import custom.capstone.domain.category.domain.Category;
 import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.posts.dao.PostRepository;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final CategoryRepository categoryRepository;
 
     /**
      * 게시글 등록
@@ -30,11 +33,14 @@ public class PostService {
     public PostSaveResponseDto savePost(final String loginEmail, final PostSaveRequestDto requestDto) {
         final Member member = getValidMember(loginEmail);
 
+        final Category category = categoryRepository.findByTitle(requestDto.categoryTitle());
+
         final Post post = Post.builder()
                 .title(requestDto.title())
                 .content(requestDto.content())
                 .price(requestDto.price())
                 .member(member)
+                .category(category)
                 .type(requestDto.type())
                 .build();
 
@@ -60,7 +66,9 @@ public class PostService {
 
         checkEqualMember(member, post);
 
-        post.update(requestDto.title(), requestDto.content(), requestDto.price(), requestDto.type(), requestDto.status());
+        final Category category = categoryRepository.findByTitle(requestDto.categoryTitle());
+
+        post.update(requestDto.title(), requestDto.content(), requestDto.price(), category, requestDto.type(), requestDto.status());
 
         return new PostResponseDto(post);
     }
@@ -72,6 +80,10 @@ public class PostService {
         return postRepository.findAll(pageable);
     }
 
+    public Page<Post> findPostsByCategory(final Long categoryId, final Pageable pageable) {
+        return postRepository.findPostsByCategory(categoryId, pageable);
+    }
+
     public Post findById(final Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
@@ -80,8 +92,8 @@ public class PostService {
     /**
      * 게시글 상세 조회
      */
-    public PostResponseDto findDetailById(final Long postId) {
-        final Post post = postRepository.findDetailById(postId)
+    public PostResponseDto findDetailById(final Long categoryId, final Long postId) {
+        final Post post = postRepository.findDetailById(categoryId, postId)
                 .orElseThrow(PostNotFoundException::new);
 
         post.increaseView();
