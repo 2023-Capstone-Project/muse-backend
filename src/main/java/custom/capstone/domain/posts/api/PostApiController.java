@@ -15,10 +15,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.util.List;
 
 @Tag(name = "게시글 API")
 @RestController
@@ -28,12 +32,13 @@ public class PostApiController {
     private final PostService postService;
 
     @Operation(summary = "게시글 등록")
-    @PostMapping
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public BaseResponse<PostSaveResponseDto> savePost(
             @AuthenticationPrincipal final String loginEmail,
-            @Valid @RequestBody final PostSaveRequestDto requestDto
-    ) {
-        final PostSaveResponseDto result = postService.savePost(loginEmail, requestDto);
+            @RequestParam(value = "imageUrls", required = false) final List<MultipartFile> images,
+            @Valid @RequestPart("requestDto") final PostSaveRequestDto requestDto
+    ) throws IOException {
+        final PostSaveResponseDto result = postService.savePost(loginEmail, images, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.POST_SAVE_SUCCESS,

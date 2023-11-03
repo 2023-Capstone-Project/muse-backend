@@ -18,6 +18,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +29,18 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
+    private final PostImageService postImageService;
 
     /**
      * 게시글 등록
      */
     @Transactional
-    public PostSaveResponseDto savePost(final String loginEmail, final PostSaveRequestDto requestDto) {
+    public PostSaveResponseDto savePost(
+            final String loginEmail,
+            final List<MultipartFile> images,
+            final PostSaveRequestDto requestDto
+    ) throws IOException {
+
         final Member member = getValidMember(loginEmail);
 
         final Category category = categoryRepository.findByTitle(requestDto.categoryTitle());
@@ -45,6 +55,7 @@ public class PostService {
                 .build();
 
         postRepository.save(post);
+        postImageService.savePostImage(post, images);
 
         return new PostSaveResponseDto(post.getId());
     }
@@ -92,12 +103,12 @@ public class PostService {
     /**
      * 게시글 상세 조회
      */
+    @Transactional
     public PostResponseDto findDetailById(final Long categoryId, final Long postId) {
         final Post post = postRepository.findDetailById(categoryId, postId)
                 .orElseThrow(PostNotFoundException::new);
 
         post.increaseView();
-        postRepository.save(post);
 
         return new PostResponseDto(post);
     }

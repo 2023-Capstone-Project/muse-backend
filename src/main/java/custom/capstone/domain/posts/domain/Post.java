@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static javax.persistence.EnumType.STRING;
@@ -58,9 +60,17 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post")
     private final Set<Interest> interests = new HashSet<>();
 
-    private void setCategory(final Category category) {
+    @OneToMany(
+            mappedBy = "post",
+            fetch = LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            orphanRemoval = true
+    )
+    private final List<PostImage> postImages = new ArrayList<>();
+
+    public void setCategory(final Category category) {
         this.category = category;
-        category.getPost().add(this);
+        category.getPosts().add(this);
     }
 
     @Builder

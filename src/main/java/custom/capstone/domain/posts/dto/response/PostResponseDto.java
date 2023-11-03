@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -18,7 +20,7 @@ public class PostResponseDto {
     private String content;
     private int views;
     private int interestCount;
-    //    private List<String> imgUrls; -> TODO: 이미지 구현 후 적용하기
+    private List<String> imageUrls;
     private String categoryTitle;
     private PostType type;
     private LocalDateTime createdAt;
@@ -31,7 +33,6 @@ public class PostResponseDto {
         this.content = post.getContent();
         this.views = post.getViews();
         this.interestCount = post.getInterestCount();
-//        this.imgUrls = imgUrls;
         this.categoryTitle = post.getCategory().getTitle();
         this.type = post.getType();
         this.createdAt = post.getCreatedAt();
@@ -40,5 +41,8 @@ public class PostResponseDto {
                 post.getId(),
                 post.getMember().getNickname()
         );
+        this.imageUrls = post.getPostImages().stream()
+                .map(image -> image.getImageUrl())
+                .collect(Collectors.toList());
     }
 }
