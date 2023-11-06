@@ -14,10 +14,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.util.List;
 
 @Tag(name = "매거진 API")
 @RestController
@@ -27,12 +31,13 @@ public class MagazineApiController {
     private final MagazineService magazineService;
 
     @Operation(summary = "매거진 등록")
-    @PostMapping
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public BaseResponse<MagazineSaveResponseDto> saveMagazine(
             @AuthenticationPrincipal final String loginEmail,
-            @Valid @RequestBody final MagazineSaveRequestDto requestDto
-    ) {
-        final MagazineSaveResponseDto result = magazineService.saveMagazine(loginEmail, requestDto);
+            @RequestPart(value = "imageUrls", required = false) final List<MultipartFile> images,
+            @Valid @RequestPart("requestDto") final MagazineSaveRequestDto requestDto
+    ) throws IOException {
+        final MagazineSaveResponseDto result = magazineService.saveMagazine(loginEmail, images, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.MAGAZINE_SAVE_SUCCESS,
@@ -67,8 +72,13 @@ public class MagazineApiController {
 
     @Operation(summary = "매거진 페이징 조회")
     @GetMapping
-    public Page<MagazineListResponseDto> findAll(final Pageable pageable) {
-        return magazineService.findAll(pageable);
+    public BaseResponse<Page<MagazineListResponseDto>> findAll(final Pageable pageable) {
+        final Page<MagazineListResponseDto> result = magazineService.findAll(pageable);
+
+        return BaseResponse.of(
+                BaseResponseStatus.MAGAZINE_READ_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "매거진 상세 조회")

@@ -13,6 +13,7 @@ public enum BaseResponseStatus {
     JOIN_SUCCESS(HttpStatus.CREATED, 1000, "회원가입에 성공했습니다."),
     LOGIN_SUCCESS(HttpStatus.OK, 1001, "성공적으로 로그인 되었습니다."),
     MEMBER_UPDATE_SUCCESS(HttpStatus.OK, 1002, "성공적으로 회원 정보가 수정되었습니다."),
+    MEMBER_READ_SUCCESS(HttpStatus.OK, 1003, "성공적으로 회원 정보가 조회되었습니다."),
 
     // POST
     POST_SAVE_SUCCESS(HttpStatus.CREATED, 1100, "게시글을 성공적으로 등록했습니다."),

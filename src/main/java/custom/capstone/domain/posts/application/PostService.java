@@ -123,9 +123,9 @@ public class PostService {
         final Post post = postRepository.findDetailById(categoryId, postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        post.increaseView();
-
         final List<String> imageUrls = postImageService.findAllPostImages(post);
+
+        post.increaseView();
 
         return new PostResponseDto(post, imageUrls);
     }

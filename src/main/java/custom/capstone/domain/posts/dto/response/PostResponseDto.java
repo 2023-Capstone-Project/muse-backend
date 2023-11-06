@@ -19,12 +19,12 @@ public class PostResponseDto {
     private String content;
     private int views;
     private int interestCount;
-    private List<String> imageUrls;
     private String categoryTitle;
     private PostType type;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private MemberProfileDto writer;
+    private List<String> imageUrls;
 
     public PostResponseDto(final Post post, final List<String> imageUrls) {
         this.postId = post.getId();
