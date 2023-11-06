@@ -4,6 +4,7 @@ import custom.capstone.domain.interest.dto.response.InterestListResponseDto;
 import custom.capstone.domain.members.application.FollowService;
 import custom.capstone.domain.members.application.MemberMyPageService;
 import custom.capstone.domain.members.dto.MemberProfileDto;
+import custom.capstone.domain.posts.application.PostImageService;
 import custom.capstone.domain.posts.dto.response.PostListResponseDto;
 import custom.capstone.domain.review.dto.response.ReviewListResponseDto;
 import custom.capstone.domain.trading.dto.response.TradingListResponseDto;
@@ -12,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -24,12 +24,12 @@ import java.util.Set;
 public class MemberMyPageApiController {
     private final MemberMyPageService memberMyPageService;
     private final FollowService followService;
+    private final PostImageService postImageService;
 
     @Operation(summary = "자신이 작성한 게시글 목록 페이징 조회")
     @GetMapping("/{memberId}/mypage/posts")
     public Page<PostListResponseDto> postsByMember(@PathVariable("memberId") final Long id, final Pageable pageable) {
-        return memberMyPageService.findPostsByMemberId(id, pageable)
-                .map(PostListResponseDto::new);
+        return memberMyPageService.findPostsByMemberId(id, pageable);
     }
 
     @Operation(summary = "자신이 작성한 후기 목록 페이징 조회")

@@ -1,5 +1,7 @@
 package custom.capstone.domain.members.domain;
 
 public enum MemberRole {
-    ADMIN, GENERAL, DESIGNER    //관리자, 일반인, 디자이너
+    ROLE_ADMIN,     // 관리자
+    ROLE_GENERAL,   // 일반인
+    ROLE_DESIGNER   // 디자이너
 }
