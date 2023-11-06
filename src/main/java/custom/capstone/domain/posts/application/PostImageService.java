@@ -1,5 +1,6 @@
 package custom.capstone.domain.posts.application;
 
+import custom.capstone.global.exception.ImageNotFoundException;
 import custom.capstone.domain.posts.dao.PostImageRepository;
 import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.posts.domain.PostImage;
@@ -12,6 +13,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,10 +32,7 @@ public class PostImageService {
 
         final String imageUrl = s3Uploader.uploadImage(image, folderPath);
 
-        final PostImage postImage = PostImage.builder()
-                .post(post)
-                .imageUrl(imageUrl)
-                .build();
+        final PostImage postImage = new PostImage(post, imageUrl);
 
         return postImageRepository.save(postImage);
     }
@@ -51,7 +50,7 @@ public class PostImageService {
         final List<PostImage> postImages = new ArrayList<>();
 
         if (!imageUrls.isEmpty()) {
-            for(final String imageUrl : imageUrls) {
+            for (final String imageUrl : imageUrls) {
                 final PostImage postImage = postImageRepository.save(new PostImage(post, imageUrl));
                 postImages.add(postImage);
             }
@@ -60,7 +59,19 @@ public class PostImageService {
         return postImages;
     }
 
-    public PostImage findPostImagesByPostId(final Long postId) {
-        return postImageRepository.findPostImagesByPostId(postId);
+    // 게시글 썸네일 찾기
+    @Transactional
+    public String findThumbnailUrl(final Post post) {
+        return post.getPostImages().stream()
+                .findFirst()
+                .map(PostImage::getImageUrl)
+                .orElseThrow(ImageNotFoundException::new);
+    }
+
+    // 게시글 이미지 전체 조회
+    public List<String> findAllPostImages(final Post post) {
+        return post.getPostImages().stream()
+                .map(image -> image.getImageUrl())
+                .collect(Collectors.toList());
     }
 }

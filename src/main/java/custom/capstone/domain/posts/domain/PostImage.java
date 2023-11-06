@@ -1,6 +1,6 @@
 package custom.capstone.domain.posts.domain;
 
-import lombok.Builder;
+import custom.capstone.global.common.BaseTimeEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +13,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class PostImage {
+public class PostImage  extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -25,19 +25,13 @@ public class PostImage {
     @Column(name = "image_url")
     private String imageUrl;
 
-    private void setPost(final Post post) {
+    public PostImage(final Post post, final String imageUrl) {
         this.post = post;
+        this.imageUrl = imageUrl;
 
         if (!post.getPostImages().contains(this)) {
             post.getPostImages().add(this);
         }
-    }
-
-    @Builder
-    public PostImage(final Post post,
-                     final String imageUrl) {
-        setPost(post);
-        this.imageUrl = imageUrl;
     }
 }
 

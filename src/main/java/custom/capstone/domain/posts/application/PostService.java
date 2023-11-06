@@ -8,6 +8,7 @@ import custom.capstone.domain.posts.dao.PostRepository;
 import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.posts.dto.request.PostSaveRequestDto;
 import custom.capstone.domain.posts.dto.request.PostUpdateRequestDto;
+import custom.capstone.domain.posts.dto.response.PostListResponseDto;
 import custom.capstone.domain.posts.dto.response.PostResponseDto;
 import custom.capstone.domain.posts.dto.response.PostSaveResponseDto;
 import custom.capstone.domain.posts.exception.PostInvalidAccessException;
@@ -81,18 +82,32 @@ public class PostService {
 
         post.update(requestDto.title(), requestDto.content(), requestDto.price(), category, requestDto.type(), requestDto.status());
 
-        return new PostResponseDto(post);
+        final List<String> imageUrls = postImageService.findAllPostImages(post);
+
+        return new PostResponseDto(post, imageUrls);
     }
 
     /**
      * 게시글 페이징 조회
      */
-    public Page<Post> findAll(final Pageable pageable) {
-        return postRepository.findAll(pageable);
+    public Page<PostListResponseDto> findAll(final Pageable pageable) {
+        final Page<Post> posts = postRepository.findAll(pageable);
+
+        return posts.map(post -> {
+            final String thumbnailUrl = postImageService.findThumbnailUrl(post);
+
+            return new PostListResponseDto(post, thumbnailUrl);
+        });
     }
 
-    public Page<Post> findPostsByCategory(final Long categoryId, final Pageable pageable) {
-        return postRepository.findPostsByCategory(categoryId, pageable);
+    public Page<PostListResponseDto> findPostsByCategory(final Long categoryId, final Pageable pageable) {
+        final Page<Post> posts = postRepository.findPostsByCategory(categoryId, pageable);
+
+        return posts.map(post -> {
+            final String thumbnailUrl = postImageService.findThumbnailUrl(post);
+
+            return new PostListResponseDto(post, thumbnailUrl);
+        });
     }
 
     public Post findById(final Long postId) {
@@ -110,7 +125,9 @@ public class PostService {
 
         post.increaseView();
 
-        return new PostResponseDto(post);
+        final List<String> imageUrls = postImageService.findAllPostImages(post);
+
+        return new PostResponseDto(post, imageUrls);
     }
 
     /**
@@ -132,8 +149,14 @@ public class PostService {
      * 게시글 통합 검색
      */
     @Transactional
-    public Page<Post> searchPosts(final String keyword, final Pageable pageable) {
-        return postRepository.findByKeyword(keyword, pageable);
+    public Page<PostListResponseDto> searchPosts(final String keyword, final Pageable pageable) {
+        final Page<Post> posts = postRepository.findByKeyword(keyword, pageable);
+
+        return posts.map(post -> {
+            final String thumbnailUrl = postImageService.findThumbnailUrl(post);
+
+            return new PostListResponseDto(post, thumbnailUrl);
+        });
     }
 
     // 회원 인지 확인

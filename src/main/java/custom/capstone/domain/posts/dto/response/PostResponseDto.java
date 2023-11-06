@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -27,7 +26,7 @@ public class PostResponseDto {
     private LocalDateTime updatedAt;
     private MemberProfileDto writer;
 
-    public PostResponseDto(final Post post) {
+    public PostResponseDto(final Post post, final List<String> imageUrls) {
         this.postId = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
@@ -39,10 +38,9 @@ public class PostResponseDto {
         this.updatedAt = post.getUpdatedAt();
         this.writer = new MemberProfileDto(
                 post.getId(),
-                post.getMember().getNickname()
+                post.getMember().getNickname(),
+                post.getMember().getProfileImage()
         );
-        this.imageUrls = post.getPostImages().stream()
-                .map(image -> image.getImageUrl())
-                .collect(Collectors.toList());
+        this.imageUrls = imageUrls;
     }
 }

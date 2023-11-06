@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -63,7 +65,7 @@ public class Post extends BaseTimeEntity {
     @OneToMany(
             mappedBy = "post",
             fetch = LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            cascade = {PERSIST, REMOVE},
             orphanRemoval = true
     )
     private final List<PostImage> postImages = new ArrayList<>();
