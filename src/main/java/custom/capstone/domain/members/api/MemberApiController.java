@@ -1,7 +1,6 @@
 package custom.capstone.domain.members.api;
 
 import custom.capstone.domain.members.application.MemberService;
-import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.members.dto.request.MemberLoginRequestDto;
 import custom.capstone.domain.members.dto.request.MemberSaveRequestDto;
 import custom.capstone.domain.members.dto.request.MemberUpdateRequestDto;
@@ -17,10 +16,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Tag(name = "회원 API")
 @RestController
@@ -31,8 +32,10 @@ public class MemberApiController {
 
     @Operation(summary = "회원 가입")
     @PostMapping("/join")
-    public BaseResponse<MemberResponseDto> join(@Valid @RequestBody final MemberSaveRequestDto requestDto) {
-        final MemberResponseDto result = memberService.saveMember(requestDto);
+    public BaseResponse<MemberResponseDto> join(
+            @RequestPart("profile_image") final MultipartFile image,
+            @Valid @RequestPart("requestDto") final MemberSaveRequestDto requestDto) throws IOException {
+        final MemberResponseDto result = memberService.saveMember(image, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.JOIN_SUCCESS,
@@ -75,8 +78,13 @@ public class MemberApiController {
 
     @Operation(summary = "회원 조회")
     @GetMapping("/{memberId}")
-    public Member findById(@PathVariable("memberId") final Long id) {
-        return memberService.findById(id);
+    public BaseResponse<MemberResponseDto> findById(@PathVariable("memberId") final Long id) {
+        final MemberResponseDto result = memberService.findById(id);
+
+        return BaseResponse.of(
+                BaseResponseStatus.MEMBER_READ_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "회원 탈퇴")

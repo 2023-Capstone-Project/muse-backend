@@ -15,10 +15,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.util.List;
 
 @Tag(name = "게시글 API")
 @RestController
@@ -28,12 +32,13 @@ public class PostApiController {
     private final PostService postService;
 
     @Operation(summary = "게시글 등록")
-    @PostMapping
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public BaseResponse<PostSaveResponseDto> savePost(
             @AuthenticationPrincipal final String loginEmail,
-            @Valid @RequestBody final PostSaveRequestDto requestDto
-    ) {
-        final PostSaveResponseDto result = postService.savePost(loginEmail, requestDto);
+            @RequestPart(value = "imageUrls", required = false) final List<MultipartFile> images,
+            @Valid @RequestPart("requestDto") final PostSaveRequestDto requestDto
+    ) throws IOException {
+        final PostSaveResponseDto result = postService.savePost(loginEmail, images, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.POST_SAVE_SUCCESS,
@@ -58,16 +63,27 @@ public class PostApiController {
 
     @Operation(summary = "카테고리별 페이징 조회")
     @GetMapping("/{categoryId}")
-    public Page<PostListResponseDto> getCategoryPost(@PathVariable("categoryId") final Long id, final Pageable pageable) {
-        return postService.findPostsByCategory(id, pageable)
-                .map(PostListResponseDto::new);
+    public BaseResponse<Page<PostListResponseDto>> getCategoryPost(
+            @PathVariable("categoryId") final Long id,
+            final Pageable pageable
+    ) {
+        final Page<PostListResponseDto> result = postService.findPostsByCategory(id, pageable);
+
+        return BaseResponse.of(
+                BaseResponseStatus.POST_READ_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "게시글 페이징 조회")
     @GetMapping
-    public Page<PostListResponseDto> findAll(final Pageable pageable) {
-        return postService.findAll(pageable)
-                .map(PostListResponseDto::new);
+    public BaseResponse<Page<PostListResponseDto>> findAll(final Pageable pageable) {
+        final Page<PostListResponseDto> result = postService.findAll(pageable);
+
+        return BaseResponse.of(
+                BaseResponseStatus.POST_READ_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "게시글 상세 조회")
@@ -79,7 +95,7 @@ public class PostApiController {
         final PostResponseDto result = postService.findDetailById(categoryId, postId);
 
         return BaseResponse.of(
-                BaseResponseStatus.POST_READ_SUCCESS,
+                BaseResponseStatus.POST_DETAIL_READ_SUCCESS,
                 result
         );
     }
@@ -96,11 +112,15 @@ public class PostApiController {
 
     @Operation(summary = "키워드 검색")
     @GetMapping("/search")
-    public Page<PostListResponseDto> searchPosts(
+    public BaseResponse<Page<PostListResponseDto>> searchPosts(
             @RequestParam(value = "keyword", required = false) final String keyword,
             @PageableDefault(direction = Sort.Direction.DESC) final Pageable pageable
     ) {
-        return postService.searchPosts(keyword, pageable)
-                .map(PostListResponseDto::new);
+        final Page<PostListResponseDto> result = postService.searchPosts(keyword, pageable);
+
+        return BaseResponse.of(
+                BaseResponseStatus.POST_SEARCH_SUCCESS,
+                result
+        );
     }
 }

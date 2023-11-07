@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -18,27 +19,28 @@ public class PostResponseDto {
     private String content;
     private int views;
     private int interestCount;
-    //    private List<String> imgUrls; -> TODO: 이미지 구현 후 적용하기
     private String categoryTitle;
     private PostType type;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private MemberProfileDto writer;
+    private List<String> imageUrls;
 
-    public PostResponseDto(final Post post) {
+    public PostResponseDto(final Post post, final List<String> imageUrls) {
         this.postId = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.views = post.getViews();
         this.interestCount = post.getInterestCount();
-//        this.imgUrls = imgUrls;
         this.categoryTitle = post.getCategory().getTitle();
         this.type = post.getType();
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();
         this.writer = new MemberProfileDto(
                 post.getId(),
-                post.getMember().getNickname()
+                post.getMember().getNickname(),
+                post.getMember().getProfileImage()
         );
+        this.imageUrls = imageUrls;
     }
 }

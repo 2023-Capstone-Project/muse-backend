@@ -7,9 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.GenerationType.*;
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -31,6 +35,14 @@ public class Notice extends BaseTimeEntity {
 
     @Column(columnDefinition = "integer default 0", nullable = false)
     private int views;
+
+    @OneToMany(
+            mappedBy = "notice",
+            fetch = LAZY,
+            cascade = {PERSIST, REMOVE},
+            orphanRemoval = true
+    )
+    private final List<NoticeImage> noticeImages = new ArrayList<>();
 
     private void setMember(final Member member) {
         this.member = member;

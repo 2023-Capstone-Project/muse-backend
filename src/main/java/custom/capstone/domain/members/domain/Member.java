@@ -53,7 +53,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Column(nullable = false)
     private MemberStatus status;
 
-    @Column(name = "profile_img_url")
+    @Column(name = "profile_image")
     private String profileImage;
 
     @OneToMany(mappedBy = "member", cascade = REMOVE)
@@ -82,13 +82,16 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     @Builder
     public Member(
+            final String nickname,
+            final String profileImage,
             final String email,
             final String password,
-            final String nickname,
             final String phoneNumber,
             final MemberRole role,
-            final MemberStatus status) {
+            final MemberStatus status
+    ) {
         this.nickname = nickname;
+        this.profileImage = profileImage;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;

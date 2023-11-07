@@ -8,6 +8,7 @@ import custom.capstone.domain.posts.dao.PostRepository;
 import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.posts.dto.request.PostSaveRequestDto;
 import custom.capstone.domain.posts.dto.request.PostUpdateRequestDto;
+import custom.capstone.domain.posts.dto.response.PostListResponseDto;
 import custom.capstone.domain.posts.dto.response.PostResponseDto;
 import custom.capstone.domain.posts.dto.response.PostSaveResponseDto;
 import custom.capstone.domain.posts.exception.PostInvalidAccessException;
@@ -18,6 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +30,18 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
+    private final PostImageService postImageService;
 
     /**
      * 게시글 등록
      */
     @Transactional
-    public PostSaveResponseDto savePost(final String loginEmail, final PostSaveRequestDto requestDto) {
+    public PostSaveResponseDto savePost(
+            final String loginEmail,
+            final List<MultipartFile> images,
+            final PostSaveRequestDto requestDto
+    ) throws IOException {
+
         final Member member = getValidMember(loginEmail);
 
         final Category category = categoryRepository.findByTitle(requestDto.categoryTitle());
@@ -45,6 +56,7 @@ public class PostService {
                 .build();
 
         postRepository.save(post);
+        postImageService.savePostImage(post, images);
 
         return new PostSaveResponseDto(post.getId());
     }
@@ -70,18 +82,32 @@ public class PostService {
 
         post.update(requestDto.title(), requestDto.content(), requestDto.price(), category, requestDto.type(), requestDto.status());
 
-        return new PostResponseDto(post);
+        final List<String> imageUrls = postImageService.findAllPostImages(post);
+
+        return new PostResponseDto(post, imageUrls);
     }
 
     /**
      * 게시글 페이징 조회
      */
-    public Page<Post> findAll(final Pageable pageable) {
-        return postRepository.findAll(pageable);
+    public Page<PostListResponseDto> findAll(final Pageable pageable) {
+        final Page<Post> posts = postRepository.findAll(pageable);
+
+        return posts.map(post -> {
+            final String thumbnailUrl = postImageService.findThumbnailUrl(post);
+
+            return new PostListResponseDto(post, thumbnailUrl);
+        });
     }
 
-    public Page<Post> findPostsByCategory(final Long categoryId, final Pageable pageable) {
-        return postRepository.findPostsByCategory(categoryId, pageable);
+    public Page<PostListResponseDto> findPostsByCategory(final Long categoryId, final Pageable pageable) {
+        final Page<Post> posts = postRepository.findPostsByCategory(categoryId, pageable);
+
+        return posts.map(post -> {
+            final String thumbnailUrl = postImageService.findThumbnailUrl(post);
+
+            return new PostListResponseDto(post, thumbnailUrl);
+        });
     }
 
     public Post findById(final Long postId) {
@@ -92,14 +118,16 @@ public class PostService {
     /**
      * 게시글 상세 조회
      */
+    @Transactional
     public PostResponseDto findDetailById(final Long categoryId, final Long postId) {
         final Post post = postRepository.findDetailById(categoryId, postId)
                 .orElseThrow(PostNotFoundException::new);
 
-        post.increaseView();
-        postRepository.save(post);
+        final List<String> imageUrls = postImageService.findAllPostImages(post);
 
-        return new PostResponseDto(post);
+        post.increaseView();
+
+        return new PostResponseDto(post, imageUrls);
     }
 
     /**
@@ -121,8 +149,14 @@ public class PostService {
      * 게시글 통합 검색
      */
     @Transactional
-    public Page<Post> searchPosts(final String keyword, final Pageable pageable) {
-        return postRepository.findByKeyword(keyword, pageable);
+    public Page<PostListResponseDto> searchPosts(final String keyword, final Pageable pageable) {
+        final Page<Post> posts = postRepository.findByKeyword(keyword, pageable);
+
+        return posts.map(post -> {
+            final String thumbnailUrl = postImageService.findThumbnailUrl(post);
+
+            return new PostListResponseDto(post, thumbnailUrl);
+        });
     }
 
     // 회원 인지 확인

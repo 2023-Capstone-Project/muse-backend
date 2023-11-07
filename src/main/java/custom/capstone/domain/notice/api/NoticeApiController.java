@@ -16,8 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.util.List;
 
 @Tag(name = "공지사항 API")
 @RestController
@@ -30,9 +33,10 @@ public class NoticeApiController {
     @PostMapping
     public BaseResponse<NoticeSaveResponseDto> saveNotice(
             @AuthenticationPrincipal final String loginEmail,
-            @Valid @RequestBody final NoticeSaveRequestDto requestDto
-    ) {
-        final NoticeSaveResponseDto result = noticeService.saveNotice(loginEmail, requestDto);
+            @RequestPart("imageUrls") final List<MultipartFile> images,
+            @Valid @RequestPart("requestDto") final NoticeSaveRequestDto requestDto
+    ) throws IOException {
+        final NoticeSaveResponseDto result = noticeService.saveNotice(loginEmail, images, requestDto);
 
         return  BaseResponse.of(
                 BaseResponseStatus.NOTICE_SAVE_SUCCESS,
@@ -67,8 +71,13 @@ public class NoticeApiController {
 
     @Operation(summary = "공지사항 페이징 조회")
     @GetMapping
-    public Page<NoticeListResponseDto> findAll(final Pageable pageable) {
-        return noticeService.findAll(pageable);
+    public BaseResponse<Page<NoticeListResponseDto>> findAll(final Pageable pageable) {
+        final Page<NoticeListResponseDto> result = noticeService.findAll(pageable);
+
+        return BaseResponse.of(
+                BaseResponseStatus.NOTICE_READ_SUCCESS,
+                result
+        );
     }
 
     @Operation(summary = "공지사항 상세 조회")
@@ -77,7 +86,7 @@ public class NoticeApiController {
         final NoticeResponseDto result = noticeService.findDetailById(id);
 
         return BaseResponse.of(
-                BaseResponseStatus.REVIEW_READ_SUCCESS,
+                BaseResponseStatus.NOTICE_DETAIL_READ_SUCCESS,
                 result
         );
     }

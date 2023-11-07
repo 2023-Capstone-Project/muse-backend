@@ -12,12 +12,15 @@ import custom.capstone.domain.members.dto.response.MemberResponseDto;
 import custom.capstone.domain.members.dto.response.MemberUpdateResponseDto;
 import custom.capstone.domain.members.exception.*;
 import custom.capstone.global.config.jwt.JwtTokenProvider;
+import custom.capstone.infra.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,22 +31,26 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final S3Uploader s3Uploader;
 
     /**
      * 회원 가입
      */
     @Transactional
-    public MemberResponseDto saveMember(final MemberSaveRequestDto requestDto) {
+    public MemberResponseDto saveMember(final MultipartFile image, final MemberSaveRequestDto requestDto) throws IOException {
         validateSingUpRequest(requestDto);
         checkPasswordEquals(requestDto.password(), requestDto.checkPassword());
 
+        final String profileImage = saveProfileImage(image);
+
         final Member member = memberRepository.save(Member.builder()
                 .nickname(requestDto.nickname())
+                .profileImage(profileImage)
                 .email(requestDto.email())
                 .password(passwordEncoder.encode(requestDto.password()))
                 .phoneNumber(requestDto.phoneNumber())
-                .role(MemberRole.GENERAL)        //default 값은 일반인으로 설정
-                .status(MemberStatus.ACTIVE)    //default 값은 활동중으로 설정
+                .role(MemberRole.ROLE_GENERAL)
+                .status(MemberStatus.ACTIVE)
                 .build());
 
         return new MemberResponseDto(member);
@@ -97,9 +104,11 @@ public class MemberService {
     /**
      * 회원 조회
      */
-    public Member findById(final Long memberId) {
-        return memberRepository.findById(memberId)
+    public MemberResponseDto findById(final Long memberId) {
+        final Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
+
+        return new MemberResponseDto(member);
     }
 
     public Member findByEmail(final String email) {
@@ -145,5 +154,11 @@ public class MemberService {
     private void checkPasswordEquals(final String password, final String checkPassword) {
         if (!password.equals(checkPassword))
             throw new JoinPasswordException();
+    }
+
+    private String saveProfileImage(final MultipartFile image) throws IOException {
+        final String folderPath = "member-profile/";
+
+        return s3Uploader.uploadImage(image, folderPath);
     }
 }

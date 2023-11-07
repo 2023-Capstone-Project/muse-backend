@@ -13,44 +13,49 @@ public enum BaseResponseStatus {
     JOIN_SUCCESS(HttpStatus.CREATED, 1000, "회원가입에 성공했습니다."),
     LOGIN_SUCCESS(HttpStatus.OK, 1001, "성공적으로 로그인 되었습니다."),
     MEMBER_UPDATE_SUCCESS(HttpStatus.OK, 1002, "성공적으로 회원 정보가 수정되었습니다."),
+    MEMBER_READ_SUCCESS(HttpStatus.OK, 1003, "성공적으로 회원 정보가 조회되었습니다."),
 
     // POST
     POST_SAVE_SUCCESS(HttpStatus.CREATED, 1100, "게시글을 성공적으로 등록했습니다."),
     POST_UPDATE_SUCCESS(HttpStatus.OK, 1101, "성공적으로 게시글 정보가 수정되었습니다."),
     POST_READ_SUCCESS(HttpStatus.OK, 1102, "성공적으로 게시글 정보가 조회되었습니다."),
+    POST_DETAIL_READ_SUCCESS(HttpStatus.OK, 1102-1, "성공적으로 게시글 상세 정보가 조회되었습니다."),
+    POST_SEARCH_SUCCESS(HttpStatus.OK, 1103, "성공적으로 게시글을 검색했습니다."),
 
     // MAGAZINE
-    MAGAZINE_SAVE_SUCCESS(HttpStatus.CREATED, 1200, "게시글을 성공적으로 등록했습니다."),
-    MAGAZINE_UPDATE_SUCCESS(HttpStatus.OK, 1201, "성공적으로 게시글 정보가 수정되었습니다."),
-    MAGAZINE_READ_SUCCESS(HttpStatus.OK, 1202, "성공적으로 게시글 정보가 조회되었습니다."),
+    MAGAZINE_SAVE_SUCCESS(HttpStatus.CREATED, 1200, "매거진을 성공적으로 등록했습니다."),
+    MAGAZINE_UPDATE_SUCCESS(HttpStatus.OK, 1201, "성공적으로 매거진 정보가 수정되었습니다."),
+    MAGAZINE_READ_SUCCESS(HttpStatus.OK, 1202, "성공적으로 매거진 정보가 조회되었습니다."),
+    MAGAZINE_DETAIL_READ_SUCCESS(HttpStatus.OK, 1202-1, "성공적으로 매거진 상세 정보가 조회되었습니다."),
 
     // NOTICE
-    NOTICE_SAVE_SUCCESS(HttpStatus.CREATED, 1300, "게시글을 성공적으로 등록했습니다."),
-    NOTICE_UPDATE_SUCCESS(HttpStatus.OK, 1301, "성공적으로 게시글 정보가 수정되었습니다."),
-    NOTICE_READ_SUCCESS(HttpStatus.OK, 1302, "성공적으로 게시글 정보가 조회되었습니다."),
+    NOTICE_SAVE_SUCCESS(HttpStatus.CREATED, 1300, "공지사항을 성공적으로 등록했습니다."),
+    NOTICE_UPDATE_SUCCESS(HttpStatus.OK, 1301, "성공적으로 공지사항 정보가 수정되었습니다."),
+    NOTICE_READ_SUCCESS(HttpStatus.OK, 1302, "성공적으로 공지사항 정보가 조회되었습니다."),
+    NOTICE_DETAIL_READ_SUCCESS(HttpStatus.OK, 1302-1, "성공적으로 공지사항 상세 정보가 조회되었습니다."),
 
     // INQUIRY & ANSWER
-    INQUIRY_SAVE_SUCCESS(HttpStatus.CREATED, 1400, "게시글을 성공적으로 등록했습니다."),
-    INQUIRY_UPDATE_SUCCESS(HttpStatus.OK, 1401, "성공적으로 게시글 정보가 수정되었습니다."),
-    INQUIRY_READ_SUCCESS(HttpStatus.OK, 1402, "성공적으로 게시글 정보가 조회되었습니다."),
+    INQUIRY_SAVE_SUCCESS(HttpStatus.CREATED, 1400, "문의사항을 성공적으로 등록했습니다."),
+    INQUIRY_UPDATE_SUCCESS(HttpStatus.OK, 1401, "성공적으로 문의사항 정보가 수정되었습니다."),
+    INQUIRY_READ_SUCCESS(HttpStatus.OK, 1402, "성공적으로 문의사항 정보가 조회되었습니다."),
 
-    ANSWER_SAVE_SUCCESS(HttpStatus.CREATED, 1500, "게시글을 성공적으로 등록했습니다."),
-    ANSWER_UPDATE_SUCCESS(HttpStatus.OK, 1501, "성공적으로 게시글 정보가 수정되었습니다."),
-    ANSWER_READ_SUCCESS(HttpStatus.OK, 1502, "성공적으로 게시글 정보가 조회되었습니다."),
+    ANSWER_SAVE_SUCCESS(HttpStatus.CREATED, 1500, "답변을 성공적으로 등록했습니다."),
+    ANSWER_UPDATE_SUCCESS(HttpStatus.OK, 1501, "성공적으로 답변 정보가 수정되었습니다."),
+    ANSWER_READ_SUCCESS(HttpStatus.OK, 1502, "성공적으로 답변 정보가 조회되었습니다."),
 
     // INTEREST
-    INTEREST_SAVE_SUCCESS(HttpStatus.CREATED, 1600, "게시글을 성공적으로 등록했습니다."),
-    INTEREST_READ_SUCCESS(HttpStatus.OK, 1601, "성공적으로 게시글 정보가 조회되었습니다."),
+    INTEREST_SAVE_SUCCESS(HttpStatus.CREATED, 1600, "좋아요를 성공적으로 등록했습니다."),
+    INTEREST_READ_SUCCESS(HttpStatus.OK, 1601, "성공적으로 좋아요 정보가 조회되었습니다."),
 
     // REVIEW
-    REVIEW_SAVE_SUCCESS(HttpStatus.CREATED, 1700, "게시글을 성공적으로 등록했습니다."),
-    REVIEW_UPDATE_SUCCESS(HttpStatus.OK, 1701, "성공적으로 게시글 정보가 수정되었습니다."),
-    REVIEW_READ_SUCCESS(HttpStatus.OK, 1702, "성공적으로 게시글 정보가 조회되었습니다."),
+    REVIEW_SAVE_SUCCESS(HttpStatus.CREATED, 1700, "리뷰를 성공적으로 등록했습니다."),
+    REVIEW_UPDATE_SUCCESS(HttpStatus.OK, 1701, "성공적으로 리뷰 정보가 수정되었습니다."),
+    REVIEW_READ_SUCCESS(HttpStatus.OK, 1702, "성공적으로 리뷰 정보가 조회되었습니다."),
 
     // TRADING
-    TRADING_SAVE_SUCCESS(HttpStatus.CREATED, 1800, "게시글을 성공적으로 등록했습니다."),
-    TRADING_UPDATE_SUCCESS(HttpStatus.OK, 1801, "성공적으로 게시글 정보가 수정되었습니다."),
-    TRADING_READ_SUCCESS(HttpStatus.OK, 1802, "성공적으로 게시글 정보가 조회되었습니다."),
+    TRADING_SAVE_SUCCESS(HttpStatus.CREATED, 1800, "거래를 성공적으로 성사했습니다."),
+    TRADING_UPDATE_SUCCESS(HttpStatus.OK, 1801, "성공적으로 거래 정보가 수정되었습니다."),
+    TRADING_READ_SUCCESS(HttpStatus.OK, 1802, "성공적으로 거래 정보가 조회되었습니다."),
 
     /**
      * 2000: Request 오류
@@ -92,6 +97,9 @@ public enum BaseResponseStatus {
 
     // DTO
     DTO_INVALID(HttpStatus.BAD_REQUEST, 2800, "DTO 입력이 바르지 않습니다."),
+
+    // IMAGE
+    IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, 2900, "이미지를 찾을 수 없습니다."),
 
     /**
      * 3000: Response 오류

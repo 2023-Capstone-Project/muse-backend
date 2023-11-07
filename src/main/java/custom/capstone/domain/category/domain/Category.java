@@ -24,7 +24,7 @@ public class Category {
     private String title;
 
     @OneToMany(mappedBy = "category", cascade = REMOVE)
-    private List<Post> post = new ArrayList<>();
+    private final List<Post> posts = new ArrayList<>();
 
     @Builder
     public Category(final String title) {

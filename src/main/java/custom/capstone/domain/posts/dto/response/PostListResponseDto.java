@@ -20,15 +20,15 @@ public class PostListResponseDto {
     private int price;
     private PostType type;
     private LocalDateTime createAt;
-//    private String previewImgUrl; -> TODO: 이미지 구현 후 적용하기
+    private String thumbnailUrl;
 
-    public PostListResponseDto(final Post post) {
+    public PostListResponseDto(final Post post, final String thumbnailUrl) {
         this.postId = post.getId();
         this.writer = post.getMember().getNickname();
         this.title = post.getTitle();
         this.price = post.getPrice();
         this.type = post.getType();
         this.createAt = post.getCreatedAt();
-//        this.previewImgUrl = previewImgUrl;
+        this.thumbnailUrl = thumbnailUrl;
     }
 }

@@ -26,9 +26,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                .antMatchers("/api-docs", "/swagger*/**")
-                .antMatchers(HttpMethod.POST, "/api/members/join", "/api/members/login")
-                .antMatchers(HttpMethod.GET, "/api/categories", "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**");
+                .antMatchers("/api-docs", "/swagger*/**", "/h2-console/**")
+                .antMatchers(HttpMethod.POST, "/api/members/login", "/api/members/join")
+                .antMatchers(HttpMethod.GET, "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**");
     }
 
     @Override
@@ -49,11 +49,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
 
                 // 회원만 접근 가능
-//                .antMatchers(HttpMethod.POST, "/api/posts/**", "/api/interests/**", "/api/reviews/**").hasAnyRole("GENERAL")
-//                .antMatchers()
-//                .authenticated()
+                .antMatchers(HttpMethod.POST, "/api/members/**", "/api/posts/**", "/api/interests/**", "/api/trading/**", "/api/reviews/**", "/api/inquires/{inquiryId}").hasRole("GENERAL")
+                .antMatchers(HttpMethod.PATCH, "/api/members/**", "/api/posts/**", "/api/interests/**", "/api/trading/**", "/api/reviews/**", "/api/inquires", "/api/inquires/{inquiryId}").hasRole("GENERAL")
+                .antMatchers(HttpMethod.DELETE, "/api/members/**", "/api/posts/**", "/api/interests/**", "/api/trading/**", "/api/reviews/**", "/api/inquires/{inquiryId}").hasRole("GENERAL")
 
-                // 인증 요청
+                // 그 외는 인증 요청
                 .anyRequest().authenticated()
 
             .and()

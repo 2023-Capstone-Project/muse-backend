@@ -18,18 +18,27 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MagazineService {
     private final MagazineRepository magazineRepository;
     private final MemberRepository memberRepository;
+    private final MagazineImageService magazineImageService;
 
     /**
      * 매거진 등록
      */
     @Transactional
-    public MagazineSaveResponseDto saveMagazine(final String loginEmail, final MagazineSaveRequestDto requestDto) {
+    public MagazineSaveResponseDto saveMagazine(
+            final String loginEmail,
+            final List<MultipartFile> images,
+            final MagazineSaveRequestDto requestDto
+    ) throws IOException {
         final Member admin = getValidAdmin(loginEmail);
 
         final Magazine magazine = Magazine.builder()
@@ -39,6 +48,7 @@ public class MagazineService {
                 .build();
 
         magazineRepository.save(magazine);
+        magazineImageService.savemagazineImages(magazine, images);
 
         return new MagazineSaveResponseDto(magazine.getId());
     }
@@ -68,8 +78,13 @@ public class MagazineService {
      * 매거진 페이징 조회
      */
     public Page<MagazineListResponseDto> findAll(final Pageable pageable) {
-        return magazineRepository.findAll(pageable)
-                .map(MagazineListResponseDto::new);
+        final Page<Magazine> magazines = magazineRepository.findAll(pageable);
+
+        return magazines.map(magazine -> {
+            final String thumbnailUrl = magazineImageService.findThumbnailUrl(magazine);
+
+            return new MagazineListResponseDto(magazine, thumbnailUrl);
+        });
     }
 
     public Magazine findById(final Long magazineId) {
@@ -85,9 +100,11 @@ public class MagazineService {
         final Magazine magazine = magazineRepository.findDetailById(magazineId)
                 .orElseThrow(MagazineNotFoundException::new);
 
+        final List<String> imageUrls = magazineImageService.findAllMagazineImages(magazine);
+
         magazine.increaseView();
 
-        return new MagazineResponseDto(magazine);
+        return new MagazineResponseDto(magazine, imageUrls);
     }
 
     /**
