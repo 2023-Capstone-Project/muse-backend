@@ -18,18 +18,27 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class NoticeService {
     private final NoticeRepository noticeRepository;
+    private final NoticeImageService noticeImageService;
     private final MemberRepository memberRepository;
 
     /**
      * 공지사항 등록
      */
     @Transactional
-    public NoticeSaveResponseDto saveNotice(final String loginEmail, final NoticeSaveRequestDto requestDto) {
+    public NoticeSaveResponseDto saveNotice(
+            final String loginEmail,
+            final List<MultipartFile> images,
+            final NoticeSaveRequestDto requestDto
+    ) throws IOException {
         final Member admin = getValidAdmin(loginEmail);
 
         final Notice notice = Notice.builder()
@@ -39,6 +48,7 @@ public class NoticeService {
                 .build();
 
         noticeRepository.save(notice);
+        noticeImageService.saveNoticeImages(notice, images);
 
         return new NoticeSaveResponseDto(notice.getId());
     }
@@ -69,8 +79,13 @@ public class NoticeService {
      */
     @Transactional
     public Page<NoticeListResponseDto> findAll(final Pageable pageable) {
-        return noticeRepository.findAll(pageable)
-                .map(NoticeListResponseDto::new);
+        final Page<Notice> notices = noticeRepository.findAll(pageable);
+
+        return notices.map(notice -> {
+            final String thumbnailUrl = noticeImageService.findThumbnailUrl(notice);
+
+            return new NoticeListResponseDto(notice, thumbnailUrl);
+        });
     }
 
     public Notice findById(final Long noticeId) {
@@ -81,11 +96,16 @@ public class NoticeService {
     /**
      * 공지사항 상세 조회
      */
+    @Transactional
     public NoticeResponseDto findDetailById(final Long noticeId) {
         final Notice notice = noticeRepository.findDetailById(noticeId)
                 .orElseThrow(NoticeNotFoundException::new);
 
-        return new NoticeResponseDto(notice);
+        final List<String> imageUrls = noticeImageService.findAllNoticeImages(notice);
+
+        notice.increaseView();
+
+        return new NoticeResponseDto(notice, imageUrls);
     }
 
     /**

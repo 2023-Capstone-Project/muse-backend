@@ -13,15 +13,17 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class NoticeListResponseDto {
+    private Long noticeId;
     private String title;
-    private String content;
     private int views;
     private LocalDateTime createdAt;
+    private String thumbnailUrl;
 
-    public NoticeListResponseDto(final Notice notice) {
+    public NoticeListResponseDto(final Notice notice, final String thumbnailUrl) {
+        this.noticeId = notice.getId();
         this.title = notice.getTitle();
-        this.content = notice.getContent();
         this.views = notice.getViews();
         this.createdAt = notice.getCreatedAt();
+        this.thumbnailUrl = thumbnailUrl;
     }
 }

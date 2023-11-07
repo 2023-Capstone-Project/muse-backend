@@ -87,7 +87,7 @@ public class MagazineApiController {
         final MagazineResponseDto result = magazineService.findDetailById(id);
 
         return BaseResponse.of(
-                BaseResponseStatus.MAGAZINE_READ_SUCCESS,
+                BaseResponseStatus.MAGAZINE_DETAIL_READ_SUCCESS,
                 result
         );
     }

@@ -19,17 +19,20 @@ public enum BaseResponseStatus {
     POST_SAVE_SUCCESS(HttpStatus.CREATED, 1100, "게시글을 성공적으로 등록했습니다."),
     POST_UPDATE_SUCCESS(HttpStatus.OK, 1101, "성공적으로 게시글 정보가 수정되었습니다."),
     POST_READ_SUCCESS(HttpStatus.OK, 1102, "성공적으로 게시글 정보가 조회되었습니다."),
+    POST_DETAIL_READ_SUCCESS(HttpStatus.OK, 1102-1, "성공적으로 게시글 상세 정보가 조회되었습니다."),
     POST_SEARCH_SUCCESS(HttpStatus.OK, 1103, "성공적으로 게시글을 검색했습니다."),
 
     // MAGAZINE
     MAGAZINE_SAVE_SUCCESS(HttpStatus.CREATED, 1200, "매거진을 성공적으로 등록했습니다."),
     MAGAZINE_UPDATE_SUCCESS(HttpStatus.OK, 1201, "성공적으로 매거진 정보가 수정되었습니다."),
     MAGAZINE_READ_SUCCESS(HttpStatus.OK, 1202, "성공적으로 매거진 정보가 조회되었습니다."),
+    MAGAZINE_DETAIL_READ_SUCCESS(HttpStatus.OK, 1202-1, "성공적으로 매거진 상세 정보가 조회되었습니다."),
 
     // NOTICE
     NOTICE_SAVE_SUCCESS(HttpStatus.CREATED, 1300, "공지사항을 성공적으로 등록했습니다."),
     NOTICE_UPDATE_SUCCESS(HttpStatus.OK, 1301, "성공적으로 공지사항 정보가 수정되었습니다."),
     NOTICE_READ_SUCCESS(HttpStatus.OK, 1302, "성공적으로 공지사항 정보가 조회되었습니다."),
+    NOTICE_DETAIL_READ_SUCCESS(HttpStatus.OK, 1302-1, "성공적으로 공지사항 상세 정보가 조회되었습니다."),
 
     // INQUIRY & ANSWER
     INQUIRY_SAVE_SUCCESS(HttpStatus.CREATED, 1400, "문의사항을 성공적으로 등록했습니다."),

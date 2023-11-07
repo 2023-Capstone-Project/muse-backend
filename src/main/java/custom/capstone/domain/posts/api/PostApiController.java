@@ -95,7 +95,7 @@ public class PostApiController {
         final PostResponseDto result = postService.findDetailById(categoryId, postId);
 
         return BaseResponse.of(
-                BaseResponseStatus.POST_READ_SUCCESS,
+                BaseResponseStatus.POST_DETAIL_READ_SUCCESS,
                 result
         );
     }
