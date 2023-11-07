@@ -39,7 +39,7 @@ public class InterestApiController {
     @DeleteMapping
     public void cancelInterest(
             @AuthenticationPrincipal final String loginEmail,
-            @RequestBody@Valid final InterestDeleteRequestDto requestDto
+            @RequestBody @Valid final InterestDeleteRequestDto requestDto
     ) {
         interestService.cancelInterest(loginEmail, requestDto);
     }
