@@ -1,0 +1,41 @@
+name: muse-backend CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  PROJECT_NAME: muse-backend
+  BUCKET_NAME: muse-bucket
+  CODE_DEPLOY_APP_NAME: muse-codedeploy
+  DEPLOYMENT_GROUP_NAME: muse-codedeploy-group
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          submodules: true
+
+      - name: Update config submodule
+        run: |
+          git submodule update --init
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build
