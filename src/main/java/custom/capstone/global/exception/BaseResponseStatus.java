@@ -70,6 +70,8 @@ public enum BaseResponseStatus {
     FOLLOW_EXISTS_TO(HttpStatus.CONFLICT, 2006, "이미 팔로우 했습니다."),
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, 2007, "해당 사용자를 찾을 수 없습니다."),
     INVALID_ACCESS(HttpStatus.UNAUTHORIZED, 2008, "접근 권한이 없습니다."),
+    MEMBER_FAILED_JOIN(HttpStatus.INTERNAL_SERVER_ERROR, 2009, "회원가입에 실패하였습니다."),
+    MEMBER_FAILED_LOGIN(HttpStatus.BAD_REQUEST, 2010, "로그인에 실패하였습니다."),
 
     // POST
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, 2100, "해당 게시글을 찾을 수 없습니다."),
@@ -95,11 +97,14 @@ public enum BaseResponseStatus {
     // TRADING
     TRADING_NOT_FOUND(HttpStatus.NOT_FOUND, 2700, "해당 거래를 찾을 수 없습니다."),
 
-    // DTO
-    DTO_INVALID(HttpStatus.BAD_REQUEST, 2800, "DTO 입력이 바르지 않습니다."),
-
     // IMAGE
     IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, 2900, "이미지를 찾을 수 없습니다."),
+
+    // CHAT
+    CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, 2800, "해당 채팅방을 찾을 수 없습니다."),
+
+    // DTO
+    DTO_INVALID(HttpStatus.BAD_REQUEST, 9999, "DTO 입력이 바르지 않습니다."),
 
     /**
      * 3000: Response 오류
@@ -112,11 +117,7 @@ public enum BaseResponseStatus {
      * 4000: DB, Server 오류
      */
     DATABASE_ERROR(HttpStatus.SERVICE_UNAVAILABLE, 4000, "데이터베이스 연결에 실패하였습니다."),
-    SERVER_ERROR(HttpStatus.BAD_GATEWAY, 4001, "서버 연결에 실패하였습니다."),
-
-    // MEMBER
-    MEMBER_FAILED_JOIN(HttpStatus.INTERNAL_SERVER_ERROR, 2009, "회원가입에 실패하였습니다."),
-    MEMBER_FAILED_LOGIN(HttpStatus.BAD_REQUEST, 2010, "로그인에 실패하였습니다.");
+    SERVER_ERROR(HttpStatus.BAD_GATEWAY, 4001, "서버 연결에 실패하였습니다.");
 
     private final HttpStatus httpStatus;
     private final int code;

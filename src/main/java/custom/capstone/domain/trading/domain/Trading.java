@@ -44,7 +44,11 @@ public class Trading extends BaseTimeEntity {
     private final Set<Review> reviews = new HashSet<>();
 
     @Builder
-    public Trading(final Post post, final Member buyer, final Member seller) {
+    public Trading(
+            final Post post,
+            final Member buyer,
+            final Member seller
+    ) {
         this.post = post;
         this.buyer = buyer;
         this.seller = seller;
