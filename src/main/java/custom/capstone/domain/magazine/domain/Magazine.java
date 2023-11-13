@@ -50,7 +50,11 @@ public class Magazine extends BaseTimeEntity {
     }
 
     @Builder
-    public Magazine(final String title, final String content, final Member member) {
+    public Magazine(
+            final String title,
+            final String content,
+            final Member member
+    ) {
         this.title = title;
         this.content = content;
         setMember(member);

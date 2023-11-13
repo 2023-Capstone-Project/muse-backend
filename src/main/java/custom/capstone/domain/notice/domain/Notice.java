@@ -50,7 +50,11 @@ public class Notice extends BaseTimeEntity {
     }
 
     @Builder
-    public Notice(final String title, final String content, final Member member) {
+    public Notice(
+            final String title,
+            final String content,
+            final Member member
+    ) {
         this.title = title;
         this.content = content;
         this.setMember(member);

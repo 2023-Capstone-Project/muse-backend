@@ -82,7 +82,8 @@ public class Post extends BaseTimeEntity {
             final int price,
             final Member member,
             final Category category,
-            final PostType type) {
+            final PostType type
+    ) {
         this.title = title;
         this.content = content;
         this.price = price;
@@ -98,7 +99,8 @@ public class Post extends BaseTimeEntity {
             final int price,
             final Category category,
             final PostType type,
-            final PostStatus status) {
+            final PostStatus status
+    ) {
         this.title = title;
         this.content = content;
         this.price = price;

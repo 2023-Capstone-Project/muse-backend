@@ -15,8 +15,10 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class PostResponseDto {
     private Long postId;
+    private Long categoryId;
     private String title;
     private String content;
+    private int price;
     private int views;
     private int interestCount;
     private String categoryTitle;
@@ -28,11 +30,13 @@ public class PostResponseDto {
 
     public PostResponseDto(final Post post, final List<String> imageUrls) {
         this.postId = post.getId();
+        this.categoryId = post.getCategory().getId();
+        this.categoryTitle = post.getCategory().getTitle();
         this.title = post.getTitle();
         this.content = post.getContent();
+        this.price = post.getPrice();
         this.views = post.getViews();
         this.interestCount = post.getInterestCount();
-        this.categoryTitle = post.getCategory().getTitle();
         this.type = post.getType();
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();

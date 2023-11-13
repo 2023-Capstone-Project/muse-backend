@@ -45,7 +45,12 @@ public class Inquiry extends BaseTimeEntity {
     }
 
     @Builder
-    public Inquiry(final Member member, final String title, final String content, final Answer answer) {
+    public Inquiry(
+            final Member member,
+            final String title,
+            final String content,
+            final Answer answer
+    ) {
         setMember(member);
         this.title = title;
         this.content = content;
