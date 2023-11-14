@@ -1,5 +1,6 @@
 package custom.capstone.domain.posts.dto.response;
 
+import custom.capstone.domain.members.dto.MemberProfileDto;
 import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.posts.domain.PostType;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ public class PostListResponseDto {
     private Long postId;
     private Long categoryId;
     private String title;
-    private String writer;
+    private MemberProfileDto writer;
     private int price;
     private int views;
     private int interestCount;
@@ -29,7 +30,11 @@ public class PostListResponseDto {
         this.postId = post.getId();
         this.categoryId = post.getCategory().getId();
         this.title = post.getTitle();
-        this.writer = post.getMember().getNickname();
+        this.writer = new MemberProfileDto(
+                post.getMember().getId(),
+                post.getMember().getNickname(),
+                post.getMember().getProfileImage()
+        );
         this.price = post.getPrice();
         this.type = post.getType();
         this.views = post.getViews();
