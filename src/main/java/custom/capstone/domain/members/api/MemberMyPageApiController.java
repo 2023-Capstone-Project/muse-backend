@@ -1,13 +1,13 @@
 package custom.capstone.domain.members.api;
 
-import custom.capstone.domain.interest.dto.response.InterestListResponseDto;
 import custom.capstone.domain.members.application.FollowService;
 import custom.capstone.domain.members.application.MemberMyPageService;
 import custom.capstone.domain.members.dto.MemberProfileDto;
+import custom.capstone.domain.members.dto.response.MyPageInterestResponseDto;
+import custom.capstone.domain.members.dto.response.MyPagePostResponseDto;
+import custom.capstone.domain.members.dto.response.MyPageReviewResponseDto;
+import custom.capstone.domain.members.dto.response.MyPageTradingResponseDto;
 import custom.capstone.domain.posts.application.PostImageService;
-import custom.capstone.domain.posts.dto.response.PostListResponseDto;
-import custom.capstone.domain.review.dto.response.ReviewListResponseDto;
-import custom.capstone.domain.trading.dto.response.TradingListResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class MemberMyPageApiController {
 
     @Operation(summary = "자신이 작성한 게시글 목록 페이징 조회")
     @GetMapping("/{memberId}/mypage/posts")
-    public Page<PostListResponseDto> postsByMember(
+    public Page<MyPagePostResponseDto> postsByMember(
             @PathVariable("memberId") final Long id,
             @PageableDefault(size = 20) final Pageable pageable
     ) {
@@ -38,32 +38,29 @@ public class MemberMyPageApiController {
 
     @Operation(summary = "자신이 작성한 후기 목록 페이징 조회")
     @GetMapping("/{memberId}/mypage/reviews")
-    public Page<ReviewListResponseDto> reviewsByMember(
+    public Page<MyPageReviewResponseDto> reviewsByMember(
             @PathVariable("memberId") final Long id,
             @PageableDefault(size = 20) final Pageable pageable
     ) {
-        return memberMyPageService.findReviewsByMemberId(id, pageable)
-                .map(ReviewListResponseDto::new);
+        return memberMyPageService.findReviewsByMemberId(id, pageable);
     }
 
     @Operation(summary = "자신이 거래한 시안 목록 페이징 조회")
     @GetMapping("/{memberId}/mypage/trading")
-    public Page<TradingListResponseDto> productsByMember(
+    public Page<MyPageTradingResponseDto> productsByMember(
             @PathVariable("memberId") final Long id,
             @PageableDefault(size = 20) final Pageable pageable
     ) {
-        return memberMyPageService.findTradingByMemberId(id, pageable)
-                .map(TradingListResponseDto::new);
+        return memberMyPageService.findTradingByMemberId(id, pageable);
     }
 
     @Operation(summary = "자신이 좋아요한 시안 목록 페이징 조회")
     @GetMapping("/{memberId}/mypage/interest")
-    public Page<InterestListResponseDto> interestByMember(
+    public Page<MyPageInterestResponseDto> interestByMember(
             @PathVariable("memberId") final Long id,
             @PageableDefault(size = 20) final Pageable pageable
     ) {
-        return memberMyPageService.findInterestByMemberId(id, pageable)
-                .map(InterestListResponseDto::new);
+        return memberMyPageService.findInterestByMemberId(id, pageable);
     }
 
     @Operation(summary = "팔로워 조회")
