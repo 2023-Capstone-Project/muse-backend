@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,7 +61,7 @@ public class InquiryApiController {
 
     @Operation(summary = "자주하는 질문 조회")
     @GetMapping
-    public Page<Inquiry> findAll(final Pageable pageable) {
+    public Page<Inquiry> findAll(@PageableDefault(size = 20) final Pageable pageable) {
         return inquiryService.findAll(pageable);
     }
 

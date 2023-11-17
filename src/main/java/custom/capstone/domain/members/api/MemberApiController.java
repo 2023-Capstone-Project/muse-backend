@@ -34,7 +34,8 @@ public class MemberApiController {
     @PostMapping("/join")
     public BaseResponse<MemberResponseDto> join(
             @RequestPart("profile_image") final MultipartFile image,
-            @Valid @RequestPart("requestDto") final MemberSaveRequestDto requestDto) throws IOException {
+            @Valid @RequestPart("requestDto") final MemberSaveRequestDto requestDto
+    ) throws IOException {
         final MemberResponseDto result = memberService.saveMember(image, requestDto);
 
         return BaseResponse.of(
