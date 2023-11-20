@@ -7,6 +7,7 @@ import custom.capstone.domain.chat.dto.response.ChatMessageResponseDto;
 import custom.capstone.global.service.redis.RedisPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +29,7 @@ public class ChatMessageController {
      * websocket "/pub/chat/message" 로 들어오는 메시징을 처리한다.
      */
     @MessageMapping("/chat/message")
-    public void message(final ChatMessageSaveRequestDto requestDto) {
+    public Long message(@Payload final ChatMessageSaveRequestDto requestDto) {
         // 클라이언트 Topic 입장 & 대화를 위해 리스너와 연동
         chatRoomService.enterChatRoom(requestDto.roomId());
 
@@ -36,7 +37,7 @@ public class ChatMessageController {
         redisPublisher.publish(chatRoomService.getTopic(requestDto.roomId()), requestDto);
 
         // DB & Redis 에 대화 저장
-        chatMessageService.saveChatMessage(requestDto);
+        return chatMessageService.saveChatMessage(requestDto);
     }
 
     /**

@@ -5,6 +5,7 @@ import custom.capstone.domain.chat.dto.request.ChatRoomSaveRequestDto;
 import custom.capstone.domain.chat.dto.response.ChatRoomResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +22,11 @@ public class ChatRoomController {
      * 채팅방 생성
      */
     @PostMapping("/room")
-    public ChatRoomResponseDto createChatRoom(@RequestBody final ChatRoomSaveRequestDto requestDto) {
-        return chatRoomService.saveChatRoom(requestDto);
+    public ChatRoomResponseDto createChatRoom(
+            @AuthenticationPrincipal final String loginEmail,
+            @RequestBody final ChatRoomSaveRequestDto requestDto
+    ) throws IllegalAccessException {
+        return chatRoomService.saveChatRoom(loginEmail, requestDto);
     }
 
     /**

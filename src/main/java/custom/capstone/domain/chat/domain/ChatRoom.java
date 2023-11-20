@@ -1,5 +1,7 @@
 package custom.capstone.domain.chat.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.posts.domain.Post;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,32 +27,38 @@ public class ChatRoom implements Serializable {
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "member_id")
-//    private Member member;
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private Member sender;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private Member receiver;
+
+    @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
     private String roomId;
 
-    private String sender;
-
-    private String receiver;
-
+    @JsonManagedReference
     @OneToMany(mappedBy = "chatRoom", cascade = REMOVE)
     private List<ChatMessage> messageList = new ArrayList<>();
+
 
     @Builder
     public ChatRoom(
             final Post post,
-            final String sender,
-            final String receiver
+            final Member sender,
+            final Member receiver
     ) {
         this.post = post;
         this.roomId = UUID.randomUUID().toString();
         this.sender = sender;
         this.receiver = receiver;
+    }
+
+    public boolean hasMember(Long memberId) {
+        return sender.getId().equals(memberId) || receiver.getId().equals(memberId);
     }
 }

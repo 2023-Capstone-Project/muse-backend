@@ -20,8 +20,8 @@ public class ChatRoomResponseDto {
         this.chatRoomId = chatRoom.getId();
         this.postId = chatRoom.getPost().getId();
         this.roomId = chatRoom.getRoomId();
-        this.sender = chatRoom.getSender();
-        this.receiver = chatRoom.getReceiver();
+        this.sender = chatRoom.getSender().getNickname();
+        this.receiver = chatRoom.getReceiver().getNickname();
         this.title = chatRoom.getPost().getTitle();
     }
 }

@@ -6,6 +6,8 @@ import custom.capstone.domain.chat.domain.ChatRoom;
 import custom.capstone.domain.chat.dto.request.ChatRoomSaveRequestDto;
 import custom.capstone.domain.chat.dto.response.ChatRoomResponseDto;
 import custom.capstone.domain.members.dao.MemberRepository;
+import custom.capstone.domain.members.domain.Member;
+import custom.capstone.domain.members.exception.MemberNotFoundException;
 import custom.capstone.domain.posts.dao.PostRepository;
 import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.posts.exception.PostNotFoundException;
@@ -53,28 +55,51 @@ public class ChatRoomService {
      * 채팅방 생성
      */
     @Transactional
-    public ChatRoomResponseDto saveChatRoom(final ChatRoomSaveRequestDto requestDto) {
+    public ChatRoomResponseDto saveChatRoom(final String loginEmail, final ChatRoomSaveRequestDto requestDto)
+            throws IllegalAccessException {
 
-        // TODO: 로그인 한 사용자 = sender, 게시글 디자이너 = receiver
-
-        final Post post = postRepository.findById(requestDto.postId())
+        Post post = postRepository.findById(requestDto.postId())
                 .orElseThrow(PostNotFoundException::new);
 
-        ChatRoom chatRoom = chatRoomRepository.findBySenderAndReceiver(requestDto.sender(), requestDto.receiver());
+        Member sender = memberRepository.findByEmail(loginEmail)
+                .orElseThrow(MemberNotFoundException::new);
 
-        if (chatRoom == null) {
-            chatRoom = ChatRoom.builder()
-                    .post(post)
-                    .sender(requestDto.sender())
-                    .receiver(requestDto.receiver())
-                    .build();
+        Member receiver = memberRepository.findById(requestDto.receiverId())
+                .orElseThrow(MemberNotFoundException::new);
 
-            opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
+        checkForChatRoomDuplication(post, sender, receiver);
 
-            chatRoomRepository.save(chatRoom);
+        ChatRoom savedChatRoom = ChatRoom.builder()
+                .post(post)
+                .sender(sender)
+                .receiver(receiver)
+                .build();
+
+        chatRoomRepository.save(savedChatRoom);
+        opsHashChatRoom.put(CHAT_ROOMS, savedChatRoom.getRoomId(), savedChatRoom);
+
+        return new ChatRoomResponseDto(savedChatRoom);
+    }
+
+    private void checkForChatRoomDuplication(
+            final Post post,
+            final Member sender,
+            final Member receiver
+    ) throws IllegalAccessException {
+
+        System.out.println("sender: " + sender.getNickname()+ " receiver: " + receiver.getNickname());
+
+        if (sender.getNickname().equals(receiver.getNickname())) {
+            throw new IllegalAccessException("자신과의 채팅은 생성할 수 없습니다.");
         }
 
-        return new ChatRoomResponseDto(chatRoom);
+        ChatRoom chatRoom = chatRoomRepository.findBySenderAndReceiver(sender, receiver);
+
+        if (chatRoom != null && (!sender.getNickname().equals(chatRoom.getSender())
+                        && !receiver.getNickname().equals(chatRoom.getReceiver())
+                        && !post.getId().equals(chatRoom.getId()))) {
+            throw new IllegalAccessException("이미 해당 게시글로 만들어진 채팅방 중 sender와 receiver로 이루어진 채팅방이 있습니다.");
+        }
     }
 
     /**

@@ -6,6 +6,9 @@ import custom.capstone.domain.chat.domain.ChatMessage;
 import custom.capstone.domain.chat.domain.ChatRoom;
 import custom.capstone.domain.chat.dto.request.ChatMessageSaveRequestDto;
 import custom.capstone.domain.chat.dto.response.ChatMessageResponseDto;
+import custom.capstone.domain.members.dao.MemberRepository;
+import custom.capstone.domain.members.domain.Member;
+import custom.capstone.domain.members.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
@@ -24,21 +27,31 @@ public class ChatMessageService {
     private final RedisTemplate<String, ChatMessage> redisTemplateMessage;
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 채팅 저장
      */
     @Transactional
-    public void saveChatMessage(final ChatMessageSaveRequestDto requestDto) {
+    public Long saveChatMessage(final ChatMessageSaveRequestDto requestDto) {
+
+        final Member sender = memberRepository.findById(requestDto.senderId())
+                .orElseThrow(MemberNotFoundException::new);
+
         final ChatRoom chatRoom = chatRoomRepository.findByRoomId(requestDto.roomId());
+
+        // TODO: Receiver = sender 가 보내는 receiver
+
+        System.out.println("ChatRoom: " + chatRoom.getRoomId());
 
         final ChatMessage chatMessage = ChatMessage.builder()
                 .roomId(requestDto.roomId())
-                .sender(requestDto.sender())
+                .sender(sender.getNickname())
                 .message(requestDto.message())
                 .chatRoom(chatRoom)
                 .build();
 
+        chatRoom.getMessageList().add(chatMessage);
         chatMessageRepository.save(chatMessage);
 
         // 직렬화
@@ -49,6 +62,10 @@ public class ChatMessageService {
 
         // expire 을 이용해 Key 만료시키기
         redisTemplateMessage.expire(chatMessage.getRoomId(), 1, TimeUnit.MINUTES);
+
+        System.out.println("보내는 아이디: " + sender.getId());
+
+        return sender.getId();
     }
 
     /**

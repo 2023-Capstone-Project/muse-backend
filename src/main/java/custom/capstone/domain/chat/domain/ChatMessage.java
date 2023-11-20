@@ -1,5 +1,6 @@
 package custom.capstone.domain.chat.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import custom.capstone.global.common.BaseTimeEntity;
 import lombok.Builder;
@@ -27,6 +28,7 @@ public class ChatMessage extends BaseTimeEntity {
 
     private String message;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "chat_room_id", nullable = false)
     private ChatRoom chatRoom;
