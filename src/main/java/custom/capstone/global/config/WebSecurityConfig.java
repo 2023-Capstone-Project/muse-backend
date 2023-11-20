@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,9 +26,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                .antMatchers("/api-docs", "/swagger*/**", "/h2-console/**", "/ws/**")
-                .antMatchers(HttpMethod.POST, "/api/members/login", "/api/members/join")
-                .antMatchers(HttpMethod.GET, "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**");
+                .antMatchers("/api-docs", "/swagger*/**", "/h2-console/**")
+                .antMatchers(HttpMethod.POST, "/api/members/login", "/api/members/join", "/ws/**")
+                .antMatchers(HttpMethod.GET, "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**", "/ws/**", "/chat/**");
     }
 
     @Override
@@ -44,19 +43,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
 
-                // 모두 가능
-                .antMatchers(HttpMethod.POST, "/api/members/join").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").permitAll()
-
-                // 관리자만 접근 가능
-                .antMatchers(HttpMethod.POST,  "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.PATCH, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").hasAnyRole("ADMIN")
+                // 관리자만 접근 가능 ** 추후
+                .antMatchers(HttpMethod.POST,  "/api/notice/**", "/api/magazine/**", "/api/inquires/**").permitAll()
+                .antMatchers(HttpMethod.PATCH, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/categories/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**").permitAll()
 
                 // 회원만 접근 가능
                 .antMatchers(HttpMethod.POST, "/api/members/**", "/api/posts/**", "/api/interests/**", "/api/trading/**", "/api/reviews/**", "/api/inquires/{inquiryId}").hasRole("GENERAL")
                 .antMatchers(HttpMethod.PATCH, "/api/members/**", "/api/posts/**", "/api/interests/**", "/api/trading/**", "/api/reviews/**", "/api/inquires", "/api/inquires/{inquiryId}").hasRole("GENERAL")
                 .antMatchers(HttpMethod.DELETE, "/api/members/**", "/api/posts/**", "/api/interests/**", "/api/trading/**", "/api/reviews/**", "/api/inquires/{inquiryId}").hasRole("GENERAL")
+
+                // 채팅
+                .antMatchers(HttpMethod.POST, "/chat/**").hasRole("GENERAL")
+                .antMatchers(HttpMethod.GET, "/chat/**").hasRole("GENERAL")
 
                 // 그 외는 인증 요청
                 .anyRequest().authenticated()
@@ -68,10 +67,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
     }
 }

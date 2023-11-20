@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +26,10 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Post extends BaseTimeEntity {
+public class Post extends BaseTimeEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 

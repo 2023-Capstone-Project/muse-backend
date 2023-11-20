@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -72,7 +73,7 @@ public class MagazineApiController {
 
     @Operation(summary = "매거진 페이징 조회")
     @GetMapping
-    public BaseResponse<Page<MagazineListResponseDto>> findAll(final Pageable pageable) {
+    public BaseResponse<Page<MagazineListResponseDto>> findAll(@PageableDefault(size = 20) final Pageable pageable) {
         final Page<MagazineListResponseDto> result = magazineService.findAll(pageable);
 
         return BaseResponse.of(

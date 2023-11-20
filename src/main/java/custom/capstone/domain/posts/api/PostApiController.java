@@ -65,7 +65,7 @@ public class PostApiController {
     @GetMapping("/{categoryId}")
     public BaseResponse<Page<PostListResponseDto>> getCategoryPost(
             @PathVariable("categoryId") final Long id,
-            final Pageable pageable
+            @PageableDefault(size = 20) final Pageable pageable
     ) {
         final Page<PostListResponseDto> result = postService.findPostsByCategory(id, pageable);
 
@@ -77,7 +77,7 @@ public class PostApiController {
 
     @Operation(summary = "게시글 페이징 조회")
     @GetMapping
-    public BaseResponse<Page<PostListResponseDto>> findAll(final Pageable pageable) {
+    public BaseResponse<Page<PostListResponseDto>> findAll(@PageableDefault(size = 20) final Pageable pageable) {
         final Page<PostListResponseDto> result = postService.findAll(pageable);
 
         return BaseResponse.of(
@@ -114,7 +114,7 @@ public class PostApiController {
     @GetMapping("/search")
     public BaseResponse<Page<PostListResponseDto>> searchPosts(
             @RequestParam(value = "keyword", required = false) final String keyword,
-            @PageableDefault(direction = Sort.Direction.DESC) final Pageable pageable
+            @PageableDefault(size = 20, direction = Sort.Direction.DESC) final Pageable pageable
     ) {
         final Page<PostListResponseDto> result = postService.searchPosts(keyword, pageable);
 

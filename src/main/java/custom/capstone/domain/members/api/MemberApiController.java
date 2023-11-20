@@ -12,6 +12,7 @@ import custom.capstone.global.exception.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -31,10 +32,11 @@ public class MemberApiController {
     private final MemberService memberService;
 
     @Operation(summary = "회원 가입")
-    @PostMapping("/join")
+    @PostMapping(value = "/join", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public BaseResponse<MemberResponseDto> join(
-            @RequestPart("profile_image") final MultipartFile image,
-            @Valid @RequestPart("requestDto") final MemberSaveRequestDto requestDto) throws IOException {
+            @RequestPart(value = "profileImage", required = false) final MultipartFile image,
+            @Valid @RequestPart("requestDto") final MemberSaveRequestDto requestDto
+    ) throws IOException {
         final MemberResponseDto result = memberService.saveMember(image, requestDto);
 
         return BaseResponse.of(
