@@ -202,3 +202,7 @@ gradle-app.setting
 
 # docker
 docker/
+
+# CICD
+appspec.yml
+scripts
