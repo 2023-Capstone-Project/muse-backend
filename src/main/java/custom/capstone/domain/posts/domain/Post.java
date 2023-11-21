@@ -63,6 +63,9 @@ public class Post extends BaseTimeEntity implements Serializable {
     @Column(name = "interest_cnt", columnDefinition = "integer default 0", nullable = false)
     private int interestCount;
 
+    @Column(name = "chat_url")
+    private String chatUrl;
+
     @OneToMany(mappedBy = "post")
     private final Set<Interest> interests = new HashSet<>();
 
@@ -86,7 +89,8 @@ public class Post extends BaseTimeEntity implements Serializable {
             final int price,
             final Member member,
             final Category category,
-            final PostType type
+            final PostType type,
+            final String chatUrl
     ) {
         this.title = title;
         this.content = content;
@@ -95,6 +99,7 @@ public class Post extends BaseTimeEntity implements Serializable {
         this.status = PostStatus.SALE;
         setCategory(category);
         this.type = type;
+        this.chatUrl = chatUrl;
     }
 
     public void update(
