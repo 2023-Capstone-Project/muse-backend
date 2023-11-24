@@ -28,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 .antMatchers("/api-docs", "/swagger*/**", "/h2-console/**")
                 .antMatchers(HttpMethod.POST, "/api/members/login", "/api/members/join", "/ws/**")
-                .antMatchers(HttpMethod.GET, "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**", "/ws/**", "/chat/**");
+                .antMatchers(HttpMethod.GET, "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**", "/ws/**");
     }
 
     @Override

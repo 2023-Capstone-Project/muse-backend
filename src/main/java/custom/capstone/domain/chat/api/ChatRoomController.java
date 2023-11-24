@@ -1,8 +1,9 @@
 package custom.capstone.domain.chat.api;
 
 import custom.capstone.domain.chat.application.ChatRoomService;
-import custom.capstone.domain.chat.dto.request.ChatRoomSaveRequestDto;
-import custom.capstone.domain.chat.dto.response.ChatRoomResponseDto;
+import custom.capstone.domain.chat.dto.MessageRequestDto;
+import custom.capstone.domain.chat.dto.MessageResponseDto;
+import custom.capstone.domain.chat.dto.ChatRoomDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-//@Controller
 @RequestMapping("/chat")
 public class ChatRoomController {
 
@@ -22,28 +22,31 @@ public class ChatRoomController {
      * 채팅방 생성
      */
     @PostMapping("/room")
-    public ChatRoomResponseDto createChatRoom(
+    public MessageResponseDto createChatRoom(
             @AuthenticationPrincipal final String loginEmail,
-            @RequestBody final ChatRoomSaveRequestDto requestDto
-    ) throws IllegalAccessException {
-        return chatRoomService.saveChatRoom(loginEmail, requestDto);
+            @RequestBody final MessageRequestDto requestDto
+    ) {
+        return chatRoomService.createRoom(loginEmail, requestDto);
     }
 
     /**
      * 채팅방 목록 조회
      */
     @GetMapping("/rooms")
-    public List<ChatRoomResponseDto> findAll() {
-        return chatRoomService.findAll();
+    public List<MessageResponseDto> findAll(@AuthenticationPrincipal final String loginEmail) {
+        return chatRoomService.findAll(loginEmail);
     }
 
     /**
      * 채팅방 단일 조회
      */
-    @GetMapping("/room/{roomId}")
+    @GetMapping("/room/enter/{roomId}")
     @ResponseBody
-    public ChatRoomResponseDto getChatRoomDetail(@PathVariable String roomId) {
-        return chatRoomService.findById(roomId);
+    public ChatRoomDto getChatRoomDetail(
+            @AuthenticationPrincipal final String loginEmail,
+            @PathVariable("roomId") final String roomId
+    ) {
+        return chatRoomService.findRoom(loginEmail, roomId);
     }
 
     /**
