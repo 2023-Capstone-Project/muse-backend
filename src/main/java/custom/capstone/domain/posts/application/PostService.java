@@ -53,6 +53,7 @@ public class PostService {
                 .member(member)
                 .category(category)
                 .type(requestDto.type())
+                .chatUrl(requestDto.chatUrl())
                 .build();
 
         postRepository.save(post);

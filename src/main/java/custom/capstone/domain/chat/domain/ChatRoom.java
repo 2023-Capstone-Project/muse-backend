@@ -1,9 +1,7 @@
 package custom.capstone.domain.chat.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.posts.domain.Post;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,10 +9,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import static javax.persistence.CascadeType.REMOVE;
-import static javax.persistence.GenerationType.IDENTITY;
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
@@ -22,43 +19,38 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class ChatRoom implements Serializable {
 
-    private static final long serialVersionUID = 6494678977089006639L;
-
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
-    private Member sender;
+    @Column(unique = true)
+    private String roomId;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id")
-    private Member receiver;
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
-    private String roomId;
+    private String sender;
 
-    @JsonManagedReference
+    private String receiver;
+
     @OneToMany(mappedBy = "chatRoom", cascade = REMOVE)
-    private List<ChatMessage> messageList = new ArrayList<>();
+    private List<Message> messageList = new ArrayList<>();
 
-
-    @Builder
     public ChatRoom(
-            final Post post,
-            final Member sender,
-            final Member receiver
+            final String sender,
+            final String roomId,
+            final String receiver,
+            final Member member,
+            final Post post
     ) {
-        this.post = post;
-        this.roomId = UUID.randomUUID().toString();
         this.sender = sender;
+        this.roomId = roomId;
         this.receiver = receiver;
-    }
-
-    public boolean hasMember(Long memberId) {
-        return sender.getId().equals(memberId) || receiver.getId().equals(memberId);
+        this.member = member;
+        this.post = post;
     }
 }

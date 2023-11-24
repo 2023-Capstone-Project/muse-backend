@@ -22,6 +22,8 @@ public record PostSaveRequestDto (
         String categoryTitle,
 
         @Enumerated(EnumType.STRING)
-        PostType type
+        PostType type,
+
+        String chatUrl
 ) {
 }

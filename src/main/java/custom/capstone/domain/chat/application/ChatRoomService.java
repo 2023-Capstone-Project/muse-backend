@@ -1,10 +1,13 @@
 package custom.capstone.domain.chat.application;
 
-import custom.capstone.domain.chat.dao.ChatMessageRepository;
+import custom.capstone.domain.chat.dao.MessageRepository;
 import custom.capstone.domain.chat.dao.ChatRoomRepository;
 import custom.capstone.domain.chat.domain.ChatRoom;
-import custom.capstone.domain.chat.dto.request.ChatRoomSaveRequestDto;
-import custom.capstone.domain.chat.dto.response.ChatRoomResponseDto;
+import custom.capstone.domain.chat.domain.Message;
+import custom.capstone.domain.chat.dto.MessageRequestDto;
+import custom.capstone.domain.chat.dto.MessageResponseDto;
+import custom.capstone.domain.chat.dto.ChatRoomDto;
+import custom.capstone.domain.chat.exception.ChatRoomNotFoundException;
 import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.members.exception.MemberNotFoundException;
@@ -13,25 +16,25 @@ import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.posts.exception.PostNotFoundException;
 import custom.capstone.global.service.redis.RedisSubscriber;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatMessageRepository chatMessageRepository;
+    private final MessageRepository messageRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
@@ -39,7 +42,7 @@ public class ChatRoomService {
     private final RedisMessageListenerContainer redisMessageListenerContainer;
     private final RedisSubscriber redisSubscriber;
     private final RedisTemplate<String, Object> redisTemplate;
-    private HashOperations<String, String, ChatRoom> opsHashChatRoom;
+    private HashOperations<String, String, ChatRoomDto> opsHashChatRoom;
     private Map<String, ChannelTopic> topics;
 
     /**
@@ -54,89 +57,115 @@ public class ChatRoomService {
     /**
      * 채팅방 생성
      */
-    @Transactional
-    public ChatRoomResponseDto saveChatRoom(final String loginEmail, final ChatRoomSaveRequestDto requestDto)
-            throws IllegalAccessException {
+    public MessageResponseDto createRoom(final String loginEmail, final MessageRequestDto requestDto) {
 
-        Post post = postRepository.findById(requestDto.postId())
-                .orElseThrow(PostNotFoundException::new);
-
-        Member sender = memberRepository.findByEmail(loginEmail)
+        final Member member = memberRepository.findByEmail(loginEmail)
                 .orElseThrow(MemberNotFoundException::new);
 
-        Member receiver = memberRepository.findById(requestDto.receiverId())
-                .orElseThrow(MemberNotFoundException::new);
+        final Post post = postRepository.findById(requestDto.postId()).
+                orElseThrow(PostNotFoundException::new);
 
-        checkForChatRoomDuplication(post, sender, receiver);
+        ChatRoom chatRoom = chatRoomRepository.findBySenderAndReceiver(member.getNickname(), requestDto.receiver());
 
-        ChatRoom savedChatRoom = ChatRoom.builder()
-                .post(post)
-                .sender(sender)
-                .receiver(receiver)
-                .build();
+        if ((chatRoom == null) || (chatRoom != null
+                        && (!member.getNickname().equals(chatRoom.getSender())
+                        && !requestDto.receiver().equals(chatRoom.getReceiver())
+                        && !requestDto.postId().equals(post.getId())))
+        ) {
+            ChatRoomDto messageRoomDto = ChatRoomDto.create(requestDto, member);
 
-        chatRoomRepository.save(savedChatRoom);
-        opsHashChatRoom.put(CHAT_ROOMS, savedChatRoom.getRoomId(), savedChatRoom);
+            opsHashChatRoom.put(CHAT_ROOMS, messageRoomDto.getRoomId(), messageRoomDto);
 
-        return new ChatRoomResponseDto(savedChatRoom);
-    }
-
-    private void checkForChatRoomDuplication(
-            final Post post,
-            final Member sender,
-            final Member receiver
-    ) throws IllegalAccessException {
-
-        System.out.println("sender: " + sender.getNickname()+ " receiver: " + receiver.getNickname());
-
-        if (sender.getNickname().equals(receiver.getNickname())) {
-            throw new IllegalAccessException("자신과의 채팅은 생성할 수 없습니다.");
+            chatRoom = chatRoomRepository.save(new ChatRoom(messageRoomDto.getSender(), messageRoomDto.getRoomId(), messageRoomDto.getReceiver(), member, post));
         }
 
-        ChatRoom chatRoom = chatRoomRepository.findBySenderAndReceiver(sender, receiver);
-
-        if (chatRoom != null && (!sender.getNickname().equals(chatRoom.getSender())
-                        && !receiver.getNickname().equals(chatRoom.getReceiver())
-                        && !post.getId().equals(chatRoom.getId()))) {
-            throw new IllegalAccessException("이미 해당 게시글로 만들어진 채팅방 중 sender와 receiver로 이루어진 채팅방이 있습니다.");
-        }
+        return new MessageResponseDto(chatRoom);
     }
 
     /**
      * 채팅방 목록 조회
      */
-    public List<ChatRoomResponseDto> findAll() {
-        final List<ChatRoom> chatRooms =  chatRoomRepository.findAll();
+    public List<MessageResponseDto> findAll(final String loginEmail) {
+        final Member member = memberRepository.findByEmail(loginEmail)
+                .orElseThrow(MemberNotFoundException::new);
 
-        return chatRooms.stream()
-                .map(ChatRoomResponseDto::new)
-                .collect(Collectors.toList());
+        final List<ChatRoom> chatRooms = chatRoomRepository.findByMemberOrReceiver(member, member.getNickname());
+
+        List<MessageResponseDto> messageRoomDtos = new ArrayList<>();
+
+        for (ChatRoom chatRoom : chatRooms) {
+            //  member 가 sender 인 경우
+            if (member.getNickname().equals(chatRoom.getSender())) {
+                MessageResponseDto messageRoomDto = new MessageResponseDto(
+                        chatRoom.getId(),
+                        chatRoom.getRoomId(),
+                        chatRoom.getSender(),
+                        chatRoom.getReceiver()
+                );
+
+                // 가장 최신 메시지 & 생성 시간 조회
+                Message latestMessage = messageRepository.findTopByRoomIdOrderByCreatedAtDesc(chatRoom.getRoomId());
+
+                if (latestMessage != null) {
+                    messageRoomDto.setLatestMessageCreatedAt(latestMessage.getCreatedAt());
+                    messageRoomDto.setLatestMessageContent(latestMessage.getMessage());
+                }
+
+                messageRoomDtos.add(messageRoomDto);
+
+            } else {
+                // member 가 receiver 인 경우
+                MessageResponseDto messageRoomDto = new MessageResponseDto(
+                        chatRoom.getId(),
+                        chatRoom.getRoomId(),
+                        chatRoom.getSender(),
+                        chatRoom.getReceiver());
+
+                // 가장 최신 메시지 & 생성 시간 조회
+                Message latestMessage = messageRepository.findTopByRoomIdOrderByCreatedAtDesc(chatRoom.getRoomId());
+                if (latestMessage != null) {
+                    messageRoomDto.setLatestMessageCreatedAt(latestMessage.getCreatedAt());
+                    messageRoomDto.setLatestMessageContent(latestMessage.getMessage());
+                }
+
+                messageRoomDtos.add(messageRoomDto);
+            }
+        }
+
+        return messageRoomDtos;
     }
 
     /**
      * 채팅방 단일 조회
      */
-    public ChatRoomResponseDto findById(final String roomId) {
-        final ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
+    public ChatRoomDto findRoom(final String loginEmail, final String roomId) {
+        final Member member = memberRepository.findByEmail(loginEmail)
+                .orElseThrow(MemberNotFoundException::new);
+
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
 
         final Post post = postRepository.findById(chatRoom.getPost().getId())
                 .orElseThrow(PostNotFoundException::new);
 
-        // TODO: 사용자 확인 추가
+        final Member receiver = memberRepository.findById(post.getMember().getId())
+                .orElseThrow(MemberNotFoundException::new);
 
-        return new ChatRoomResponseDto(chatRoom);
-    }
+        // sender & receiver 모두 messageRoom 조회 가능
+        chatRoom = chatRoomRepository.findByRoomIdAndMemberOrRoomIdAndReceiver(roomId, member, roomId, receiver.getNickname());
 
-    /**
-     * 채팅방 삭제
-     */
-    @Transactional
-    public void deleteChatRoom(final String roomId) {
-        final ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
+        if (chatRoom == null) {
+            throw new ChatRoomNotFoundException();
+        }
 
-        // TODO: 삭제하는 당사자가 누구인지 판별해서 삭제하기
+        final ChatRoomDto chatRoomDto = new ChatRoomDto(
+                chatRoom.getRoomId(),
+                chatRoom.getSender(),
+                chatRoom.getReceiver()
+        );
 
-        chatRoomRepository.delete(chatRoom);
+        chatRoomDto.setChatRoomPostId(post.getId());
+
+        return chatRoomDto;
     }
 
     /**
@@ -147,9 +176,22 @@ public class ChatRoomService {
 
         if (topic == null) {
             topic = new ChannelTopic(roomId);
+
             redisMessageListenerContainer.addMessageListener(redisSubscriber, topic);
+
             topics.put(roomId, topic);
         }
+    }
+
+    /**
+     * 채팅방 삭제
+     */
+    public void deleteChatRoom(final String roomId) {
+        final ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
+
+        // TODO: 삭제하는 당사자가 누구인지 판별해서 삭제하기
+
+        chatRoomRepository.delete(chatRoom);
     }
 
     /**

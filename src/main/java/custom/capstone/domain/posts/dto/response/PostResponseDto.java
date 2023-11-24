@@ -26,6 +26,7 @@ public class PostResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private MemberProfileDto writer;
+    private String chatUrl;
     private List<String> imageUrls;
 
     public PostResponseDto(final Post post, final List<String> imageUrls) {
@@ -45,6 +46,7 @@ public class PostResponseDto {
                 post.getMember().getNickname(),
                 post.getMember().getProfileImage()
         );
+        this.chatUrl = post.getChatUrl();
         this.imageUrls = imageUrls;
     }
 }

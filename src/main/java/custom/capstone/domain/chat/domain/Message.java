@@ -1,9 +1,7 @@
 package custom.capstone.domain.chat.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import custom.capstone.global.common.BaseTimeEntity;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +14,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ChatMessage extends BaseTimeEntity {
+public class Message extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
@@ -28,22 +26,24 @@ public class ChatMessage extends BaseTimeEntity {
 
     private String message;
 
-    @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "chat_room_id", nullable = false)
+    @JoinColumn(
+            name = "roomId",
+            referencedColumnName = "roomId",
+            insertable = false,
+            updatable = false
+    )
     private ChatRoom chatRoom;
 
-    @Builder
-    public ChatMessage(
-            final String roomId,
+    public Message(
             final String sender,
-            final String message,
-            final ChatRoom chatRoom
+            final String roomId,
+            final String message
     ) {
-        this.roomId = roomId;
+        super();
         this.sender = sender;
+        this.roomId = roomId;
         this.message = message;
-        this.chatRoom = chatRoom;
     }
 }
 

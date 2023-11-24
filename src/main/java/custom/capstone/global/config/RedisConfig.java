@@ -1,6 +1,6 @@
 package custom.capstone.global.config;
 
-import custom.capstone.domain.chat.domain.ChatMessage;
+import custom.capstone.domain.chat.dto.MessageDto;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -44,8 +44,8 @@ public class RedisConfig {
      * redis 에 메시지 내역을 저장하기 위한 redisTamplte 설정
      */
     @Bean
-    public RedisTemplate<String, ChatMessage> redisTemplateMessage(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, ChatMessage> redisTemplateMessage = new RedisTemplate<>();
+    public RedisTemplate<String, MessageDto> redisTemplateMessage(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, MessageDto> redisTemplateMessage = new RedisTemplate<>();
 
         redisTemplateMessage.setConnectionFactory(connectionFactory);
         redisTemplateMessage.setKeySerializer(new StringRedisSerializer());
