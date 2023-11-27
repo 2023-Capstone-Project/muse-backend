@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
@@ -16,6 +18,7 @@ public class MagazineListResponseDto {
     private String title;
     private MemberProfileDto admin;
     private int views;
+    private LocalDateTime createdAt;
     private String thumbnailUrl;
 
     public MagazineListResponseDto(final Magazine magazine, final String thumbnailUrl) {
@@ -27,6 +30,7 @@ public class MagazineListResponseDto {
                 magazine.getMember().getProfileImage()
         );
         this.views = magazine.getViews();
+        this.createdAt = magazine.getCreatedAt();
         this.thumbnailUrl = thumbnailUrl;
     }
 }
