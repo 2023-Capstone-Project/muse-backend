@@ -98,6 +98,7 @@ public class ChatRoomService {
             if (member.getNickname().equals(chatRoom.getSender())) {
                 MessageResponseDto messageRoomDto = new MessageResponseDto(
                         chatRoom.getId(),
+                        chatRoom.getMember().getId(),
                         chatRoom.getRoomId(),
                         chatRoom.getSender(),
                         chatRoom.getReceiver()
@@ -117,6 +118,7 @@ public class ChatRoomService {
                 // member 가 receiver 인 경우
                 MessageResponseDto messageRoomDto = new MessageResponseDto(
                         chatRoom.getId(),
+                        chatRoom.getMember().getId(),
                         chatRoom.getRoomId(),
                         chatRoom.getSender(),
                         chatRoom.getReceiver());
