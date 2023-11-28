@@ -10,7 +10,7 @@ on:
 env:
   PROJECT_NAME: muse-backend
   BUCKET_NAME: musefrontend
-  CODE_DEPLOY_APP_NAME: muse_cicd
+  CODE_DEPLOY_APP_NAME: muse-cicd
   DEPLOYMENT_GROUP_NAME: muse-instance
 
 jobs:
