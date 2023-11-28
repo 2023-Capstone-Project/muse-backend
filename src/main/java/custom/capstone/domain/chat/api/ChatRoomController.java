@@ -1,9 +1,8 @@
 package custom.capstone.domain.chat.api;
 
 import custom.capstone.domain.chat.application.ChatRoomService;
-import custom.capstone.domain.chat.dto.MessageRequestDto;
-import custom.capstone.domain.chat.dto.MessageResponseDto;
-import custom.capstone.domain.chat.dto.ChatRoomDto;
+import custom.capstone.domain.chat.application.MessageService;
+import custom.capstone.domain.chat.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,6 +16,7 @@ import java.util.List;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
+    private final MessageService messageService;
 
     /**
      * 채팅방 생성
@@ -42,11 +42,19 @@ public class ChatRoomController {
      */
     @GetMapping("/room/enter/{roomId}")
     @ResponseBody
-    public ChatRoomDto getChatRoomDetail(
+    public ChatRoomDetailDto getChatRoomDetail(
             @AuthenticationPrincipal final String loginEmail,
             @PathVariable("roomId") final String roomId
     ) {
-        return chatRoomService.findRoom(loginEmail, roomId);
+
+        // 채팅방 상세 정보 조회
+        final ChatRoomDto chatRoomDto = chatRoomService.findRoom(loginEmail, roomId);
+
+        // 채팅 메시지 내역 조회
+        final List<MessageDto> messageList = messageService.loadMessage(roomId);
+
+        // ChatRoomDetailDto에 채팅방 정보와 메시지 내역을 설정하여 반환
+        return new ChatRoomDetailDto(chatRoomDto, messageList);
     }
 
     /**
