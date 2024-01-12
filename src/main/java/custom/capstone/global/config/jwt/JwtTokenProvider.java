@@ -12,10 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 @Component
 public class JwtTokenProvider {
@@ -25,7 +23,7 @@ public class JwtTokenProvider {
 
     @Value("${security.jwt.secret-expiration}")
     private Long tokenValidTime;
-    
+
     private final UserDetailsService userDetailsService;
 
     protected JwtTokenProvider(final UserDetailsService userDetailsService) {
@@ -39,9 +37,10 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-    public String createToken(final String userPk, final List<String> roles) {
+    public String createToken(final String userPk, final String role) {
         final Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위
-        claims.put("roles", roles);                             // 정보는 key-value 로 저장된다
+
+        claims.put("role", role);                             // 정보는 key-value 로 저장된다
 
         final Date now = new Date();
 
@@ -62,20 +61,20 @@ public class JwtTokenProvider {
 
     // 토큰에서 회원 정보 추출
     public String getUserPk(final String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    // Request 의 Header 에서 token 값을 가져옵니다. "Authorization" : "Bearer {TOKEN 값}'
-    public String resolveToken(final HttpServletRequest request) {
-        final String authorizationHeader = request.getHeader("Authorization");
-
-        return authorizationHeader.substring(7);    // Bearer 를 제외한 TOKEN 값만 반환
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     // 토큰의 유효성 + 만료일자 확인
-    public boolean validateToken(final String jwtToken) {
+    public boolean validateToken(final String token) {
         try {
-            final Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            final Jws<Claims> claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token);
+
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             return false;
