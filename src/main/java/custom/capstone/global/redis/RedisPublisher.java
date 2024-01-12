@@ -1,4 +1,4 @@
-package custom.capstone.global.service.redis;
+package custom.capstone.global.redis;
 
 import custom.capstone.domain.chat.dto.MessageDto;
 import lombok.RequiredArgsConstructor;
