@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-//@ToString
 public enum BaseResponseStatus {
     /**
      * 1000: 요청 성공

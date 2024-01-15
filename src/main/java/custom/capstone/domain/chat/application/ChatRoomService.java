@@ -14,7 +14,7 @@ import custom.capstone.domain.members.exception.MemberNotFoundException;
 import custom.capstone.domain.posts.dao.PostRepository;
 import custom.capstone.domain.posts.domain.Post;
 import custom.capstone.domain.posts.exception.PostNotFoundException;
-import custom.capstone.global.service.redis.RedisSubscriber;
+import custom.capstone.global.redis.RedisSubscriber;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;

@@ -3,7 +3,7 @@ package custom.capstone.domain.chat.api;
 import custom.capstone.domain.chat.application.ChatRoomService;
 import custom.capstone.domain.chat.application.MessageService;
 import custom.capstone.domain.chat.dto.MessageDto;
-import custom.capstone.global.service.redis.RedisPublisher;
+import custom.capstone.global.redis.RedisPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
