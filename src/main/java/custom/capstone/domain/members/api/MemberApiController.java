@@ -58,7 +58,7 @@ public class MemberApiController {
 
     @Operation(summary = "로그아웃")
     @GetMapping("/logout")
-    public java.lang.String logout(final HttpServletRequest request, final HttpServletResponse response) {
+    public String logout(final HttpServletRequest request, final HttpServletResponse response) {
         new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
         return "redirect:/";
     }

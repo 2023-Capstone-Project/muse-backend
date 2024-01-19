@@ -4,7 +4,7 @@ server:
 spring:
   profiles:
     active: dev
-    include: jwt, aws, redis, mysql
+    include: jwt, aws, redis
 #    include: jwt, mysql, aws, redis
 
 logging.level:
