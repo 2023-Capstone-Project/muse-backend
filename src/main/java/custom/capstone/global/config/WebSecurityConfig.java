@@ -1,9 +1,8 @@
 package custom.capstone.global.config;
 
-import custom.capstone.global.config.jwt.JwtAuthenticationFilter;
 import custom.capstone.global.config.jwt.JwtTokenProvider;
+import custom.capstone.global.config.jwt.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,9 +11,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -23,12 +21,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    /**
+     * 정적 자원에는 Security 를 적용하지 않음
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                .antMatchers("/api-docs", "/swagger*/**", "/h2-console/**")
-                .antMatchers(HttpMethod.POST, "/api/members/login", "/api/members/join", "/ws/**")
-                .antMatchers(HttpMethod.GET, "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**", "/ws/**");
+        web
+                .ignoring()
+                .antMatchers("/api-docs", "/swagger*/**", "/h2-console/**");
     }
 
     @Override
@@ -42,6 +42,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
+
+                // 모든 접근 허용
+                .antMatchers(HttpMethod.POST, "/api/members/login", "/api/members/join", "/ws/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/posts/**", "/api/notice/**", "/api/magazine/**", "/api/inquires/**", "/ws/**").permitAll()
 
                 // 관리자만 접근 가능 ** 추후
                 .antMatchers(HttpMethod.POST,  "/api/notice/**", "/api/magazine/**", "/api/inquires/**").permitAll()
@@ -61,11 +65,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
 
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .exceptionHandling()
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+
+                .and()
+                .apply(new JwtSecurityConfig(jwtTokenProvider));
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 }

@@ -57,7 +57,7 @@ public class S3Uploader {
 
         final List<String> imageUrls = new ArrayList<>();
 
-        if (!images.isEmpty() && images != null) {
+        if (!images.isEmpty()) {
             for (final MultipartFile image : images) {
                 imageUrls.add(uploadImage(image, folderPath));
             }

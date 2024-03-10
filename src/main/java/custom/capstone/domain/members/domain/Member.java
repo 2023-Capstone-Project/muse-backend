@@ -15,12 +15,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -107,10 +104,6 @@ public class Member extends BaseTimeEntity implements UserDetails {
         this.nickname = nickname;
         this.password = password;
         this.phoneNumber = phoneNumber;
-    }
-
-    public void encodePassword(PasswordEncoder passwordEncoder){
-        this.password = passwordEncoder.encode(password);
     }
 
     public void updateProfileImage(final String profileImage) {

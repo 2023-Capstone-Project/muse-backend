@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 import java.util.TimeZone;
 
 @EnableWebSecurity
-@EnableJpaAuditing
 @SpringBootApplication
 public class MuseApplication {
     public static void main(String[] args) {

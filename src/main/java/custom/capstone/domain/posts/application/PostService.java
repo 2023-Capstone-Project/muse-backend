@@ -11,6 +11,7 @@ import custom.capstone.domain.posts.dto.request.PostUpdateRequestDto;
 import custom.capstone.domain.posts.dto.response.PostListResponseDto;
 import custom.capstone.domain.posts.dto.response.PostResponseDto;
 import custom.capstone.domain.posts.dto.response.PostSaveResponseDto;
+import custom.capstone.domain.posts.dto.response.PostUpdateResponseDto;
 import custom.capstone.domain.posts.exception.PostInvalidAccessException;
 import custom.capstone.domain.posts.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,6 @@ public class PostService {
                 .member(member)
                 .category(category)
                 .type(requestDto.type())
-                .chatUrl(requestDto.chatUrl())
                 .build();
 
         postRepository.save(post);
@@ -62,12 +62,11 @@ public class PostService {
         return new PostSaveResponseDto(post.getId());
     }
 
-
     /**
      * 게시글 수정
      */
     @Transactional
-    public PostResponseDto updatePost(
+    public PostUpdateResponseDto updatePost(
             final String loginEmail,
             final Long postId,
             final PostUpdateRequestDto requestDto
@@ -83,9 +82,7 @@ public class PostService {
 
         post.update(requestDto.title(), requestDto.content(), requestDto.price(), category, requestDto.type(), requestDto.status());
 
-        final List<String> imageUrls = postImageService.findAllPostImages(post);
-
-        return new PostResponseDto(post, imageUrls);
+        return new PostUpdateResponseDto(postId);
     }
 
     /**
@@ -120,8 +117,8 @@ public class PostService {
      * 게시글 상세 조회
      */
     @Transactional
-    public PostResponseDto findDetailById(final Long categoryId, final Long postId) {
-        final Post post = postRepository.findDetailById(categoryId, postId)
+    public PostResponseDto findDetailById(final Long postId) {
+        final Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFoundException::new);
 
         final List<String> imageUrls = postImageService.findAllPostImages(post);

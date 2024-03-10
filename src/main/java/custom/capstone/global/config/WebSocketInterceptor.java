@@ -1,4 +1,4 @@
-package custom.capstone.global.util;
+package custom.capstone.global.config;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.messaging.Message;

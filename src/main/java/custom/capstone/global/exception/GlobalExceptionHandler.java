@@ -19,12 +19,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<BaseResponse<?>> handlerBusinessException(final BusinessException ex) {
-        log.error("[Error] HttpStatus: {}, Message: {}", ex.getStatus(), ex.getMessage());
+        log.error("[Error] HttpStatus: {}, Message: {}", ex.getStatus().getHttpStatus(), ex.getStatus().getMessage());
         return buildResponse(ex.getStatus());
     }
 
     private ResponseEntity<BaseResponse<?>> buildResponse(final BaseResponseStatus status) {
-        final BaseResponse<?> baseResponse = BaseResponse.of(status, null);
+        final BaseResponse<?> baseResponse = BaseResponse.of(status, status.getHttpStatus());
         return new ResponseEntity<>(baseResponse, status.getHttpStatus());
     }
 

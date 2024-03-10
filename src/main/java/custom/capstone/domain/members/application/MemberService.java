@@ -21,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,7 +41,7 @@ public class MemberService {
 
         final String profileImage = saveProfileImage(image);
 
-        final Member member = memberRepository.save(Member.builder()
+        final Member member = Member.builder()
                 .nickname(requestDto.nickname())
                 .profileImage(profileImage)
                 .email(requestDto.email())
@@ -51,7 +49,9 @@ public class MemberService {
                 .phoneNumber(requestDto.phoneNumber())
                 .role(MemberRole.ROLE_GENERAL)
                 .status(MemberStatus.ACTIVE)
-                .build());
+                .build();
+
+        memberRepository.save(member);
 
         return new MemberResponseDto(member);
     }
@@ -61,15 +61,12 @@ public class MemberService {
      */
     public MemberLoginResponseDto login(final MemberLoginRequestDto requestDto) {
         final Member member = memberRepository.findByEmail(requestDto.email())
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(LoginFailException::new);
 
         if (!passwordEncoder.matches(requestDto.password(), member.getPassword()))
             throw new PasswordException();
 
-        final List<String> roles = new ArrayList<>();
-        roles.add(member.getRole().name());
-
-        final String token = jwtTokenProvider.createToken(requestDto.email(), roles);
+        final String token = jwtTokenProvider.createToken(requestDto.email(), member.getRole().name());
 
         return new MemberLoginResponseDto(member.getId(), token);
     }
@@ -85,6 +82,7 @@ public class MemberService {
     ) {
         final Member member = getValidMember(loginEmail);
 
+        checkNicknameDuplicate(member.getNickname());
         checkPasswordEquals(requestDto.password(), requestDto.checkPassword());
 
         member.update(requestDto.nickname(), passwordEncoder.encode(requestDto.password()), requestDto.phoneNumber());
@@ -116,18 +114,6 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    public MemberResponseDto findDetailById(final Long memberId) {
-        final Member entity = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
-
-        return new MemberResponseDto(entity);
-    }
-
-    @Transactional
-    public List<Member> findMembers() {
-        return memberRepository.findAll();
-    }
-
     // 회원인지 확인
     private Member getValidMember(final String loginEmail) {
         return memberRepository.findByEmail(loginEmail)
@@ -135,19 +121,19 @@ public class MemberService {
     }
     
      // 이메일, 닉네임 중복 여부 확인
-    private void checkEmailDuplicate(final MemberSaveRequestDto requestDto) {
-        if (memberRepository.existsMemberByEmail(requestDto.email()))
-            throw new MemberEmailExistException();
-    }
+     private void checkEmailDuplicate(final String email) {
+         if (memberRepository.existsMemberByEmail(email))
+             throw new MemberEmailExistException();
+     }
 
-    private void checkNicknameDuplicate(final MemberSaveRequestDto requestDto) {
-        if (memberRepository.existsMemberByNickname(requestDto.nickname()))
+    private void checkNicknameDuplicate(final String nickname) {
+        if (memberRepository.existsMemberByNickname(nickname))
             throw new MemberNicknameExistException();
     }
 
     private void validateSingUpRequest(final MemberSaveRequestDto requestDto) {
-        checkEmailDuplicate(requestDto);
-        checkNicknameDuplicate(requestDto);
+        checkEmailDuplicate(requestDto.email());
+        checkNicknameDuplicate(requestDto.nickname());
     }
 
     // 비밀번호 확인

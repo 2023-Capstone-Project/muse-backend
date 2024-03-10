@@ -16,8 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static javax.persistence.CascadeType.*;
 import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -33,12 +33,12 @@ public class Post extends BaseTimeEntity implements Serializable {
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = PERSIST)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @ManyToOne(fetch = LAZY, cascade = PERSIST)
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @Column(length = 50, nullable = false)
@@ -63,9 +63,6 @@ public class Post extends BaseTimeEntity implements Serializable {
     @Column(name = "interest_cnt", columnDefinition = "integer default 0", nullable = false)
     private int interestCount;
 
-    @Column(name = "chat_url")
-    private String chatUrl;
-
     @OneToMany(mappedBy = "post")
     private final Set<Interest> interests = new HashSet<>();
 
@@ -89,8 +86,7 @@ public class Post extends BaseTimeEntity implements Serializable {
             final int price,
             final Member member,
             final Category category,
-            final PostType type,
-            final String chatUrl
+            final PostType type
     ) {
         this.title = title;
         this.content = content;
@@ -99,7 +95,6 @@ public class Post extends BaseTimeEntity implements Serializable {
         this.status = PostStatus.SALE;
         setCategory(category);
         this.type = type;
-        this.chatUrl = chatUrl;
     }
 
     public void update(
