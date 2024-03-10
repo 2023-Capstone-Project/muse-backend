@@ -6,10 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -23,8 +22,8 @@ public class Category {
     @Column(length = 20, nullable = false)
     private String title;
 
-    @OneToMany(mappedBy = "category", cascade = REMOVE)
-    private final List<Post> posts = new ArrayList<>();
+    @OneToMany(mappedBy = "category")
+    private final Set<Post> posts = new HashSet<>();
 
     @Builder
     public Category(final String title) {

@@ -1,6 +1,7 @@
 package custom.capstone.global.config;
 
 import custom.capstone.global.config.jwt.JwtTokenProvider;
+import custom.capstone.global.config.jwt.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,6 +63,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // 그 외는 인증 요청
                 .anyRequest().authenticated()
+
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
 
                 .and()
                 .apply(new JwtSecurityConfig(jwtTokenProvider));

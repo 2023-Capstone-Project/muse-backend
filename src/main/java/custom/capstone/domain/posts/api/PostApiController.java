@@ -6,6 +6,7 @@ import custom.capstone.domain.posts.dto.request.PostUpdateRequestDto;
 import custom.capstone.domain.posts.dto.response.PostListResponseDto;
 import custom.capstone.domain.posts.dto.response.PostResponseDto;
 import custom.capstone.domain.posts.dto.response.PostSaveResponseDto;
+import custom.capstone.domain.posts.dto.response.PostUpdateResponseDto;
 import custom.capstone.global.common.BaseResponse;
 import custom.capstone.global.exception.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,12 +49,12 @@ public class PostApiController {
 
     @Operation(summary = "게시글 수정")
     @PatchMapping("/{postId}")
-    public BaseResponse<PostResponseDto> updatePost(
+    public BaseResponse<PostUpdateResponseDto> updatePost(
             @AuthenticationPrincipal final String loginEmail,
             @PathVariable("postId") final Long id,
             @Valid @RequestBody final PostUpdateRequestDto requestDto
     ) {
-        final PostResponseDto result = postService.updatePost(loginEmail, id, requestDto);
+        final PostUpdateResponseDto result = postService.updatePost(loginEmail, id, requestDto);
 
         return BaseResponse.of(
                 BaseResponseStatus.POST_UPDATE_SUCCESS,
@@ -92,7 +93,7 @@ public class PostApiController {
             @PathVariable("categoryId") final Long categoryId,
             @PathVariable("postId") final Long postId
     ) {
-        final PostResponseDto result = postService.findDetailById(categoryId, postId);
+        final PostResponseDto result = postService.findDetailById(postId);
 
         return BaseResponse.of(
                 BaseResponseStatus.POST_DETAIL_READ_SUCCESS,
