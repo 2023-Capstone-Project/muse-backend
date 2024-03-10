@@ -6,9 +6,11 @@ import autoparams.generator.ObjectContainer;
 import autoparams.generator.ObjectGenerator;
 import custom.capstone.domain.members.dto.request.MemberSaveRequestDto;
 
-public class MemberSaveCustomization implements Customizer {
+public class MemberCustomization implements Customizer {
+
     @Override
     public ObjectGenerator customize(final ObjectGenerator generator) {
+
         return ((query, context) -> query.getType().equals(MemberSaveRequestDto.class)
                 ? new ObjectContainer(factory())
                 : generator.generate(query, context));

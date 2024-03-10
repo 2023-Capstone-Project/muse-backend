@@ -2,7 +2,7 @@ package custom.capstone.domain.members.application;
 
 import autoparams.AutoSource;
 import autoparams.customization.Customization;
-import custom.capstone.domain.customization.MemberSaveCustomization;
+import custom.capstone.domain.customization.MemberCustomization;
 import custom.capstone.domain.members.dao.MemberRepository;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.members.domain.MemberStatus;
@@ -63,7 +63,7 @@ class MemberServiceTest {
         @DisplayName("[성공T] 회원 등록")
         @ParameterizedTest
         @AutoSource
-        @Customization(MemberSaveCustomization.class)
+        @Customization(MemberCustomization.class)
         void saveMember_success(final MemberSaveRequestDto requestDto) throws IOException {
             // given -- 테스트의 상태 설정
             given(memberRepository.existsMemberByEmail(requestDto.email())).willReturn(false);

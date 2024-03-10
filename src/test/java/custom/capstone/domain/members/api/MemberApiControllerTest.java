@@ -3,7 +3,7 @@ package custom.capstone.domain.members.api;
 import autoparams.AutoSource;
 import autoparams.customization.Customization;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import custom.capstone.domain.customization.MemberSaveCustomization;
+import custom.capstone.domain.customization.MemberCustomization;
 import custom.capstone.domain.members.application.MemberService;
 import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.members.dto.request.MemberLoginRequestDto;
@@ -65,7 +65,7 @@ class MemberApiControllerTest {
         @DisplayName("[성공T] 회원 등록")
         @ParameterizedTest
         @AutoSource
-        @Customization(MemberSaveCustomization.class)
+        @Customization(MemberCustomization.class)
         void join_success(final MemberSaveRequestDto requestDto) throws Exception {
             // given -- 테스트의 상태 설정
             final MockMultipartFile image = new MockMultipartFile(

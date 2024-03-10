@@ -8,7 +8,7 @@ import custom.capstone.domain.members.domain.Member;
 import custom.capstone.domain.members.dto.response.MemberResponseDto;
 import custom.capstone.domain.posts.application.PostImageService;
 import custom.capstone.domain.posts.domain.Post;
-import custom.capstone.domain.posts.domain.PostType;
+import custom.capstone.domain.posts.domain.PostImage;
 import custom.capstone.domain.review.domain.Review;
 import custom.capstone.domain.trading.domain.Trading;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +26,8 @@ import org.springframework.data.domain.Sort;
 import java.util.ArrayList;
 import java.util.List;
 
+import static custom.capstone.domain.posts.domain.PostType.CUSTOM;
+import static custom.capstone.domain.posts.domain.PostType.REFORM;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -52,17 +54,21 @@ class MemberMyPageServiceTest {
         @DisplayName("[성공T] 자신이 작성한 게시글 목록 페이징 조회")
         @ParameterizedTest
         @AutoSource
-        void find_success_my_posts(final Member member, final Category category) throws Exception {
+        void find_my_posts_success(final Member member, final Category category) {
             // given
             given(memberService.findById(any())).willReturn(new MemberResponseDto(member));
 
             final List<Post> posts = new ArrayList<>();
-            posts.add(new Post("test1", "test1", 1000, member, category, PostType.CUSTOM));
-            posts.add(new Post("test2", "test2", 2000, member, category, PostType.CUSTOM));
+            posts.add(new Post("test1", "test1", 1000, member, category, CUSTOM));
+            posts.add(new Post("test2", "test2", 2000, member, category, REFORM));
 
             given(postImageService.findThumbnailUrl(any())).willReturn("thumbnail");
 
-            final Pageable pageable = PageRequest.of(0, posts.size(), Sort.by(Sort.Direction.DESC, "createdAt"));
+            final Pageable pageable = PageRequest.of(
+                    0,
+                    posts.size(),
+                    Sort.by(Sort.Direction.DESC, "createdAt")
+            );
 
             final var response = new PageImpl<>(posts, pageable, posts.size());
 
@@ -81,7 +87,7 @@ class MemberMyPageServiceTest {
         @DisplayName("[성공T] 자신이 작성한 후기 목록 페이징 조회")
         @ParameterizedTest
         @AutoSource
-        void find_success_my_reviews(final Member member, final Trading trading) throws Exception {
+        void find_my_reviews_success(final Member member, final Trading trading) {
             // given -- 테스트의 상태 설정
             given(memberService.findById(any())).willReturn(new MemberResponseDto(member));
 
@@ -89,7 +95,11 @@ class MemberMyPageServiceTest {
             reviews.add(new Review(trading, member, "Good 😀"));
             reviews.add(new Review(trading, member, "Bad 🙁"));
 
-            final Pageable pageable = PageRequest.of(0, reviews.size(), Sort.by(Sort.Direction.DESC, "createdAt"));
+            final Pageable pageable = PageRequest.of(
+                    0,
+                    reviews.size(),
+                    Sort.by(Sort.Direction.DESC, "createdAt")
+            );
 
             final var response = new PageImpl<>(reviews, pageable, reviews.size());
 
@@ -108,12 +118,11 @@ class MemberMyPageServiceTest {
         @DisplayName("[성공T] 자신이 거래한 시안 목록 페이징 조회")
         @ParameterizedTest
         @AutoSource
-        void find_success_my_tradings(
+        void find_my_tradings_success(
                 final Member buyer,
                 final Member seller,
                 final Post post
-        ) throws Exception {
-
+        ) {
             // given -- 테스트의 상태 설정
             given(memberService.findById(any())).willReturn(new MemberResponseDto(buyer));
 
@@ -121,7 +130,11 @@ class MemberMyPageServiceTest {
             tradings.add(new Trading(post, buyer, seller));
             tradings.add(new Trading(post, buyer, seller));
 
-            final Pageable pageable = PageRequest.of(0, tradings.size(), Sort.by(Sort.Direction.DESC, "createdAt"));
+            final Pageable pageable = PageRequest.of(
+                    0,
+                    tradings.size(),
+                    Sort.by(Sort.Direction.DESC, "createdAt")
+            );
 
             final var response = new PageImpl<>(tradings, pageable, tradings.size());
 
@@ -138,15 +151,25 @@ class MemberMyPageServiceTest {
         }
 
         @DisplayName("[성공T] 자신이 좋아요한 시안 목록 페이징 조회")
-        void find_success_my_interests(final Member member, final Post post) throws Exception {
+        @ParameterizedTest
+        @AutoSource
+        void find_my_interests_success(final Member member, final List<Post> post) {
             // given -- 테스트의 상태 설정
             given(memberService.findById(any())).willReturn(new MemberResponseDto(member));
 
-            final List<Interest> interests = new ArrayList<>();
-            interests.add(new Interest(member, post));
-            interests.add(new Interest(member, post));
+            final List<PostImage> images = new ArrayList<>();
+            images.add(new PostImage(post.get(0), "image1.jpg"));
+            images.add(new PostImage(post.get(1), "image2.jpg"));
 
-            final Pageable pageable = PageRequest.of(0, interests.size(), Sort.by(Sort.Direction.DESC, "createdAt"));
+            final List<Interest> interests = new ArrayList<>();
+            interests.add(new Interest(member, post.get(0)));
+            interests.add(new Interest(member, post.get(1)));
+
+            final Pageable pageable = PageRequest.of(
+                    0,
+                    interests.size(),
+                    Sort.by(Sort.Direction.DESC, "createdAt")
+            );
 
             final var response = new PageImpl<>(interests, pageable, interests.size());
 
