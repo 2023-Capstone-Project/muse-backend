@@ -3,6 +3,7 @@ package custom.capstone.domain.chat.api;
 import custom.capstone.domain.chat.application.ChatRoomService;
 import custom.capstone.domain.chat.application.MessageService;
 import custom.capstone.domain.chat.dto.*;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,9 +19,7 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final MessageService messageService;
 
-    /**
-     * 채팅방 생성
-     */
+    @Operation(summary = "채팅방 생성")
     @PostMapping("/room")
     public MessageResponseDto createChatRoom(
             @AuthenticationPrincipal final String loginEmail,
@@ -29,17 +28,13 @@ public class ChatRoomController {
         return chatRoomService.createRoom(loginEmail, requestDto);
     }
 
-    /**
-     * 채팅방 목록 조회
-     */
+    @Operation(summary = "채팅방 목록 조회")
     @GetMapping("/rooms")
     public List<MessageResponseDto> findAll(@AuthenticationPrincipal final String loginEmail) {
         return chatRoomService.findAll(loginEmail);
     }
 
-    /**
-     * 채팅방 단일 조회
-     */
+    @Operation(summary = "채팅방 단일 조회")
     @GetMapping("/room/enter/{roomId}")
     @ResponseBody
     public ChatRoomDetailDto getChatRoomDetail(
@@ -57,9 +52,7 @@ public class ChatRoomController {
         return new ChatRoomDetailDto(chatRoomDto, messageList);
     }
 
-    /**
-     * 채팅방 삭제
-     */
+    @Operation(summary = "채팅방 삭제")
     @DeleteMapping("/room/{roomId}")
     public HttpStatus deleteChatRoom(@PathVariable("roomId") final String roomId) {
         chatRoomService.deleteChatRoom(roomId);
